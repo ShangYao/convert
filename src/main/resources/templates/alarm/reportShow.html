@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viveport" content="width=device-width, initial-scale=1"/>
+    <title>精编系统-报告详细列表</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+
+</head>
+<body>
+<!-- 导航部分开始 修改密码包含在导航里面 -->
+<nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/index.html">精编系统</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">精编管理<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/refined/list.html">我的精编</a></li>
+                            <li><a href="/refined/audit.html">精编审核</a></li>
+                            <li><a href="/refined/all.html">所有精编</a></li>
+                            <li><a href="/refined/statistics.html">精编统计</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">告警管理<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/alarm/list">告警配置</a></li>
+                            <li><a href="/alarm/reportList">告警报告</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">系统设置<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/basic/user/list">用户管理</a></li>
+                            <li><a href="/basic/store/list">店铺管理</a></li>
+                            <li><a href="/basic/group/list">小组管理</a></li>
+                            <li><a href="/basic/role/list">角色管理</a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/refined/add.html">添加精编</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">李海利 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/index.html">个人中心</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#updatePassword">修改密码</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/">退出</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div>
+    </div><!-- /.container-fluid -->
+</nav>
+<!-- Modal 修改密码 -->
+<div class="modal fade " id="updatePassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+            </div>
+            <div class="modal-body text-center">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="old-password" class="control-label">输入原密码:</label>
+                        <input type="password" class="form-control" id="old-password"/>
+                    </div>
+                    <br /> <br />
+                    <div class="form-group">
+                        <label for="new-password" class="control-label">输入新密码:</label>
+                        <input type="password" class="form-control" id="new-password"/>
+                    </div>
+                    <br /> <br />
+                    <div class="form-group">
+                        <label for="new-password-confirm" class="control-label">确认新密码:</label>
+                        <input type="password" class="form-control" id="new-password-confirm"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 导航部分结束 -->
+
+
+<!-- 内容部分 -->
+<div class="container">
+    <ol class="breadcrumb">
+        <li><a href="reportList">报告列表</a></li>
+        <li class="active">报告详细列表</li>
+    </ol>
+    <div class="panel panel-default">
+
+        <div class="panel-heading">
+            <h3 class="panel-title">单品信息</h3>
+        </div>
+        <div class="panel-body">
+            <dl class="dl-horizontal">
+                <dt>店铺名称:</dt>
+                <dd>马明明-66</dd>
+                <dt>商品编号:</dt>
+                <dd>1212121212</dd>
+                <dt>商品标题:</dt>
+                <dd>美国代购正品Marc Jacobs 棕色宽带气质时尚女士石英手表MBM8521</dd>
+                <dt>商品链接:</dt>
+                <dd> https://item.taobao.com/item.htm?id=561648859386</dd>
+                <dt>颜色:</dt>
+                <dd>红色</dd>
+                <dt>尺码:</dt>
+                <dd>DXL</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+
+        <div class="panel-heading">
+            <h3 class="panel-title">告警信息</h3>
+        </div>
+        <div class="panel-body">
+            <dl class="dl-horizontal">
+                <dt>告警名称:</dt>
+                <dd>全部断货告警</dd>
+                <dt>告警类型:</dt>
+                <dd>断货</dd>
+                <dt>告警等级:</dt>
+                <dd>严重</dd>
+                <dt>告警规则:</dt>
+                <dd> 当单品状态为“在售中”关联的ROC单品全断货时，生成告警</dd>
+                <dt>ROC单品:</dt>
+                <dd>
+                    <table class="table  table-condensed table-hover">
+                        <tr>
+                            <td><a href="#">AMZN#B008CJDAW6#B008CJDAW6</a></td>
+                            <td>断货</td>
+                            <td>2018-01-12 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td><a href="#">AMZN#B008CJDAW6#B008CJDAW6</a></td>
+                            <td>断货</td>
+                            <td>2018-01-12 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td><a href="#">AMZN#B008CJDAW6#B008CJDAW6</a></td>
+                            <td>断货</td>
+                            <td>2018-01-12 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td><a href="#">AMZN#B008CJDAW6#B008CJDAW6</a></td>
+                            <td>断货</td>
+                            <td>2018-01-12 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td><a href="#">AMZN#B008CJDAW6#B008CJDAW6</a></td>
+                            <td>断货</td>
+                            <td>2018-01-12 00:00:00</td>
+                        </tr>
+
+                    </table>
+
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>
+<!-- 内容部分结束 -->
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>

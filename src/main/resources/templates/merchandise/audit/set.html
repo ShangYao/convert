@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viveport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/x-icon" class="js-site-favicon"
+	href="/images/jing.jpg" />
+<title>精编系统-设置商品</title>
+<link href="/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="/css/formValidation.css" />
+</head>
+<body>
+	<!-- 导航部分开始 修改密码包含在导航里面 -->
+	<script type="text/javascript" src="/js/head.js"></script>
+	<!-- Modal 修改密码 -->
+	<script type="text/javascript" src="/js/updatePassword.js"></script>
+	<!-- 导航部分结束 -->
+
+
+	<!-- 内容部分 -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="list">我的精编</a></li>
+			<li class="active">设置商品</li>
+		</ol>
+		<div class="panel panel-default">
+
+			<div class="panel-heading">
+				<h3 class="panel-title">基本信息</h3>
+			</div>
+			<div class="panel-body">
+				<dl class="dl-horizontal">
+					<dt>店铺名称:</dt>
+					<dd th:text="${merchandise.store.name}"></dd>
+					<dt>商品编号:</dt>
+					<dd th:text="${merchandise.itemId}"></dd>
+					<dt>商品标题:</dt>
+					<dd th:text="${merchandise.title}"></dd>
+					<dt>商品链接:</dt>
+					<dd th:text="${merchandise.url}"></dd>
+				</dl>
+			</div>
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					单品信息
+					<button type="button" value="添加单品" onclick="toItem()"
+						style="float: right;" class="btn btn-info">添加单品</button>
+				</h3>
+
+			</div>
+			<form class="form-horizontal" id="defaultForm"
+				th:object="${merchandise}" method="POST">
+				<input type="hidden" name="id" th:value="*{id}" />
+				<div class="panel-body" id="source_sites_usrs_groups">
+					<table class="table table-bordered table-condensed table-hover "
+						id="table-skus">
+
+						<tr class="success">
+							<th>编号</th>
+							<th>颜色</th>
+							<th>尺码</th>
+							<th>在售状态</th>
+							<th>成本价</th>
+							<th>单品数量</th>
+							<th>rocid</th>
+							<th>关联</th>
+							<th></th>
+						</tr>
+						<tr th:each="item : ${merchandise.lineItems}">
+							<td th:text="${item.id}">12</td>
+							<td><input type="text" class="form-control input-sm"
+								placeholder="颜色1" th:value="${item.color}" name="color" /></td>
+							<td><input type="text" class="form-control input-sm"
+								placeholder="尺码1" th:value="${item.size}" name="size" /></td>
+							<td><select class="form-control input-sm" name="salesStates">
+									<option th:selected="${item.salesState}=='在售中' ">在售中</option>
+									<option th:selected="${item.salesState}=='已下架' ">已下架</option>
+							</select></td>
+							<td><input type="number" class="form-control input-sm"
+								th:value="${item.basePrice}" placeholder="成本价" name="cost" /></td>
+							<td th:text="${item.rocidCount}"></td>
+							<td><input type="text" class="form-control input-sm"
+								th:value="${item.rocidString}" placeholder="rocId" name="rocid" /></td>
+
+
+							<td><a title="设置"><span class="glyphicon glyphicon-cog"
+									data-toggle="modal" data-target="#set-rocid"></span></a></td>
+							<td><a href="javascript: "><span
+									class="glyphicon glyphicon-plus" aria-hidden="true"
+									id="ware_add" data-template="waretr"></span></a></td>
+						</tr>
+
+
+						<tr th:if="${merchandise.itemSize==0}">
+							<td></td>
+							<td><input type="text" class="form-control input-sm"
+								placeholder="颜色1" name="color" /></td>
+							<td><input type="text" class="form-control input-sm"
+								placeholder="尺码1" name="size" /></td>
+							<td><select class="form-control input-sm" name="salesStates">
+									<option>在售中</option>
+									<option>已下架</option>
+							</select></td>
+							<td><input type="number" class="form-control input-sm"
+								placeholder="成本价" name="cost" /></td>
+							<td></td>
+							<td><input type="text" class="form-control input-sm rocid"
+								placeholder="rocId" name="rocid" /></td>
+
+							<td><a href="javascript: " title="设置"><span
+									class="glyphicon glyphicon-cog" data-toggle="modal"
+									data-target="#set-rocid"></span></a></td>
+							<td><a href="javascript: "><span
+									class="glyphicon glyphicon-plus" aria-hidden="true"
+									id="ware_add" data-template="waretr"></span></a></td>
+
+
+
+
+						</tr>
+
+
+						<tr class="hide" id="waretr">
+							<td></td>
+							<td><input type="text" class="form-control input-sm"
+								name="color" /></td>
+							<td><input type="text" class="form-control input-sm"
+								name="size" /></td>
+							<td><select class="form-control input-sm" name="salesStates">
+									<option>在售中</option>
+									<option>已下架</option>
+							</select></td>
+							<td><input type="number" class="form-control input-sm"
+								placeholder="成本价" name="cost" /></td>
+							<td>0</td>
+							<td><input type="text" class="form-control input-sm "
+								placeholder="rocId" name="rocid" /></td>
+
+							<td><a href="javascript: " title="设置"><span
+									class="glyphicon glyphicon-cog" data-toggle="modal"
+									data-target="#set-rocid"></span></a></td>
+							<td><a href="javascript: "><span
+									class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></td>
+						</tr>
+					</table>
+				</div>
+				<div class="form-group " style="text-align: center;">
+					<div class="col-sm-4 ">
+						<button class="btn btn-default" onclick="draft()">仅保存草稿</button>
+					</div>
+					<div class="col-sm-4 ">
+						<button class="btn btn-default" onclick="publish()">保存并发布</button>
+					</div>
+					<div class="col-sm-4 ">
+						<input type="button" value="返回" class="btn btn-default"
+							onclick="history.go(-1)" />
+					</div>
+				</div>
+				<input type="hidden" id="login_user"
+					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
+			<input type="hidden" id="message"
+					th:value="${merchandise.alertMessage}" />
+
+			</form>
+		</div>
+	</div>
+	<!-- Modal -->
+	<div class="modal fade" id="set-rocid" tabindex="-1" role="dialog"
+		aria-labelledby="SetRocIdModal">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="SetRocIdModal">关联ROCID信息</h4>
+				</div>
+				<form class="form-inline">
+					<div class="modal-body">
+
+            <input type="hidden" id="roc_ids_key"></input>
+            <input type="text" id="roc_ids_value"></input>
+
+						<div>
+							<div class="form-group">
+								<input type="text" name="c[]" class="form-control b"
+									placeholder="第1个ROCID" /> <a href="javascript:"
+									class="control-label"> <span
+									class="glyphicon glyphicon-plus" aria-hidden="true"
+									id="add_roc_id" data-template="rocrow"></span></a>
+							</div>
+						</div>
+						<div id="rocrow" class="hide">
+							<br />
+							<div class="form-group">
+								<input type="text" name="c[]" class="form-control b" /> <a
+									href="javascript:" class="control-label"> <span
+									class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" onclick="addSet()">提交</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- 内容部分结束 -->
+
+	<script src="/js/alert.js"></script>
+
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/js/formValidation.js"></script>
+	<script type="text/javascript" src="/js/framework/bootstrap.js"></script>
+	<script type="text/javascript" src="/js/language/zh_CN.js"></script>
+
+  <script type="text/javascript">
+    "use strict";
+
+    var roc_ids_data = new Map();
+
+    function get_roc_ids(key) {
+      var data = roc_ids_data.get(key);
+      if (data === undefined) {
+        return [];
+      } else {
+        return data;
+      }
+    }
+      
+    function set_roc_ids(key, data) {
+      roc_ids_data.set(key, data);
+    }
+
+    function set_modal_roc_ids(key, data) {
+      $('#set-rocid').find('#roc_ids_key').val(key);
+      $('#set-rocid').find('#roc_ids_value').val(data[0]);
+    }
+
+    $('#set-rocid').on('show.bs.modal', function(event) {
+      var roc_ids_key = $(event.relatedTarget).closest('tr').data('roc_ids_key');
+      var data = get_roc_ids(roc_ids_key);
+      set_modal_roc_ids(roc_ids_key, data);
+    }).on('hide.bs.modal', function() {
+      var roc_ids_key = $('#set-rocid').find('#roc_ids_key').val();
+      var data = $('#set-rocid').find('#roc_ids_value').val();
+      data = data ? [data] : [];
+      set_roc_ids(roc_ids_key, data);
+    }).on('hidden.bs.modal', function() {
+      set_modal_roc_ids('', []);
+    });
+  </script>
+
+	<script type="text/javascript">
+		function tt(element) {
+
+			alert(element.children[0].innerHTML);
+			alert(element.children[1].innerHTML);
+
+		}
+		function addSet(index) {
+			var str = "";
+			$(".b").each(function() {
+				if ($(this).val() != "")
+					str += $(this).val() + ",";
+			});
+			$('.rocid').html(str);
+			alert(str);
+		}
+		function set(index) {
+			a = index;
+			$('#set-rocid').modal("show");
+
+		}
+		function toItem() {
+
+			defaultForm.action = "toItem";
+			defaultForm.submit();
+
+		}
+		function draft() {
+
+			//alert($('#test').val());
+			//defaultForm.action = "setItem?state=草稿";
+			//	defaultForm.submit();
+
+		}
+
+		function publish() {
+
+			defaultForm.action = "setItem?state=待审核";
+			defaultForm.submit();
+		}
+
+		$(document)
+				.ready(
+						function() {
+							//$('#set-rocid').modal("show");
+							//动态添加HTML元素并绑定事件
+							$('#ware_add')
+									.on(
+											'click',
+											function() {
+												var trindex = $(this).data(
+														'trindex');
+												if (!trindex) {
+													trindex = 1;
+													$(this).data('trindex', 1);
+												}
+												trindex++;
+												$(this)
+														.data('trindex',
+																trindex);
+												var template = $(this).attr(
+														'data-template'), $templateEle = $('#'
+														+ template), $row = $templateEle
+														.clone().removeAttr(
+																'id')
+														.insertBefore(
+																$templateEle)
+														.removeClass('hide');
+												$row.find('input').eq(0).attr(
+														'placeholder',
+														'颜色' + trindex);
+												$row.find('input').eq(1).attr(
+														'placeholder',
+														'尺码' + trindex);
+
+												$row.on('click',
+														'.glyphicon-remove',
+														function(e) {
+															$row.remove();
+														});
+
+                        $row.data('roc_ids_key', 'roc_ids_key_' + trindex);
+											});
+
+							//动态添加HTML元素并绑定事件
+							$('#add_roc_id')
+									.on(
+											'click',
+											function() {
+												var rocindex = $(this).data(
+														'rocindex');
+												if (!rocindex) {
+													rocindex = 1;
+													$(this).data('rocindex', 1);
+												}
+												rocindex++;
+												$(this).data('rocindex',
+														rocindex);
+												var template = $(this).attr(
+														'data-template'), $templateEle = $('#'
+														+ template), $row = $templateEle
+														.clone().removeAttr(
+																'id')
+														.insertBefore(
+																$templateEle)
+														.removeClass('hide');
+												$row.find('input').eq(0).attr(
+														'placeholder',
+														'第' + rocindex
+																+ '个ROCID');
+												$row.on('click',
+														'.glyphicon-remove',
+														function(e) {
+															$row.remove();
+														});
+											});
+						});
+	</script>
+
+</body>
+</html>

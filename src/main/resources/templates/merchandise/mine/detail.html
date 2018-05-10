@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viveport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/x-icon" class="js-site-favicon" href="/images/jing.jpg"/>
+
+<title>精编系统-审核精编</title>
+<link href="/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="/css/formValidation.css" />
+<script src="/js/jquery.min.js"></script>
+
+</head>
+<body>
+	<!-- 导航部分开始 修改密码包含在导航里面 -->
+	<script type="text/javascript" src="/js/head.js"></script>
+	<!-- Modal 修改密码 -->
+	<script type="text/javascript" src="/js/updatePassword.js"></script>
+	<!-- 导航部分结束 -->
+
+
+	<!-- 内容部分 -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="list">我的精编</a></li>
+			<li class="active">精编详情</li>
+		</ol>
+		<div class="panel panel-default">
+
+			<div class="panel-heading">
+				<h3 class="panel-title">基本信息</h3>
+			</div>
+			<div class="panel-body">
+				<dl class="dl-horizontal">
+					<dt>当前状态:</dt>
+					<dd th:text="${merchandise.state}"></dd>
+
+					<dt>店铺名称:</dt>
+					<dd th:text="${merchandise.store.name}"></dd>
+					<dt>商品编号:</dt>
+					<dd th:text="${merchandise.itemId}"></dd>
+					<dt>商品标题:</dt>
+					<dd th:text="${merchandise.title}"></dd>
+					<dt>商品链接:</dt>
+					<dd th:text="${merchandise.url}">
+					</dd>
+				</dl>
+			</div>
+
+			<div class="panel-heading">
+				<h3 class="panel-title">原网信息</h3>
+			</div>
+
+			<div class="panel-body">
+				<div class="form-group" th:each="turl :${merchandise.sourceUrl}">
+					<dl class="dl-horizontal">
+						<dt>货号:</dt>
+						<dd th:text="${turl.mpn}">
+						</dd>
+						<dt>链接:</dt>
+						<dd>
+							<a th:href="${turl.url}" target="_blank" th:text="${turl.url}"></a>
+						</dd>
+
+					</dl>
+				</div>
+			</div>
+
+			<div class="panel-heading">
+				<h3 class="panel-title">单品信息</h3>
+			</div>
+			<form class="form-horizontal" id="defaultForm"
+				th:object="${merchandise}" method="POST">
+				<input type="hidden" name="id" th:value="*{id}" />
+				<div class="panel-body" id="source_sites_usrs_groups">
+					<table class="table table-bordered table-condensed table-hover "
+						id="table-skus">
+
+						<tr class="success">
+							<th>编号</th>
+							<th>颜色</th>
+							<th>尺码</th>
+							<th>在售状态</th>
+							<th>成本价</th>
+							<th>单品数量</th>
+						</tr>
+						<tr th:each="item : ${merchandise.lineItems}">
+							<td th:text="${item.id}">12</td>
+							<td th:text="${item.color}">12</td>
+							<td th:text="${item.size}">12</td>
+							<td th:text="${item.salesState}">12</td>
+							<td th:text="${item.basePrice}">12</td>
+							<td><a th:text="${item.rocidCount}"
+								th:onclick="'javascript:rocid(\''+${item.rocidString}+'\')'"></a></td>
+						</tr>
+					</table>
+				</div>
+
+				<input type="hidden" id="login_user"
+					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
+			</form>
+
+			<div class="panel-heading">
+				<h3 class="panel-title">变更历史</h3>
+			</div>
+
+
+			<div class="panel-body">
+				<table class="table table-bordered table-condensed table-hover "
+					id="table-skus">
+					<tr class="success">
+						<th>时间</th>
+						<th>新状态</th>
+						<th>旧状态</th>
+						<th>备注</th>
+						<th>操作人</th>
+					</tr>
+					<tr th:each="item : ${changeList}">
+						<td
+							th:text="${#dates.format(item.createdAt, 'yyyy/MM/dd HH:mm:ss')}"></td>
+						<td th:text="${item.newState}">12</td>
+						<td th:text="${item.oldState}">12</td>
+						<td th:text="${item.note}">12</td>
+						<td th:text="${item.createdBy}">12</td>
+					</tr>
+				</table>
+			</div>
+			<div class="panel-body">
+				<div class="form-group " style="text-align: center;">
+
+					<div class="col-sm-4 ">
+						<input type="button" value="返回" class="btn btn-default"
+							onclick="history.go(-1)" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="SetRocIdModal">
+		<div class="modal-dialog " role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="SetRocIdModal">ROCID信息</h4>
+				</div>
+				<dl class="dl-horizontal" id="showRocid">
+				</dl>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- 内容部分结束 -->
+	<script src="/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/js/formValidation.js"></script>
+	<script type="text/javascript" src="/js/framework/bootstrap.js"></script>
+	<script type="text/javascript" src="/js/language/zh_CN.js"></script>
+	<script type="text/javascript">
+		/*<![CDATA[*/
+		function rocid(id) {
+			$("#showRocid").html("");
+
+			var arr = id.split(",");
+			for (var i = 0; arr.length > i; i++) {
+				var rid = arr[i];
+				var u = "http://roc.app.jinanlongen.com/parent_wares/"
+						+ encodeURIComponent(rid.substring(0, rid
+								.lastIndexOf('#'))) + "/wares/"
+						+ encodeURIComponent(rid);
+				$("#showRocid").append(
+						"<dd ><a href='"+u+" 'target='_blank'>" + rid
+								+ "</a></dd>");
+			}
+			$("#myModal").modal("show");
+		}
+
+		/*]]>*/
+	</script>
+</body>
+</html>

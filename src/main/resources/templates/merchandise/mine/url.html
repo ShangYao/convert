@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viveport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/x-icon" class="js-site-favicon"
+	href="/images/jing.jpg" />
+
+<title>精编系统-修改精编</title>
+<link href="/css/bootstrap.min.css" rel="stylesheet" />
+<link href="/css/bootstrap-select.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="/css/formValidation.css" />
+<script src="/js/jquery.min.js"></script>
+
+</head>
+<body>
+	<!-- 导航部分开始 修改密码包含在导航里面 -->
+	<script type="text/javascript" src="/js/head.js"></script>
+	<!-- Modal 修改密码 -->
+	<script type="text/javascript" src="/js/updatePassword.js"></script>
+	<!-- 导航部分结束 -->
+
+
+	<!-- 内容部分 -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="queryList">我的精编</a></li>
+			<li><a href="#"></a>修改精编</li>
+			<li class="active">添加源网连接</li>
+		</ol>
+		<div class="panel panel-default">
+
+			<form class="form-horizontal" id="defaultForm" th:object="${url}"
+				method="POST" action="addUrl" onsubmit="return false">
+				<input type="hidden" name="id" th:value="*{id}" /> <input
+					type="hidden" name="createdAt" th:value="*{createdAt}" /> <input
+					type="hidden" name="state" th:value="*{state}" /> <input
+					type="hidden" name="merchandiseId" th:value="*{merchandiseId}" />
+				<input type="hidden" id="login_user"
+					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
+				<input type="hidden" id="message" th:value="*{alertMessage}" />
+				<div class="panel-heading">
+					<h3 class="panel-title">基本信息</h3>
+				</div>
+				<div class="panel-body">
+
+					<div class="form-group">
+						<label for="name" class="col-sm-2 control-label">货号</label>
+						<div class="col-sm-10">
+							<input class="form-control" id="mpn" name="mpn" th:value="*{mpn}"
+								placeholder="货号" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="name" class="col-sm-2 control-label">url</label>
+						<div class="col-sm-10">
+							<input type="url" class="form-control" id="url" name="url" th:value="*{url}"
+								placeholder="url" />
+						</div>
+					</div>
+
+
+				</div>
+
+
+				<div class="form-group " style="text-align: center;">
+					<div class="col-sm-4 ">
+						<button class="btn btn-default" onclick="add()">保存</button>
+					</div>
+					<div class="col-sm-4 ">
+						<button class="btn btn-default" onclick="history.go(-1)">返回</button>
+
+					</div>
+
+				</div>
+
+			</form>
+		</div>
+
+	</div>
+
+
+	<script src="/js/alert.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap-select.min.js"></script>
+	<script type="text/javascript" src="/js/formValidation.js"></script>
+	<script type="text/javascript" src="/js/framework/bootstrap.js"></script>
+	<script type="text/javascript" src="/js/language/zh_CN.js"></script>
+
+	<script type="text/javascript">
+		function back() {
+
+			defaultForm.action = "list";
+			defaultForm.submit();
+		}
+
+		function add() {
+			if ($("#mpn").val() == "" || $("#mpn").val() == null) {
+				alert("mpn不能为空！");
+				return false;
+			}
+
+			if ($("#url").val() == "" || $("#url").val() == null) {
+				alert("url不能为空！");
+				return false;
+			}
+			defaultForm.submit();
+
+		}
+
+		$(document)
+				.ready(
+						function() {
+							//动态添加HTML元素并绑定事件
+							$('.glyphicon-plus')
+									.on(
+											'click',
+											function() {
+												var index = $(this).data(
+														'index');
+
+												if (!index) {
+													index = 1;
+													$(this).data('index', 1);
+												}
+
+												index++;
+												$(this).data('index', index);
+												var template = $(this).attr(
+														'data-template'), $templateEle = $('#'
+														+ template + 'Template'), $row = $templateEle
+														.clone().removeAttr(
+																'id')
+														.insertBefore(
+																$templateEle)
+														.removeClass('hide'), $el = $row
+														.find('input').eq(0)
+														.attr('name', 'rocid'), $le = $row
+														.find('label')
+														.eq(0)
+														.attr(
+																'for',
+																template
+																		+ index);
+
+												$('#defaultForm')
+														.formValidation(
+																'addField', $el);
+
+												$el.attr('placeholder',
+														'请添加RocId #' + index);
+												$el
+														.attr('id', template
+																+ index);
+												$row
+														.on(
+																'click',
+																'.glyphicon-remove',
+																function(e) {
+																	$(
+																			'#defaultForm')
+																			.formValidation(
+																					'removeField',
+																					$el);
+																	$row
+																			.remove();
+																});
+											});
+
+							$('.glyphicon-remove').on('click', function() {
+								$(this).closest(".form-group").remove();
+
+							});
+
+							$('#defaultForm').formValidation({
+								message : 'This value is not valid',
+								icon : {
+									valid : 'glyphicon glyphicon-ok',
+									invalid : 'glyphicon glyphicon-remove',
+									validating : 'glyphicon glyphicon-refresh'
+								},
+								fields : {
+									inputTitel : {
+										message : 'The username is not valid',
+										validators : {
+											notEmpty : {
+												message : '标题'
+											},
+											stringLength : {
+												min : 6,
+												max : 60,
+												message : '标题必须在6-60个字符之间'
+											}
+
+										}
+									},
+
+								}
+							});
+						});
+	</script>
+</body>
+</html>

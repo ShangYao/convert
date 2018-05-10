@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viveport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/x-icon" class="js-site-favicon"
+	href="/images/jing.jpg" />
+<title>精编系统-添加小组</title>
+<link href="/css/bootstrap.min.css" rel="stylesheet" />
+	<script src="/js/jquery.min.js"></script>
+
+</head>
+<body>
+	<!-- 导航部分开始 修改密码包含在导航里面 -->
+	<script type="text/javascript" src="/js/head.js"></script>
+	<!-- Modal 修改密码 -->
+	<script type="text/javascript" src="/js/updatePassword.js"></script>
+	<!-- 导航部分结束 -->
+
+
+	<!-- 内容部分 -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="list">小组管理</a></li>
+			<li class="active">修改小组</li>
+		</ol>
+		<div style="width: 500px; margin: 0 auto;">
+			<form class="form-horizontal" id="myform" action="modify" method="POST"
+				th:object="${group}" onsubmit="return false">
+				<input type="hidden" name="id" th:value="*{id}" /> 
+				<input type="hidden" name="level" th:value="*{level}" />
+				<input
+					type="hidden" name="parentId" th:value="*{parentId}" />
+				<div class="form-group">
+					<label for="name" class="col-sm-2 control-label">小组名称</label>
+					<div class="col-sm-10">
+						<input class="form-control" id="name" name="name"
+							th:value="*{name}" placeholder="小组名称" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-10">
+						<button class="btn btn-primary" onclick="add()">保存</button>
+						<button class="btn btn-primary" onclick="back()">返回</button>
+					</div>
+				</div>
+				<input type="hidden" id="login_user"
+					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
+				<input type="hidden" id="message" th:value="${group.alertMessage}" />
+			</form>
+		</div>
+	</div>
+	<!-- 内容部分结束 -->
+
+	<script src="/js/alert.js"></script>
+ 	<script src="/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		function add() {
+			if ($("#name").val() == "" || $("#name").val() == null) {
+				alert("小组名称不能为空！");
+				return false;
+			}
+			myform.submit();
+		}
+		function back() {
+			myform.action="list";
+			myform.submit();
+		}
+	</script>
+
+</body>
+</html>

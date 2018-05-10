@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viveport" content="width=device-width, initial-scale=1" />
+<title>精编系统-添加精编</title>
+<link rel="icon" type="image/x-icon" class="js-site-favicon"
+	href="/images/jing.jpg" />
+
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="/js/tinymce/jquery.tinymce.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
+
+
+<link href="/css/bootstrap.min.css" rel="stylesheet" />
+<link href="/css/bootstrap-select.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="/css/formValidation.css" />
+<script>tinymce.init({
+	 selector: "textarea",
+	 upload_image_url: '/merchandise/mine/upload', //配置的上传图片的路由
+     height: 400,
+     language:'zh_CN',
+     plugins: [
+         'advlist autolink lists link  charmap print preview hr anchor pagebreak',
+         'searchreplace wordcount visualblocks visualchars code fullscreen',
+         'insertdatetime media nonbreaking save table contextmenu directionality',
+         'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help uploadimage'
+       ],
+       toolbar1: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+       toolbar2: 'print preview media | forecolor backcolor emoticons | codesample help uploadimage',
+       image_advtab: true,
+       templates: [
+         { title: 'Test template 1', content: 'Test 1' },
+         { title: 'Test template 2', content: 'Test 2' }
+       ],
+     menubar: false
+		});</script>
+</head>
+<body>
+	<!-- 导航部分开始 修改密码包含在导航里面 -->
+	<script type="text/javascript" src="/js/head.js"></script>
+	<!-- Modal 修改密码 -->
+	<script type="text/javascript" src="/js/updatePassword.js"></script>
+	<!-- 导航部分结束 -->
+
+
+	<!-- 内容部分 -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="list">精编管理</a></li>
+			<li><a href="list">我的精编</a></li>
+			<li class="active">精编添加</li>
+		</ol>
+		<div class="panel panel-default">
+
+			<form class="form-horizontal" id="defaultForm"
+				th:object="${merchandise}" method="POST" onsubmit="return false">
+				<div class="panel-heading">
+					<h3 class="panel-title">基本信息</h3>
+				</div>
+				<div class="panel-body">
+					
+					
+					<div class="form-group">
+						<label for="title" class="col-sm-2 control-label">商品标题</label>
+						<div class="col-sm-10">
+							<input class="form-control" name="title" id="title"
+								th:value="*{title}" placeholder="商品标题" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="url" class="col-sm-2 control-label">性别</label>
+						<div class="col-sm-10">
+							<select id="genderId" class="selectpicker show-tick form-control"
+								name="genderId" data-live-search="true">
+								<option value="0">选择性别</option>
+								<option th:each="gender:${genders}" th:value="${gender.id}"
+									th:selected="${gender.id}==*{genderId}" th:text="${gender.name}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="url" class="col-sm-2 control-label">品牌</label>
+						<div class="col-sm-10">
+							<select id="brandId" class="selectpicker show-tick form-control"
+								name="brandId" data-live-search="true">
+								<option value="0">选择品牌</option>
+								<option th:each="brand:${brands}" th:value="${brand.id}"
+									th:selected="${brand.id}==*{brandId}" th:text="${brand.name}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="url" class="col-sm-2 control-label">分类</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="taxon1"
+								th:value="${taxonId}" onchange="getTaxon2(this.value)">
+								<option value="0">---选择一级分类---</option>
+								<option th:each="taxon:${topTaxons}" th:value="${taxon.id}"
+									th:text="${taxon.name}"
+									></option>
+							</select> 
+							 <select  
+								class="form-control" id="taxon2"
+								onchange="getTaxon3(this.value)">
+								<!-- <option th:if="${group2.id}!=0" th:text="${group2.name}"
+									th:value="${group2.id}"></option> -->
+								<option value="0">选择二级分类</option>
+							</select> 
+							<select  class="form-control"
+								 id="taxon3">
+								<!-- <option th:if="${group3.id}!=0" th:text="${group3.name}"
+									th:value="${group3.id}"></option> -->
+								<option value="0">选择三级小组</option>
+							</select> 
+							
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="url" class="col-sm-2 control-label">相册管理</label>
+						<div class="col-sm-10">
+							<input type="url" class="form-control" 
+								 placeholder="分类" />
+						</div>
+					</div>
+
+				</div>
+				<!-- <div class="panel-heading">
+					<h3 class="panel-title">原网链接</h3>
+				</div> -->
+
+				<!-- <textarea>Next, start a free trial!</textarea> -->
+				<!-- <div class="panel-body">
+
+					<div class="form-group">
+						<label for="targetUrl1" class="col-sm-1 control-label"></label>
+						<div class="col-sm-10">
+							<p>
+								若精编的商品不存在ROC库，可不关联ROC单品，仅录入相关来源网站的链接。<br />
+								若录入了ROC单品则不需要在录入原网链接
+							</p>
+						</div>
+					</div>
+					<div class="form-group form-inline">
+						<label class="col-sm-1 control-label"></label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="mpn"
+								placeholder="请添加货号" /> <input type="url" class="form-control"
+								id="targetUrl1" name="targetUrl" placeholder="请添加网址 #" />
+						</div>
+
+						<a href="javascript:"><span class="glyphicon glyphicon-plus"
+							aria-hidden="true" data-template="targetUrl"></span></a>
+					</div>
+
+					<div class="form-group form-inline hide" id="targetUrlTemplate">
+						<label class="col-sm-1 control-label"></label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="mpn"
+								placeholder="请添加货号" /> <input type="url" class="form-control" />
+						</div>
+						<a href="javascript:"><span class="glyphicon glyphicon-remove"
+							aria-hidden="true"></span></a>
+					</div>
+
+				</div> -->
+				<div class="form-group " style="text-align: center;">
+					<div class="col-sm-4 ">
+						<button class="btn btn-default" id="draf" onclick="draft()">仅保存草稿</button>
+					</div>
+					<div class="col-sm-4 ">
+						<button class="btn btn-default" id="pub" onclick="publish()">保存并发布</button>
+					</div>
+					<div class="col-sm-4 ">
+						<input type="button" value="返回" class="btn btn-default"
+							onclick="back()" />
+					</div>
+
+				</div>
+				<input type="hidden" id="login_user"
+					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
+				<input type="hidden" id="message"
+					th:value="${merchandise.alertMessage}" />
+
+			</form>
+		</div>
+
+	</div>
+
+<script type="text/javascript" src="/js/sparrow/ajax.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap-select.min.js"></script>
+	<script src="/js/alert.js"></script>
+	<script type="text/javascript" src="/js/formValidation.js"></script>
+	<script type="text/javascript" src="/js/framework/bootstrap.js"></script>
+	<script type="text/javascript" src="/js/language/zh_CN.js"></script>
+
+	<script type="text/javascript">
+		function back() {
+
+			defaultForm.action = "list";
+			defaultForm.submit();
+
+		}
+		function draft() {
+			if ($("#url").val() == "" || $("#url").val() == null) {
+				alert("url不能为空！");
+				return false;
+			}
+
+			if ($("#storeId").val() == 0) {
+				alert("请选择店铺！");
+				return false;
+			}
+
+			if ($("#title").val() == "" || $("#title").val() == null) {
+				alert("标题不能为空！");
+				return false;
+			}
+			if ($("#itemId").val() == "" || $("#itemId").val() == null) {
+				alert("商品编号不能为空！");
+				return false;
+			}
+			if ($("#targetUrl1").val() == "" || $("#targetUrl1").val() == null) {
+				alert("请至少添加一条源网链接！");
+				return false;
+			}
+			$("#draf").attr("disabled", true);
+			defaultForm.action = "add?newState=草稿";
+			defaultForm.submit();
+
+		}
+
+		function publish() {
+
+			if ($("#storeId").val() == 0) {
+				alert("请选择店铺！");
+				return false;
+			}
+
+			if ($("#url").val() == "" || $("#url").val() == null) {
+				alert("url不能为空！");
+				return false;
+			}
+			if ($("#title").val() == "" || $("#title").val() == null) {
+				alert("标题不能为空！");
+				return false;
+			}
+			if ($("#itemId").val() == "" || $("#itemId").val() == null) {
+				alert("商品编号不能为空！");
+				return false;
+			}
+			if ($("#targetUrl1").val() == "" || $("#targetUrl1").val() == null) {
+				alert("请至少添加一条源网链接！");
+				return false;
+			}
+			$("#pub").attr("disabled", true);
+			defaultForm.action = "add?newState=待审核";
+			defaultForm.submit();
+		}
+
+		$(document)
+				.ready(
+						function() {
+							//动态添加HTML元素并绑定事件
+							$('.glyphicon-plus')
+									.on(
+											'click',
+											function() {
+												var index = $(this).data(
+														'index');
+
+												if (!index) {
+													index = 1;
+													$(this).data('index', 1);
+												}
+
+												index++;
+												$(this).data('index', index);
+												var template = $(this).attr(
+														'data-template'), $templateEle = $('#'
+														+ template + 'Template'), $row = $templateEle
+														.clone().removeAttr(
+																'id')
+														.insertBefore(
+																$templateEle)
+														.removeClass('hide'), $el = $row
+														.find('input').eq(1)
+														.attr('name', template), $le = $row
+														.find('label')
+														.eq(1)
+														.attr(
+																'for',
+																template
+																		+ index);
+
+												$('#defaultForm')
+														.formValidation(
+																'addField', $el);
+
+												$el.attr('placeholder',
+														'请添加网址 #' + index);
+												$el
+														.attr('id', template
+																+ index);
+												$row
+														.on(
+																'click',
+																'.glyphicon-remove',
+																function(e) {
+																	$(
+																			'#defaultForm')
+																			.formValidation(
+																					'removeField',
+																					$el);
+																	$row
+																			.remove();
+																});
+											});
+
+							$('#defaultForm').formValidation({
+								message : 'This value is not valid',
+								icon : {
+									valid : 'glyphicon glyphicon-ok',
+									invalid : 'glyphicon glyphicon-remove',
+									validating : 'glyphicon glyphicon-refresh'
+								},
+								fields : {
+									inputTitel : {
+										message : 'The username is not valid',
+										validators : {
+											notEmpty : {
+												message : '标题'
+											},
+											stringLength : {
+												min : 6,
+												max : 60,
+												message : '标题必须在6-60个字符之间'
+											}
+
+										}
+									},
+									url : {
+										validators : {
+											notEmpty : {
+												message : '链接不能为空'
+											},
+											stringLength : {
+												min : 10,
+												//max : 300,
+												message : 'URL长度应大于10字符'
+											}
+										}
+									},
+									targetUrl : {
+										validators : {
+											notEmpty : {
+												message : '链接不能为空'
+											},
+											stringLength : {
+												min : 10,
+											//	max : 300,
+												message : 'URL长度应大于10字符'
+											}
+										}
+									}
+
+								}
+							});
+						});
+	</script>
+</body>
+</html>

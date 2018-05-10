@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viveport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/x-icon" class="js-site-favicon"
+	href="/images/jing.jpg" />
+<title>精编系统-用户管理</title>
+<!-- Bootstrap -->
+<link href="/css/bootstrap.min.css" rel="stylesheet" />
+<link href="/css/bootstrap-select.min.css" rel="stylesheet" />
+
+<script src="/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/bootstrap-paginator.js"></script>
+<script src="/js/qunit-1.11.0.js"></script>
+</head>
+<body>
+	<!-- 导航部分开始 修改密码包含在导航里面 -->
+	<script type="text/javascript" src="/js/head.js"></script>
+	<!-- Modal 修改密码 -->
+	<script type="text/javascript" src="/js/updatePassword.js"></script>
+	<!-- 导航部分结束 -->
+
+
+	<!-- 内容部分 -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="#">用户管理</a></li>
+			<li class="active">用户列表</li>
+		</ol>
+		<a sec:authentication="name"></a>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<form class="form-inline" id="myform" th:object="${user}"
+					action="queryList" method="POST">
+
+					<input type="text" name="code" class="form-control" id="code"
+						style="width: 120px" th:value="${user.code}" placeholder="编号" />
+					<input type="text" name="userName" id="name" class="form-control"
+						style="width: 120px" th:value="${user.userName}" placeholder="姓名" />
+
+					<div class="form-group">
+						<select class="selectpicker show-tick form-control" name="roleId"
+							id="roleId" th:value="${roleId}">
+							<option value="0">选择角色</option>
+							<option th:each="role:${roleList}" th:value="${role.id}"
+								th:text="${role.name}" th:selected="(${role.id} == *{roleId})"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<select class="selectpicker show-tick form-control" name="group1"
+							id="group1" th:value="${group1.id}"
+							onchange="getGroup2(this.value)">
+							<option value="0">选择一级小组</option>
+							<option th:each="group:${topGroup}" th:value="${group.id}"
+								th:text="${group.name}"
+								th:selected="(${group.id} == ${group1.id})"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<select name="group2" id="group2" th:value="${group2.id}"
+							class="form-control" onchange="getGroup3(this.value)">
+							<option th:if="${group2.id}!=0" th:text="${group2.name}"
+								th:value="${group2.id}"></option>
+							<option value="0"></option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<select name="group3" class="form-control" th:value="${group3.id}"
+							id="group3">
+							<option th:if="${group3.id}!=0" th:text="${group3.name}"
+								th:value="${group3.id}"></option>
+							<option value="0"></option>
+						</select>
+					</div>
+
+
+
+					<div class="form-group">
+						<button type="submit" class="btn btn-default">提交</button>
+						<button type="button" class="btn btn-default" onclick="empty()">清空</button>
+					</div>
+
+
+				</form>
+
+			</div>
+			<div class="panel-body">
+				<table class="table table-bordered table-condensed table-hover ">
+					<thead>
+						<tr class="success">
+							<th>职工编号</th>
+							<th>姓名</th>
+							<th>角色</th>
+							<th width="40%">小组</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="user: ${user.queryList}">
+							<td th:text="${user.code}"></td>
+							<td th:text="${user.userName}"></td>
+							<td th:text="${user.roleNameString}"></td>
+							<td th:text="${user.groupNameString}"></td>
+
+							<td><a th:href="@{toModify(id=${user.id})}" title="设置"><span
+									class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;</td>
+						</tr>
+					</tbody>
+
+
+				</table>
+				<div style="display: flex; align-items: center;">
+					<ul id='pagination' style="display: inline"></ul>
+					<!-- 共<a th:text="*{user.totalPages}"></a>页; -->
+				</div>
+
+
+				<input type="hidden" id="totalPages" name="totalPages"
+					th:value="*{user.totalPages}" /> <input type="hidden" id="page"
+					name="page" th:value="*{user.page}" /> <input type="hidden"
+					id="action" name="action" value="queryList?page=" /> <input
+					type="hidden" id="login_user"
+					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
+
+				<script src="/js/pagination-plugin.js"></script>
+			</div>
+		</div>
+
+	</div>
+	<!-- 内容部分结束 -->
+	
+	
+	
+	<script type="text/javascript">
+		function toModify(id) {
+			alert(id);
+		}
+
+		function empty() {
+			$("#code").val("");
+			$("#name").val("");
+			$("#group2").val("");
+			$("#group3").val("");
+
+			document.getElementById("roleId").options.selectedIndex = 0;
+			$("#roleId").selectpicker('refresh');
+			document.getElementById("group1").options.selectedIndex = 0;
+			$("#group1").selectpicker('refresh');
+			
+		}
+	</script>
+
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap-select.min.js"></script>
+	<script type="text/javascript" src="/js/alert.js"></script>
+	<script type="text/javascript" src="/js/sparrow/ajax.js"></script>
+
+</body>
+</html>

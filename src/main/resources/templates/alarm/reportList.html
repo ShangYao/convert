@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viveport" content="width=device-width, initial-scale=1"/>
+    <title>精编系统-报告列表</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/css/bootstrap-select.min.css" rel="stylesheet"/>
+    <link href="/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen"/>
+</head>
+<body>
+<!-- 导航部分开始 修改密码包含在导航里面 -->
+<nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/index.html">精编系统</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">精编管理<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/refined/list.html">我的精编</a></li>
+                            <li><a href="/refined/audit.html">精编审核</a></li>
+                            <li><a href="/refined/all.html">所有精编</a></li>
+                            <li><a href="/refined/statistics.html">精编统计</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">告警管理<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/alarm/list">告警配置</a></li>
+                            <li><a href="/alarm/reportList">告警报告</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">系统设置<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/basic/user/list">用户管理</a></li>
+                            <li><a href="/basic/store/list">店铺管理</a></li>
+                            <li><a href="/basic/group/list">小组管理</a></li>
+                            <li><a href="/basic/role/list">角色管理</a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/refined/add.html">添加精编</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">李海利 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/index.html">个人中心</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#updatePassword">修改密码</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/">退出</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div>
+    </div><!-- /.container-fluid -->
+</nav>
+<!-- Modal 修改密码 -->
+<div class="modal fade " id="updatePassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+            </div>
+            <div class="modal-body text-center">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="old-password" class="control-label">输入原密码:</label>
+                        <input type="password" class="form-control" id="old-password"/>
+                    </div>
+                    <br /> <br />
+                    <div class="form-group">
+                        <label for="new-password" class="control-label">输入新密码:</label>
+                        <input type="password" class="form-control" id="new-password"/>
+                    </div>
+                    <br /> <br />
+                    <div class="form-group">
+                        <label for="new-password-confirm" class="control-label">确认新密码:</label>
+                        <input type="password" class="form-control" id="new-password-confirm"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 导航部分结束 -->
+
+
+<!-- 内容部分 -->
+<div class="container">
+    <ol class="breadcrumb">
+        <li class="active">报告列表</li>
+    </ol>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <form class="form-inline">
+
+                <input type="text" class="form-control" style="width:120px" name="datetimepicker" placeholder="创建日期开始"/>
+                <input type="text" class="form-control" style="width:120px" name="datetimepicker" placeholder="创建日期结束"/>
+                <div class="form-group">
+                    <select id="selectStore" class="selectpicker show-tick form-control" data-live-search="true">
+                        <option value="19">选择店铺</option>
+                        <option value="19">马明明-66</option>
+                        <option value="24">李冰-强强</option>
+                        <option value="146">李冰-captain</option>
+                        <option value="26">孟敬曼-敏晓</option>
+                        <option value="123">孟敬曼-奥兰</option>
+                        <option value="102">吴迪-super</option>
+                        <option value="168">吴迪-小致</option>
+                        <option value="15">王兴强-美玩</option>
+                        <option value="22">伊彬-天下</option>
+                        <option value="21">伊彬-乐天派</option>
+                        <option value="112">李建嵩-开花</option>
+                        <option value="107">李建嵩-豆子</option>
+                        <option value="55">齐迪-兔兔</option>
+                        <option value="27">齐迪-老鹰</option>
+                        <option value="145">何子刚-太阳</option>
+                        <option value="161">何子刚-西雅图</option>
+                        <option value="16">杨飞-尚品</option>
+                        <option value="134">杨飞-维加</option>
+                        <option value="33">孟飞-豆豆</option>
+                        <option value="71">孟飞-美属</option>
+                        <option value="40">任才-八彩</option>
+                        <option value="23">任才-美购</option>
+                        <option value="20">金鑫-一品</option>
+                        <option value="32">金鑫-富商</option>
+                        <option value="43">王相斌-SMART</option>
+                        <option value="46">王相斌-友西</option>
+                        <option value="77">冯旭-戴娜</option>
+                        <option value="28">冯旭-逍旭</option>
+                        <option value="105">白松-战车</option>
+                        <option value="167">白松-mark</option>
+                        <option value="38">何佳-小时代</option>
+                        <option value="48">何佳-小樱</option>
+                        <option value="47">张秀伟-太郎</option>
+                        <option value="154">刘记国-漂海</option>
+                        <option value="110">刘记国-SUN</option>
+                        <option value="120">魏超-Moon</option>
+                        <option value="150">魏超-TP</option>
+                        <option value="119">阮阳-保健品</option>
+                        <option value="155">阮阳-营养</option>
+                        <option value="156">阮阳-安健</option>
+                        <option value="67">微信</option>
+                        <option value="37">陈甲朋-包</option>
+                        <option value="68">陈甲朋-SP</option>
+                        <option value="29">马宾-手表</option>
+                        <option value="144">马宾-饰品</option>
+                        <option value="66">丁玉红-M购</option>
+                        <option value="121">丁玉红-BL</option>
+                        <option value="151">丁玉红-化妆品店</option>
+                        <option value="152">毕研刚-IE店</option>
+                        <option value="153">毕研刚-Nice店</option>
+                        <option value="127">孔燕-K</option>
+                        <option value="130">孔燕-NS</option>
+                        <option value="30">李瑜-旗舰</option>
+                        <option value="109">李瑜-66</option>
+                        <option value="41">李传强-国际</option>
+                        <option value="59">李传强-国表</option>
+                        <option value="69">段伦振-HD</option>
+                        <option value="101">段伦振-Hi</option>
+                        <option value="5">冯晓-兔子</option>
+                        <option value="126">冯晓-易购</option>
+                        <option value="34">郑勇-自在</option>
+                        <option value="113">郑勇-熊</option>
+                        <option value="116">尹昌磊-爱购</option>
+                        <option value="137">尹昌磊-三吉</option>
+                        <option value="158">孙小东-达拉斯</option>
+                        <option value="162">孙小东-南海岸</option>
+                        <option value="39">时胜朋-这里</option>
+                        <option value="56">时胜朋-琪琪</option>
+                        <option value="133">尹丹丹-购嗨</option>
+                        <option value="45">赵玉龙-疯子</option>
+                        <option value="157">赵玉龙-白头鹰</option>
+                        <option value="58">韩涛-猫美</option>
+                        <option value="159">韩涛-彪嫚儿</option>
+                        <option value="35">刘宝宁-超值</option>
+                        <option value="12">李欣欣-大道</option>
+                        <option value="49">李欣欣-miu</option>
+                        <option value="52">邵芬-乐芬</option>
+                        <option value="51">邵芬-美洲</option>
+                        <option value="108">王广友-名纽</option>
+                        <option value="132">王广友-德拉</option>
+                        <option value="57">崔琳-筱筱</option>
+                        <option value="173">李欣欣-西海</option>
+                        <option value="174">李欣欣-第三街</option>
+                        <option value="1">李光杰-北美</option>
+                        <option value="74">王兴强-德克</option>
+                        <option value="75">王兴强-nice</option>
+                        <option value="73">边振晟-洛杉矶</option>
+                        <option value="114">边振晟-潮流</option>
+                        <option value="118">吴嘉彬-乐邦</option>
+                        <option value="128">吴嘉彬-山姆</option>
+                        <option value="170">吴嘉彬-曼哈顿</option>
+                        <option value="131">李鑫-格调</option>
+                        <option value="138">李鑫-肯尼迪</option>
+                        <option value="169">李鑫-威廉</option>
+                        <option value="129">王德峰-su</option>
+                        <option value="70">薛飞-夏</option>
+                        <option value="72">薛飞-星期</option>
+                        <option value="25">高川-草根</option>
+                        <option value="106">高川-道</option>
+                        <option value="111">王德凯-汤</option>
+                        <option value="135">王德凯-not</option>
+                        <option value="124">张杰-EKKO</option>
+                        <option value="148">张杰-环球</option>
+                        <option value="149">赵保森-瀑布</option>
+                        <option value="163">赵保森-特拉</option>
+                        <option value="44">王德峰-绒花</option>
+                        <option value="17">许凌娟-coco</option>
+                        <option value="136">许凌娟-华尔</option>
+                        <option value="115">陈浩-wonder</option>
+                        <option value="147">陈浩-山</option>
+                        <option value="139">赵一铭-牧人</option>
+                        <option value="142">赵一铭-欧美</option>
+                        <option value="140">许冲芬-购</option>
+                        <option value="141">许凌娟-空间</option>
+                        <option value="125">张秀伟-唯唯</option>
+                        <option value="172">张秀伟-world</option>
+                        <option value="171">蔺晶晶-天</option>
+                        <option value="166">amazon-HPN</option>
+                        <option value="164">员工内购</option>
+                        <option value="160">zebra</option>
+                        <option value="122">秦立涛-L购 停</option>
+                        <option value="3">拍拍【旗舰店】</option>
+                        <option value="7">杨飞-西西</option>
+                        <option value="31">公司内购</option>
+                        <option value="100">备用店铺(无抓单店铺)</option>
+                        <option value="103">网站</option>
+                        <option value="54">纽约流氓兔</option>
+                        <option value="60">京东【保健品】停</option>
+                        <option value="61">京东【国际专营】停</option>
+                        <option value="62">拍拍【运动店】</option>
+                        <option value="65">1号店</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select id="selectUser" class="selectpicker show-tick form-control" data-live-search="true">
+                        <option selected="selected" value="0">选择用户</option>
+                        <option value="129">李苗</option>
+                        <option value="142">王菲</option>
+                        <option value="199">王丽梅</option>
+                        <option value="283">石雯豪</option>
+                        <option value="306">方媛</option>
+                        <option value="82">冀旭亭</option>
+                        <option value="212">曲彤</option>
+                        <option value="120">刘文君</option>
+                        <option value="105">张倩倩</option>
+                        <option value="100">李旭</option>
+                        <option value="93">燕晓</option>
+                        <option value="310">张亚楠</option>
+                        <option value="35">张下下</option>
+                        <option value="55">沈莉</option>
+                        <option value="127">张芹</option>
+                        <option value="279">马佳佳</option>
+                        <option value="188">付小雪</option>
+                        <option value="269">张晗</option>
+                        <option value="71">王玉娥</option>
+                        <option value="267">穆雪</option>
+                        <option value="131">张孟珍</option>
+                        <option value="169">张静冉</option>
+                        <option value="175">李亚茹</option>
+                        <option value="157">王贝</option>
+                        <option value="209">田炙鑫</option>
+                        <option value="166">韩萌萌</option>
+                        <option value="76">蒲金明</option>
+                        <option value="165">杨海英</option>
+                        <option value="177">逯蕾蕾</option>
+                        <option value="134">张婷</option>
+                        <option value="106">杨超</option>
+                        <option value="163">刘畅</option>
+                        <option value="64">韩梅</option>
+                        <option value="168">苏小迪</option>
+                        <option value="85">诸葛瑞雪</option>
+                        <option value="204">万小爽</option>
+                        <option value="299">路金凤</option>
+                        <option value="125">李瑞倩</option>
+                        <option value="133">王婷婷</option>
+                        <option value="167">魏云</option>
+                        <option value="194">王倩文</option>
+                        <option value="141">黄巧梅</option>
+                        <option value="159">吕倩倩</option>
+                        <option value="207">李洁鑫</option>
+                        <option value="276">梁爽</option>
+                        <option value="305">吴娜</option>
+                        <option value="187">许冲芬</option>
+                        <option value="291">闫柏卉</option>
+                        <option value="297">姬娅</option>
+                        <option value="304">张秋雨</option>
+                        <option value="258">苗亚博</option>
+                        <option value="107">蔺晶晶囤货</option>
+                        <option value="108">张下下囤货</option>
+                        <option value="109">王会会囤货</option>
+                        <option value="110">李欣欣囤货</option>
+                        <option value="111">熊伟囤货</option>
+                        <option value="195">王婷婷囤货</option>
+                        <option value="9">李海利</option>
+                        <option value="54">王金甜</option>
+                        <option value="37">闫玉艳</option>
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="form-control">
+                        <option>告警名称</option>
+                        <option>告警名称</option>
+                        <option>告警名称</option>
+                        <option>告警名称</option>
+                        <option>告警名称</option>
+                        <option>告警名称</option>
+                        <option>告警名称</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="form-control">
+                        <option>告警等级</option>
+                        <option class="bg-warning">中等</option>
+                        <option class="bg-danger">严重</option>
+                        <option class="bg-info">轻度</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default">提交</button>
+                </div>
+
+
+            </form>
+
+        </div>
+        <div class="panel-body">
+            <table class="table table-bordered table-condensed table-hover ">
+
+                <tr class="success">
+                    <th>ID</th>
+                    <th>告警时间</th>
+                    <th>店铺</th>
+                    <th>精编人</th>
+                    <th>精编ID</th>
+                    <th>单品ID</th>
+                    <th>告警名称</th>
+                    <th>等级</th>
+                    <th>详情</th> 
+                </tr>
+
+
+                <tr>
+                    <td>11</td>
+                    <td>2018-01-08</td>
+                    <td>伊彬-天下</td>
+                    <td>刘文君</td>
+                    <td>11212</td>
+                    <td>32323</td>
+                    <td>全部断货好久</td>
+                    <td class="bg-danger">严重 </td>
+                    <td><a href="reportShow" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                            href="report-list.html" title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+                            href="report-list.html" title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>2018-01-08</td>
+                    <td>伊彬-天下</td>
+                    <td>刘文君</td>
+                    <td>11212</td>
+                    <td>32323</td>
+                    <td>全部断货好久</td>
+                    <td class="bg-warning">中度 </td>
+                    <td><a href="report-list.html" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                            href="report-list.html" title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+                            href="report-list.html" title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>2018-01-08</td>
+                    <td>伊彬-天下</td>
+                    <td>刘文君</td>
+                    <td>11212</td>
+                    <td>32323</td>
+                    <td>全部断货好久</td>
+                    <td class="bg-info">轻度 </td>
+                    <td><a href="report-list.html" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                            href="report-list.html" title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+                            href="report-list.html" title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>2018-01-08</td>
+                    <td>伊彬-天下</td>
+                    <td>刘文君</td>
+                    <td>11212</td>
+                    <td>32323</td>
+                    <td>全部断货好久</td>
+                    <td class="bg-danger">严重 </td>
+                    <td><a href="reportShow" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>2018-01-08</td>
+                    <td>伊彬-天下</td>
+                    <td>刘文君</td>
+                    <td>11212</td>
+                    <td>32323</td>
+                    <td>全部断货好久</td>
+                    <td class="bg-warning">中度 </td>
+                    <td><a href="#" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>2018-01-08</td>
+                    <td>伊彬-天下</td>
+                    <td>刘文君</td>
+                    <td>11212</td>
+                    <td>32323</td>
+                    <td>全部断货好久</td>
+                    <td class="bg-info">轻度 </td>
+                    <td><a href="#" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>2018-01-08</td>
+                    <td>伊彬-天下</td>
+                    <td>刘文君</td>
+                    <td>11212</td>
+                    <td>32323</td>
+                    <td>全部断货好久</td>
+                    <td class="bg-danger">严重 </td>
+                    <td><a href="#" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>2018-01-08</td>
+                    <td>伊彬-天下</td>
+                    <td>刘文君</td>
+                    <td>11212</td>
+                    <td>32323</td>
+                    <td>全部断货好久</td>
+                    <td class="bg-warning">中度 </td>
+                    <td><a href="#" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>2018-01-08</td>
+                    <td>伊彬-天下</td>
+                    <td>刘文君</td>
+                    <td>11212</td>
+                    <td>32323</td>
+                    <td>全部断货好久</td>
+                    <td class="bg-info">轻度 </td>
+                    <td><a href="#" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>2018-01-08</td>
+                    <td>伊彬-天下</td>
+                    <td>刘文君</td>
+                    <td>11212</td>
+                    <td>32323</td>
+                    <td>全部断货好久</td>
+                    <td class="bg-danger">严重 </td>
+                    <td><a href="#" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>2018-01-08</td>
+                    <td>伊彬-天下</td>
+                    <td>刘文君</td>
+                    <td>11212</td>
+                    <td>32323</td>
+                    <td>全部断货好久</td>
+                    <td class="bg-warning">中度 </td>
+                    <td><a href="#" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>2018-01-08</td>
+                    <td>伊彬-天下</td>
+                    <td>刘文君</td>
+                    <td>11212</td>
+                    <td>32323</td>
+                    <td>全部断货好久</td>
+                    <td class="bg-info">轻度 </td>
+                    <td><a href="#" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+                            href="#" title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+
+            </table>
+            <ul class="pagination">
+                <li class="disabled"><a href="#">首页</a></li>
+                <li class="disabled"><a href="#">上一页</a></li>
+                <li class="active"><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">6</a></li>
+                <li><a href="#">7</a></li>
+                <li><a href="#">...</a></li>
+                <li><a href="#">19</a></li>
+                <li><a href="#">20</a></li>
+                <li><a href="#">下一页</a></li>
+                <li><a href="#">尾页</a></li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+<!-- 内容部分结束 -->
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/js/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript">
+    <!--日期插件调用-->
+    $("input[name='datetimepicker']").datetimepicker({
+        language: 'zh-CN',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 4,
+        forceParse: 0,
+        format: 'yyyy-mm-dd'
+    });
+</script>
+
+</body>
+</html>

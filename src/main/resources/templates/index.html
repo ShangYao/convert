@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viveport" content="width=device-width, initial-scale=1"/>
+    <meta name="renderer" content="webkit"/>
+<link rel="icon" type="image/x-icon" class="js-site-favicon"
+	href="/images/jing.jpg" />
+    <title>精编系统-用户中心</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="/js/jquery.min.js"></script>
+
+</head>
+<body>
+<!--浏览器告警信息-->
+<div id="alert" class="hidden">
+    <div class="alert alert-danger  alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+        </button>
+        <strong>浏览器告警信息</strong> 您当前使用的是IE内核。请切换至<a href="http://bbs.360.cn/thread-14983457-1-1.html"> 极速模式</a> 或者用 <a
+            href="http://www.chromeliulanqi.com/">Chrome</a> 或者 <a href="http://www.firefox.com.cn/">FireFox</a>
+        浏览器.继续使用当前浏览器将会出现内容不完整以及部分功能无法正常使用的问题。
+    </div>
+</div>
+
+	<!-- 导航部分开始 修改密码包含在导航里面 -->
+<script type="text/javascript" src="/js/head.js"></script> 
+	<!-- Modal 修改密码 -->
+<script type="text/javascript" src="/js/updatePassword.js"></script>
+	<!-- 导航部分结束 -->
+
+
+<!-- 内容部分 -->
+<div class="container">
+
+    <!-- <div class="alert alert-danger alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+        </button>
+        <strong>错误信息</strong> 危险的错误信息
+    </div>
+    <div class="alert alert-success alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+        </button>
+        <strong>成功信息</strong> 成功后提示的信息
+    </div>
+    <div class="alert alert-info alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+        </button>
+        <strong>正常信息</strong> 提示信息
+    </div>
+    <div class="alert alert-warning alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+        </button>
+        <strong>异常信息</strong> 警告信息
+    </div> -->
+
+    <ol class="breadcrumb">
+        <li class="active">个人中心</li>
+    </ol>
+
+
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">我的信息</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered">
+
+                    <tr>
+                        <td>姓名：</td>
+                        <td th:text="${user.userName}"></td>
+                    </tr>
+                    <tr>
+                        <td>职工编号：</td>
+                        <td th:text="${user.code}">1002</td>
+                    </tr>
+                    <tr>
+                        <td>小组：</td>
+                        <td th:text="${user.groupNameString}">滨州淘宝一组</td>
+                    </tr>
+                    <tr>
+                        <td>角色：</td>
+                        <td th:text="${user.roleNameString}">管理员</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">精编统计</h3>
+            </div>
+            <div class="panel-body">
+                <div class="list-group">
+                    <a href="/merchandise/mine/queryList?show=all&amp;pageNum=0" class="list-group-item">我的精编总数<span class="badge" th:text="${merchandise.totleElements}">200</span></a>
+                    <a href="/merchandise/mine/queryList?show=committed&amp;pageNum=0" class="list-group-item ">待审核精编 <span class="badge" th:text="${merchandise.committedPage.totleElements}">10</span></a>
+                    <a href="/merchandise/mine/queryList?show=draft&amp;pageNum=0" class="list-group-item">草稿箱 <span class="badge" th:text="${merchandise.draftPage.totleElements}">4</span></a>
+                    <a href="/merchandise/mine/queryList?show=published&amp;pageNum=0" class="list-group-item">已发布 <span class="badge" th:text="${merchandise.publishedPage.totleElements}">12</span></a>
+                    <a href="/merchandise/mine/queryList?show=declined&amp;pageNum=0" class="list-group-item">审核未通过 <span class="badge" th:text="${merchandise.declinedPage.totleElements}">12</span></a>
+                    <a href="/merchandise/mine/queryList?show=retired&amp;pageNum=0" class="list-group-item">已经下架 <span class="badge" th:text="${merchandise.retiredPage.totleElements}">25</span></a>
+                    <a href="/merchandise/mine/queryList?show=trash&amp;pageNum=0" class="list-group-item">回收站<span class="badge" th:text="${merchandise.trashPage.totleElements}">25</span></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <input type="hidden" id="login_user"
+			th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
+</div>
+<!-- 内容部分结束 -->
+
+<footer class="footer navbar-fixed-bottom ">
+    <div class="container">
+        <p>Copyright &copy; 2014-2018 济南隆恩经贸有限责任公司&nbsp;&nbsp;<span>v0.1.0</span> </p>
+    </div>
+</footer>
+
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    <!--如果浏览器是IE则进行以下内容提示-->
+    if (!!window.ActiveXObject || "ActiveXObject" in window)
+        $("#alert").attr("class", "show");
+</script>
+</body>
+</html>

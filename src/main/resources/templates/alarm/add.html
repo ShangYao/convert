@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viveport" content="width=device-width, initial-scale=1"/>
+    <title>精编系统-创建告警规则</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/bootstrap-switch.min.css" />
+    <link href="/css/bootstrap-select.min.css" rel="stylesheet"/>
+
+   
+</head>
+<body>
+<!-- 导航部分开始 修改密码包含在导航里面 -->
+<nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/index.html">精编系统</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">精编管理<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/refined/list.html">我的精编</a></li>
+                            <li><a href="/refined/audit.html">精编审核</a></li>
+                            <li><a href="/refined/all.html">所有精编</a></li>
+                            <li><a href="/refined/statistics.html">精编统计</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">告警管理<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/alarm/list">告警配置</a></li>
+                            <li><a href="/alarm/reportList">告警报告</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">系统设置<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/basic/user/list">用户管理</a></li>
+                            <li><a href="/basic/store/list">店铺管理</a></li>
+                            <li><a href="/basic/group/list">小组管理</a></li>
+                            <li><a href="/basic/role/list">角色管理</a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/refined/add.html">添加精编</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">李海利 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/index.html">个人中心</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#updatePassword">修改密码</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/">退出</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div>
+    </div><!-- /.container-fluid -->
+</nav>
+<!-- Modal 修改密码 -->
+<div class="modal fade " id="updatePassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+            </div>
+            <div class="modal-body text-center">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="old-password" class="control-label">输入原密码:</label>
+                        <input type="password" class="form-control" id="old-password"/>
+                    </div>
+                    <br/> <br/>
+                    <div class="form-group">
+                        <label for="new-password" class="control-label">输入新密码:</label>
+                        <input type="password" class="form-control" id="new-password"/>
+                    </div>
+                    <br/> <br/>
+                    <div class="form-group">
+                        <label for="new-password-confirm" class="control-label">确认新密码:</label>
+                        <input type="password" class="form-control" id="new-password-confirm"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 导航部分结束 -->
+
+
+<!-- 内容部分 -->
+<div class="container">
+    <ol class="breadcrumb">
+        <li><a href="list">告警管理</a></li>
+        <li class="active">创建告警规则</li>
+    </ol>
+    <form class="form-inline" action="add" method="POST" th:value="alertRule">
+        <div class="text-center" style="width: 700px; margin: 0 auto">
+            <div class="panel panel-default ">
+
+                <div class="panel-heading">
+                    <div class="form-group">
+                        <input type="text" name="name" class="form-control" placeholder="告警规则名称"/>
+                    </div>
+                    <div class="form-group">
+                        <select id="selectStore" multiple="multiple" name="storeId[]" class="selectpicker show-tick form-control" data-live-search="true">
+                            <option value="0">选择店铺</option>
+								<option th:each="store:${storeList}" th:value="${store.id}"
+									th:text="${store.name}" th:selected="${store.selected}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select id="selectUser" multiple="multiple" name="userId[]" class="selectpicker show-tick form-control" data-live-search="true">
+                            <option selected="selected" value="0">选择用户</option>
+                          <option th:each="user:${userList}" th:value="${user.id}"
+									th:text="${user.userName}" th:selected="${user.selected}"></option>
+
+                        </select>
+                    </div>
+
+                </div>
+                <div class="panel-body">
+
+                    <!-- Nav tabs -->
+
+                    <ul class="nav nav-tabs" role="tablist" id="refinedlist">
+                        <li role="presentation" class="active"><a href="#reduction" aria-controls="store" role="tab"
+                                                                  data-toggle="tab">降价</a></li>
+                        <li role="presentation"><a href="#increase" aria-controls="user" role="tab"
+                                                   data-toggle="tab">涨价</a>
+                        </li>
+                        <li role="presentation"><a href="#out" aria-controls="committed" role="tab"
+                                                   data-toggle="tab">断货</a></li>
+                        <li role="presentation"><a href="#on" aria-controls="committed" role="tab"
+                                                   data-toggle="tab">补货</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="reduction">
+                            <p class="text-left center-block" style="width: 500px;">
+                                当单品状态为“在售中”，关联的所有ROC单品的最低价与成本价进行对比，降价价格差大于设置的基准值时，生成告警。</p>
+                            <div class="form-group  bg-info">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="inlineCheckbox1"  value="option1"/> 轻度
+                                </label>
+                                <input type="number" id="reduction" class="form-control"/>
+                            </div>
+                            <br/><br/>
+                            <div class="form-group bg-warning">
+                                <label class="checkbox-inline  ">
+                                    <input type="checkbox" id="inlineCheckbox1" value="option1"/> 中等
+                                </label>
+                                <input type="number" class="form-control"/>
+                            </div>
+                            <br/><br/>
+                            <div class="form-group bg-danger">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="inlineCheckbox1" value="option1"/> 严重
+                                </label>
+                                <input type="number" class="form-control"/>
+                            </div>
+                            <br/><br/>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane " id="increase">
+                            <p class="text-left center-block" style="width: 500px;">
+
+                                当单品状态为“在售中”，关联的所有ROC单品的最低价与成本价进行对比，涨价价格差大于设置的基准值时，生成告警</p>
+                            <div class="form-group  bg-info">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="inlineCheckbox1" value="option1"/> 轻度
+                                </label>
+                                <input type="number" class="form-control"/>
+                            </div>
+                            <br/><br/>
+                            <div class="form-group bg-warning">
+                                <label class="checkbox-inline  ">
+                                    <input type="checkbox" id="inlineCheckbox1" value="option1"/> 中等
+                                </label>
+                                <input type="number" class="form-control"/>
+                            </div>
+                            <br/><br/>
+                            <div class="form-group bg-danger">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="inlineCheckbox1" value="option1"/> 严重
+                                </label>
+                                <input type="number" class="form-control"/>
+                            </div>
+                            <br/><br/>
+                        </div>
+                        <div role="tabpanel" class="tab-pane " id="out">
+                            <br/>
+                            <div class="form-group  bg-info">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="inlineCheckbox1" value="option1"/> 轻度
+                                    单品状态为“在售中”关联的ROC单品有断货时，生成告警
+                                </label>
+
+                            </div>
+                            <br/><br/>
+                            <div class="form-group bg-danger">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="inlineCheckbox1" value="option1"/> 严重
+                                    单品状态为“在售中”关联的ROC单品全断货时，生成告警
+                                </label>
+
+                            </div>
+                            <br/><br/>
+                        </div>
+                        <div role="tabpanel" class="tab-pane " id="on">
+                            <br/>
+                            <div class="form-group  bg-info">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="inlineCheckbox1" value="option1"/> 轻度
+                                    单品状态为“已下架”关联的ROC单品有补货时，生成告警
+                                </label>
+
+                            </div>
+                            <br/><br/>
+                            <div class="form-group bg-danger">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="inlineCheckbox1" value="option1"/> 严重
+                                    单品状态为“已下架”关联的ROC单品全断补货，生成告警
+                                </label>
+
+                            </div>
+                            <br/><br/>
+
+
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" name="switch-checkbox"  checked="checked"/>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<!-- 内容部分结束 -->
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap-switch.min.js"></script>
+<script src="/js/bootstrap-select.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("[name='switch-checkbox']").bootstrapSwitch();
+    })
+</script>
+</body>
+</html>

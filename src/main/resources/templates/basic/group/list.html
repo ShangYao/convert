@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viveport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/x-icon" class="js-site-favicon"
+	href="/images/jing.jpg" />
+<title>精编系统-小组列表</title>
+<link href="/css/bootstrap.min.css" rel="stylesheet" />
+
+<link rel="stylesheet" href="/css/bootstrap.css" />
+<link rel="stylesheet" href="/css/bootstrap-table.css" />
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/bootstrap-table.js"></script>
+<script src="/js/sparrow/bootstraptable-treeview.js"></script>
+<script src="/js/alert.js"></script>
+
+</head>
+<body>
+	<!-- 导航部分开始 修改密码包含在导航里面 -->
+	<script type="text/javascript" src="/js/head.js"></script>
+	<!-- Modal 修改密码 -->
+	<script type="text/javascript" src="/js/updatePassword.js"></script>
+	<!-- 导航部分结束 -->
+
+
+	<!-- 内容部分 -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="#">小组管理</a></li>
+			<li class="active">小组列表</li>
+		</ol>
+		<form id="myform" method="POST">
+
+			<input type="hidden" id="message" th:value="${message}" /> <input
+				type="hidden" id="login_user"
+				th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
+
+		</form>
+
+		<div style="margin: 20px">
+			<input type="button" id="expandAllTree" value="展开所有"
+				class="btn btn-defaul" /> <input type="button" id="collapseAllTree"
+				value="折叠所有" class="btn btn-defaul" />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="button" value="添加一级小组" class="btn btn-defaul"
+				onclick="toAdd()" />
+			<table id="tree_table"></table>
+
+		</div>
+	</div>
+	<!-- 内容部分结束 -->
+
+
+
+	<script type="text/javascript">
+function toAdd(){
+	myform.action="toAdd";
+	myform.submit();
+}
+function add(id){
+	myform.action="toAdd?parentId="+id;
+	myform.submit();
+}
+function modify(id){
+	myform.action="toModify?id="+id; 
+	myform.submit();
+}
+function deleteOne(id){
+	if(confirm("确定删除小组及其包含的分组？")){
+		myform.action="delete?id="+id;  
+		myform.submit();
+	}
+	
+}
+    $(function () {
+        $('#tree_table').bootstrapTable({
+            class: 'table table-hover table-bordered',
+            url:'data',
+           contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+            sidePagination: 'client',
+            pagination: false,
+            treeView: true,
+            treeId: "id",
+            treeField: "name",
+            columns: [{
+                field: 'name',
+                title: '名称',
+            },
+           
+            
+            {
+                field: 'id',
+                title: '操作',
+                 formatter: function(value, row, index, field) {
+                   return '<span onclick="modify('+value+')" class="glyphicon glyphicon-cog" title="修改" ></span>'+
+                   '&nbsp;&nbsp;<span onclick="add('+value+')" class="glyphicon glyphicon-plus" title="添加子组" ></span>'+
+                  '&nbsp;&nbsp;<span onclick="deleteOne('+value+')" class="glyphicon glyphicon-trash" title="删除" ></span>';
+                 },
+               },
+
+            
+            ]
+        });
+        $("#expandAllTree").on('click',function(){
+            $('#tree_table').bootstrapTable("expandAllTree")
+        })
+        $("#collapseAllTree").on('click',function(){
+            $('#tree_table').bootstrapTable("collapseAllTree")
+        })
+    });
+
+</script>
+
+</body>
+</html>

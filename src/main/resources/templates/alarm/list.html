@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viveport" content="width=device-width, initial-scale=1"/>
+    <title>精编系统-告警规则列表</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/bootstrap-switch.min.css" />
+  
+</head>
+<body>
+<!-- 导航部分开始 修改密码包含在导航里面 -->
+<nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/index.html">精编系统</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">精编管理<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/refined/list.html">我的精编</a></li>
+                            <li><a href="/refined/audit.html">精编审核</a></li>
+                            <li><a href="/refined/all.html">所有精编</a></li>
+                            <li><a href="/refined/statistics.html">精编统计</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">告警管理<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/alarm/list">告警配置</a></li>
+                            <li><a href="/alarm/reportList">告警报告</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">系统设置<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/basic/user/list">用户管理</a></li>
+                            <li><a href="/basic/store/list">店铺管理</a></li>
+                            <li><a href="/basic/group/list">小组管理</a></li>
+                            <li><a href="/basic/role/list">角色管理</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/refined/add.html">添加精编</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">李海利 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/index.html">个人中心</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#updatePassword">修改密码</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/">退出</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div>
+    </div><!-- /.container-fluid -->
+</nav>
+<!-- Modal 修改密码 -->
+<div class="modal fade " id="updatePassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+            </div>
+            <div class="modal-body text-center">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="old-password" class="control-label">输入原密码:</label>
+                        <input type="password" class="form-control" id="old-password"/>
+                    </div>
+                    <br /> <br />
+                    <div class="form-group">
+                        <label for="new-password" class="control-label">输入新密码:</label>
+                        <input type="password" class="form-control" id="new-password"/>
+                    </div>
+                    <br /> <br />
+                    <div class="form-group">
+                        <label for="new-password-confirm" class="control-label">确认新密码:</label>
+                        <input type="password" class="form-control" id="new-password-confirm"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 导航部分结束 -->
+
+
+<!-- 内容部分 -->
+<div class="container">
+    <ol class="breadcrumb">
+        <li class="active">告警列表</li>
+    </ol>
+    <p class="text-right">
+        <a href="toAdd" class="btn btn-primary">添加告警</a>
+    </p>
+    <table class="table table-bordered table-condensed table-hover ">
+
+        <tr class="success">
+            <th>ID</th>
+            <th>告警名称</th>
+            <th>告警类型</th>
+            <th>应用状态</th>
+            <th>操作</th>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>全部断货告警</td>
+            <td>断货</td>
+            <td>
+                <input type="checkbox" name="switch-checkbox" checked="checked" />
+            </td>
+            <td>
+                <a href="add.html" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+                    href="#" title="删除"><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+
+        </tr>
+       
+    </table>
+</div>
+<!-- 内容部分结束 -->
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap-switch.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("[name='switch-checkbox']").bootstrapSwitch();
+    })
+</script>
+
+</body>
+</html>
