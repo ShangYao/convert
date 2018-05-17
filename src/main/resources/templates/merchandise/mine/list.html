@@ -131,16 +131,7 @@
 						id="login_user"
 						th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
 
-					<div class="form-group">
-						<select id="selectStore"
-							class="selectpicker show-tick form-control" name="storeId"
-							data-live-search="true">
-							<option value="0">选择店铺</option>
-							<option th:each="shop:${shopList}" th:value="${shop.id}"
-								th:text="${shop.name}"
-								th:selected="(${shop.id} == ${merchandise.storeId})"></option>
-						</select>
-					</div>
+					
 
 					<div class="form-group">
 						<input type="text" class="form-control" name="queryString"
@@ -193,9 +184,6 @@
 										<th>创建日期</th>
 										<th>最后更新</th>
 										<th>最后维护</th>
-										<th>店铺</th>
-										<th>商品编号</th>
-										<th>商品链接</th>
 										<th>标题</th>
 										<th>状态</th>
 										<th>操作</th>
@@ -204,7 +192,7 @@
 								<tbody>
 
 									<tr th:each="merchandise : ${merchandise.queryList}">
-										<td><a th:href="@{show(id=${merchandise.id})}"
+										<td><a th:href="'./'+${merchandise.id}"
 											th:text="${merchandise.id}">111</a></td>
 										<!-- <td th:text="${merchandise.createdAt}">2018-01-08</td> -->
 										<td
@@ -215,15 +203,12 @@
 											th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 										<td th:if="${merchandise.maintainAt}!=null"
 											th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-										<td th:text="${merchandise.store.name}">121212112121</td>
-										<td th:text="${merchandise.itemId}">阿迪达斯男士运动篮球鞋</td>
-										<td><a class="js-clipboard" th:value="${merchandise.url}">复制链接</a></td>
 										<td th:text="${merchandise.title}">抄袭</td>
 										<td th:text="${merchandise.state}">草稿</td>
 										<td th:if="${merchandise.state}=='草稿'"><a
 											th:href="@{set(id=${merchandise.id})}" title="设置"><span
 												class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
-											th:href="@{toModify(id=${merchandise.id})}" title="修改"><span
+											th:href="${merchandise.id}+'/modify'" title="修改"><span
 												class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
 											th:onclick="'javascript:deleteOne(\''+${merchandise.id}+'\')'"
 											title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
@@ -233,7 +218,7 @@
 										<td th:if="${merchandise.state}=='已发布'"><a
 											th:href="@{set(id=${merchandise.id})}" title="设置"><span
 												class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
-											th:href="@{toModify(id=${merchandise.id})}" title="修改"><span
+											th:href="${merchandise.id}+'/modify'" title="修改"><span
 												class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
 											th:onclick="'javascript:removeOne(\''+${merchandise.id}+'\')'"
 											title="下架"><span class="glyphicon glyphicon-remove"></span></a></td>
@@ -275,9 +260,6 @@
 									<th>创建日期</th>
 									<th>最后更新</th>
 									<th>最后维护</th>
-									<th>店铺</th>
-									<th>商品编号</th>
-									<th>商品链接</th>
 									<th>标题</th>
 									<th>状态</th>
 									<th>操作</th>
@@ -296,9 +278,6 @@
 								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 							<td th:if="${merchandise.maintainAt}!=null"
 								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-									<td th:text="${merchandise.store.name}">121212112121</td>
-									<td th:text="${merchandise.itemId}">阿迪达斯男士运动篮球鞋</td>
-									<td><a class="js-clipboard" th:value="${merchandise.url}">复制链接</a></td>
 									<td th:text="${merchandise.title}">抄袭</td>
 									<td th:text="${merchandise.state}">草稿</td>
 									<td><a th:href="@{set(id=${merchandise.id})}" title="设置"><span
@@ -326,9 +305,6 @@
 									<th>创建日期</th>
 									<th>最后更新</th>
 									<th>最后维护</th>
-									<th>店铺</th>
-									<th>商品编号</th>
-									<th>商品链接</th>
 									<th>标题</th>
 									<th>状态</th>
 									<th>操作</th>
@@ -348,9 +324,6 @@
 								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 							<td th:if="${merchandise.maintainAt}!=null"
 								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-									<td th:text="${merchandise.store.name}">121212112121</td>
-									<td th:text="${merchandise.itemId}">阿迪达斯男士运动篮球鞋</td>
-									<td><a class="js-clipboard" th:value="${merchandise.url}">复制链接</a></td>
 									<td th:text="${merchandise.title}">抄袭</td>
 									<td th:text="${merchandise.state}">草稿</td>
 									<td><a th:href="@{set(id=${merchandise.id})}" title="设置"><span
@@ -376,13 +349,10 @@
 									<th>创建日期</th>
 									<th>最后更新</th>
 									<th>最后维护</th>
-									<th>店铺</th>
-									<th>商品编号</th>
-									<th>商品链接</th>
 									<th>标题</th>
 									<th>状态</th>
-									<th>审核人</th>
-									<th>操作</th>
+<!-- 									<th>审核人</th>
+ -->									<th>操作</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -399,12 +369,9 @@
 								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 							<td th:if="${merchandise.maintainAt}!=null"
 								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-									<td th:text="${merchandise.store.name}">121212112121</td>
-									<td th:text="${merchandise.itemId}">阿迪达斯男士运动篮球鞋</td>
-									<td><a class="js-clipboard" th:value="${merchandise.url}">复制链接</a></td>
 									<td th:text="${merchandise.title}">抄袭</td>
 									<td th:text="${merchandise.state}">草稿</td>
-									<td th:text="${merchandise.reviewer.userName}">李海利</td>
+								<!-- 	<td th:text="${merchandise.reviewer.userName}">李海利</td> -->
 									<td><a th:href="@{set(id=${merchandise.id})}" title="设置"><span
 											class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
 										th:href="@{toModify(id=${merchandise.id})}" title="修改"><span
@@ -433,12 +400,9 @@
 									<th>创建日期</th>
 									<th>最后更新</th>
 									<th>最后维护</th>
-									<th>店铺</th>
-									<th>商品编号</th>
-									<th>商品链接</th>
 									<th>标题</th>
 									<th>状态</th>
-									<th>审核人</th>
+									<!-- <th>审核人</th> -->
 									<th>操作</th>
 								</tr>
 							</thead>
@@ -456,12 +420,9 @@
 								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 							<td th:if="${merchandise.maintainAt}!=null"
 								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-									<td th:text="${merchandise.store.name}">121212112121</td>
-									<td th:text="${merchandise.itemId}">阿迪达斯男士运动篮球鞋</td>
-									<td><a class="js-clipboard" th:value="${merchandise.url}">复制链接</a></td>
 									<td th:text="${merchandise.title}">抄袭</td>
 									<td th:text="${merchandise.state}">草稿</td>
-									<td th:text="${merchandise.reviewer.userName}">李海利</td>
+									<!-- <td th:text="${merchandise.reviewer.userName}">李海利</td> -->
 									<td><a th:href="@{set(id=${merchandise.id})}" title="设置"><span
 											class="glyphicon glyphicon-cog"></span></a> &nbsp;&nbsp;<a
 										th:href="@{toModify(id=${merchandise.id})}" title="修改"><span
@@ -489,12 +450,9 @@
 									<th>创建日期</th>
 									<th>最后更新</th>
 									<th>最后维护</th>
-									<th>店铺</th>
-									<th>商品编号</th>
-									<th>商品链接</th>
 									<th>标题</th>
 									<th>状态</th>
-									<th>审核人</th>
+									<!-- <th>审核人</th> -->
 									<th>操作</th>
 								</tr>
 							</thead>
@@ -511,12 +469,9 @@
 								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 							<td th:if="${merchandise.maintainAt}!=null"
 								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-									<td th:text="${merchandise.store.name}">121212112121</td>
-									<td th:text="${merchandise.itemId}">阿迪达斯男士运动篮球鞋</td>
-									<td><a class="js-clipboard" th:value="${merchandise.url}">复制链接</a></td>
 									<td th:text="${merchandise.title}">抄袭</td>
 									<td th:text="${merchandise.state}">草稿</td>
-									<td th:text="${merchandise.reviewer.userName}">李海利</td>
+									<!-- <td th:text="${merchandise.reviewer.userName}">李海利</td> -->
 									<td>
 										<!-- <a  th:href="@{set(id=${merchandise.id})}" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
                                         th:href="@{toModify(id=${merchandise.id})}" title="修改"><span class="glyphicon glyphicon-pencil"></span></a> -->&nbsp;&nbsp;<a
@@ -544,9 +499,6 @@
 									<th>创建日期</th>
 									<th>最后更新</th>
 									<th>最后维护</th>
-									<th>店铺</th>
-									<th>商品编号</th>
-									<th>商品链接</th>
 									<th>标题</th>
 									<th>状态</th>
 									<th>操作</th>
@@ -565,9 +517,6 @@
 								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 							<td th:if="${merchandise.maintainAt}!=null"
 								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-									<td th:text="${merchandise.store.name}">121212112121</td>
-									<td th:text="${merchandise.itemId}">阿迪达斯男士运动篮球鞋</td>
-									<td><a class="js-clipboard" th:value="${merchandise.url}">复制链接</a></td>
 									<td th:text="${merchandise.title}">抄袭</td>
 									<td th:text="${merchandise.state}">草稿</td>
 									<td><a th:href="@{toModify(id=${merchandise.id})}"

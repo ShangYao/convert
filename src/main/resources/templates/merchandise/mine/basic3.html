@@ -17,31 +17,7 @@
 <link href="/css/bootstrap.min.css" rel="stylesheet" />
 <link href="/css/bootstrap-select.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="/css/formValidation.css" />
-<script>
-	tinymce
-			.init({
-				selector : "textarea",
-				upload_image_url : '/merchandise/upload', //配置的上传图片的路由
-				height : 400,
-				language : 'zh_CN',
-				plugins : [
-						'advlist autolink lists link  charmap print preview hr anchor pagebreak',
-						'searchreplace wordcount visualblocks visualchars code fullscreen',
-						'insertdatetime media nonbreaking save table contextmenu directionality',
-						'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help uploadimage' ],
-				toolbar1 : 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-				toolbar2 : 'print preview media | forecolor backcolor emoticons | codesample help uploadimage',
-				image_advtab : true,
-				templates : [ {
-					title : 'Test template 1',
-					content : 'Test 1'
-				}, {
-					title : 'Test template 2',
-					content : 'Test 2'
-				} ],
-				menubar : false
-			});
-</script>
+
 </head>
 <body>
 	<!-- 导航部分开始 修改密码包含在导航里面 -->
@@ -62,6 +38,8 @@
 
 			<form class="form-horizontal" id="defaultForm"
 				th:object="${merchandise}" method="POST" onsubmit="return false">
+				<input type="hidden" name="id" th:value="*{id}" />
+				<input type="hidden" name="createdAt" th:value="*{createdAt}" />
 				<div class="panel-heading">
 					<h3 class="panel-title">基本信息</h3>
 				</div>
@@ -103,7 +81,7 @@
 								onchange="getTaxon2(this.value)">
 								<option value="0">选择一级分类</option>
 								<option th:each="taxon:${topTaxons}" th:value="${taxon.id}"
-									th:text="${taxon.name}"></option>
+									th:text="${taxon.name}" th:selected="*{taxon1.id}==${taxon.id}"></option>
 							</select> <select class="form-control" id="taxon2"
 								onchange="getTaxon3(this.value)">
 								<option value="0">选择二级分类</option>
@@ -122,27 +100,27 @@
 						<label for="url" class="col-sm-2 control-label">相册管理</label>
 						<div class="col-sm-10">
 							<select id="albumId" class="selectpicker show-tick form-control"
-								 name="albumId" data-live-search="true">
+							name="albumId" data-live-search="true">
 								<option value="0">选择商品相册</option>
 								<option th:if="*{albums}!=null" th:each="album:*{albums}" th:value="${album.id}"
 									th:selected="${album.id}==*{albumId}" th:text="${album.name}"
-									disabled="disabled"></option>
+									></option>
 							</select> <input type="button" value="相册管理" class="btn btn-default"
 								onclick="album()" placeholder="分类" />
 						</div>
 					</div>
 
 				</div>
-<!-- <textarea>Next, start a free trial!</textarea>  -->
+
 				<div class="form-group " style="text-align: center;">
-					<!-- <div class="col-sm-4 ">
+					<div class="col-sm-4 ">
 						<button class="btn btn-default" id="draf" onclick="draft()">仅保存草稿</button>
 					</div>
 					<div class="col-sm-4 ">
 						<button class="btn btn-default" id="pub" onclick="publish()">保存并发布</button>
-					</div> -->
-					<div class="col-sm-4 " style="text-align: center;">
-						<input type="button" value="返回我的精编" class="btn btn-default"
+					</div>
+					<div class="col-sm-4 ">
+						<input type="button" value="返回" class="btn btn-default"
 							onclick="back()" />
 					</div>
 
@@ -195,171 +173,58 @@
 
 		}
 		function draft() {
-			if ($("#url").val() == "" || $("#url").val() == null) {
-				alert("url不能为空！");
-				return false;
-			}
-
-			if ($("#storeId").val() == 0) {
-				alert("请选择店铺！");
-				return false;
-			}
-
 			if ($("#title").val() == "" || $("#title").val() == null) {
-				alert("标题不能为空！");
+				alert("title不能为空！");
 				return false;
 			}
-			if ($("#itemId").val() == "" || $("#itemId").val() == null) {
-				alert("商品编号不能为空！");
+
+			if ($("#brandId").val() == 0) {
+				alert("请选择品牌！");
 				return false;
 			}
-			if ($("#targetUrl1").val() == "" || $("#targetUrl1").val() == null) {
-				alert("请至少添加一条源网链接！");
+			if ($("#genderId").val() == 0) {
+				alert("请选择性别！");
 				return false;
 			}
-			$("#draf").attr("disabled", true);
-			defaultForm.action = "add?newState=草稿";
+			if ($("#taxon2").val() == 0) {
+				alert("请选择类目！");
+				return false;
+			}
+			if ($("#albumId").val() == 0) {
+				alert("请选择相册！");
+				return false;
+			}
+			defaultForm.action = "draft";
 			defaultForm.submit();
 
 		}
 
 		function publish() {
-
-			if ($("#storeId").val() == 0) {
-				alert("请选择店铺！");
-				return false;
-			}
-
-			if ($("#url").val() == "" || $("#url").val() == null) {
-				alert("url不能为空！");
-				return false;
-			}
 			if ($("#title").val() == "" || $("#title").val() == null) {
-				alert("标题不能为空！");
+				alert("title不能为空！");
 				return false;
 			}
-			if ($("#itemId").val() == "" || $("#itemId").val() == null) {
-				alert("商品编号不能为空！");
+
+			if ($("#brandId").val() == 0) {
+				alert("请选择品牌！");
 				return false;
 			}
-			if ($("#targetUrl1").val() == "" || $("#targetUrl1").val() == null) {
-				alert("请至少添加一条源网链接！");
+			if ($("#genderId").val() == 0) {
+				alert("请选择性别！");
 				return false;
 			}
-			$("#pub").attr("disabled", true);
-			defaultForm.action = "add?newState=待审核";
+			if ($("#taxon2").val() == 0) {
+				alert("请选择类目！");
+				return false;
+			}
+			if ($("#albumId").val() == 0) {
+				alert("请选择相册！");
+				return false;
+			}
+			defaultForm.action = "publish";
 			defaultForm.submit();
 		}
-
-		$(document)
-				.ready(
-						function() {
-							//动态添加HTML元素并绑定事件
-							$('.glyphicon-plus')
-									.on(
-											'click',
-											function() {
-												var index = $(this).data(
-														'index');
-
-												if (!index) {
-													index = 1;
-													$(this).data('index', 1);
-												}
-
-												index++;
-												$(this).data('index', index);
-												var template = $(this).attr(
-														'data-template'), $templateEle = $('#'
-														+ template + 'Template'), $row = $templateEle
-														.clone().removeAttr(
-																'id')
-														.insertBefore(
-																$templateEle)
-														.removeClass('hide'), $el = $row
-														.find('input').eq(1)
-														.attr('name', template), $le = $row
-														.find('label')
-														.eq(1)
-														.attr(
-																'for',
-																template
-																		+ index);
-
-												$('#defaultForm')
-														.formValidation(
-																'addField', $el);
-
-												$el.attr('placeholder',
-														'请添加网址 #' + index);
-												$el
-														.attr('id', template
-																+ index);
-												$row
-														.on(
-																'click',
-																'.glyphicon-remove',
-																function(e) {
-																	$(
-																			'#defaultForm')
-																			.formValidation(
-																					'removeField',
-																					$el);
-																	$row
-																			.remove();
-																});
-											});
-
-							$('#defaultForm').formValidation({
-								message : 'This value is not valid',
-								icon : {
-									valid : 'glyphicon glyphicon-ok',
-									invalid : 'glyphicon glyphicon-remove',
-									validating : 'glyphicon glyphicon-refresh'
-								},
-								fields : {
-									inputTitel : {
-										message : 'The username is not valid',
-										validators : {
-											notEmpty : {
-												message : '标题'
-											},
-											stringLength : {
-												min : 6,
-												max : 60,
-												message : '标题必须在6-60个字符之间'
-											}
-
-										}
-									},
-									url : {
-										validators : {
-											notEmpty : {
-												message : '链接不能为空'
-											},
-											stringLength : {
-												min : 10,
-												//max : 300,
-												message : 'URL长度应大于10字符'
-											}
-										}
-									},
-									targetUrl : {
-										validators : {
-											notEmpty : {
-												message : '链接不能为空'
-											},
-											stringLength : {
-												min : 10,
-												//	max : 300,
-												message : 'URL长度应大于10字符'
-											}
-										}
-									}
-
-								}
-							});
-						});
+		
 	</script>
 </body>
 </html>

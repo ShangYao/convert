@@ -25,8 +25,8 @@
 	<!-- 内容部分 -->
 	<div class="container">
 		<ol class="breadcrumb">
-			<li><a href="list">精编管理</a></li>
-			<li><a href="list">我的精编</a></li>
+			<li><a href="../list">精编管理</a></li>
+			<li><a href="../list">我的精编</a></li>
 			<li class="active">修改精编</li>
 		</ol>
 		<div class="panel panel-default">
@@ -46,43 +46,84 @@
 
 				<div class="panel-heading">
 					<h3 class="panel-title">基本信息</h3>
+					<button type="button" value="修改基本信息" onclick="basic()"
+						style="float: right;" class="btn btn-info">修改基本信息</button>
 				</div>
 				<div class="panel-body">
-					<div class="form-group">
-						<label for="disabledSelect" class="col-sm-2 control-label">店铺名称</label>
-						<div class="col-sm-10">
-							<select id="disabledSelect"
-								class="selectpicker show-tick form-control" name="storeId"
-								th:value="*{store.name}" data-live-search="true">
-								<option value="0">选择店铺</option>
-								<option th:each="shop:${shopList}" th:value="${shop.id}"
-									th:text="${shop.name}" th:selected="${shop.id}==*{store.id}"></option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="itemId" class="col-sm-2 control-label">平台编号</label>
-						<div class="col-sm-10">
-							<input class="form-control" id="itemId" name="itemId"
-								th:value="*{itemId}" placeholder="平台编号" />
-						</div>
-					</div>
 					<div class="form-group">
 						<label for="title" class="col-sm-2 control-label">商品标题</label>
 						<div class="col-sm-10">
 							<input class="form-control" name="title" id="title"
-								th:value="*{title}" placeholder="商品标题" />
+								disabled="disabled" th:value="*{title}" placeholder="商品标题" />
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="url" class="col-sm-2 control-label">商品链接</label>
+						<label class="col-sm-2 control-label">性别</label>
 						<div class="col-sm-10">
-							<input type="url" class="form-control" id="url" name="url"
-								th:value="*{url}" placeholder="商品链接" />
+							<select id="genderId"
+								class="selectpicker show-tick form-control modify"
+								disabled="disabled" name="genderId" data-live-search="true">
+								<!-- <option value="0">选择性别</option> -->
+								<option th:text="*{gender.name}"></option>
+								<!-- <option th:each="gender:${genders}" th:value="${gender.id}"
+									th:selected="${gender.id}==*{genderId}"
+									th:text="${gender.name}" ></option> -->
+							</select>
 						</div>
 					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">品牌</label>
+						<div class="col-sm-10">
+							<select id="brandId"
+								class="selectpicker show-tick form-control modify"
+								disabled="disabled" name="brandId" data-live-search="true">
 
+								<option th:text="*{brand.name}"></option>
+								<!-- <option value="0">选择品牌</option>
+								<option th:each="brand:${brands}" th:value="${brand.id}"
+									th:selected="${brand.id}==*{brandId}" th:text="${brand.name}"
+									></option> -->
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">分类</label>
+						<div class="col-sm-10">
+							<select class="form-control " id="taxon1" th:value="${taxonId}"
+								disabled="disabled" onchange="getTaxon2(this.value)">
+								<option value="0">选择一级分类</option>
+								<option th:each="taxon:${topTaxons}" th:value="${taxon.id}"
+									th:text="${taxon.name}" th:selected="*{taxon1.id}==${taxon.id}"></option>
+							</select> <select class="form-control " id="taxon2" disabled="disabled"
+								onchange="getTaxon3(this.value)">
+								<option value="0">选择二级分类</option>
+								<option th:if="*{taxon2}!=null" th:text="*{taxon2.name}"
+									th:value="*{taxon2.id}" th:selected="true"></option>
+							</select> <select class="form-control " name="taxonId" disabled="disabled"
+								id="taxon3">
+								<option th:if="*{taxon3}!=null" th:text="*{taxon3.name}"
+									th:value="*{taxon3.id}" th:selected="true"></option>
+								<option value="0">选择三级分类</option>
+							</select>
+
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="url" class="col-sm-2 control-label">相册名称</label>
+						<div class="col-sm-10">
+							<select id="albumId" class="selectpicker show-tick form-control"
+								disabled="disabled" name="albumId" data-live-search="true">
+								<option value="0">选择商品相册</option>
+								<option th:each="album:*{albums}" th:value="${album.id}"
+									th:selected="${album.id}==*{albumId}" th:text="${album.name}"
+									disabled="disabled"></option>
+							</select>
+							<!-- <input type="button" value="相册管理" class="btn btn-default"
+								onclick="album()" placeholder="分类" /> -->
+						</div>
+					</div>
 				</div>
+				<!-- 原网链接部分 -->
 				<div class="panel-heading">
 					<h3 class="panel-title">
 						原网信息
@@ -90,32 +131,171 @@
 							style="float: right;" class="btn btn-info">添加原网信息</button>
 					</h3>
 				</div>
-
-
-
-				<div class="panel-body" id="source_sites_usrs_groups" >
+				<div class="panel-body">
 					<table class="table table-bordered table-condensed table-hover "
-						id="table-skus">
-
+						style="width: 90%;" align="center">
 						<tr class="success">
 							<th>编号</th>
+							<th>品牌</th>
 							<th>mpn</th>
 							<th>url</th>
+							<th>状态</th>
 							<th>创建时间</th>
 							<th>操作</th>
 						</tr>
 						<tr th:each="item : ${merchandise.SourceUrl}">
 							<td th:text="${item.id}" class="itemId">12</td>
+							<td th:text="*{brand.name}">12</td>
 							<td th:text="${item.mpn}">12</td>
-							<td  ><a th:href="${item.url}" target="_blank" th:text="${item.url}"></a></td>
+							<td><a th:href="${item.url}" target="_blank"
+								th:text="${item.url}"></a></td>
+							<td th:if="${item.state}==1">正常</td>
+							<td th:if="${item.state}==0">已删除</td>
 							<td th:text="${item.createdAt}">12</td>
-							<!-- <td><a th:text="${item.rocidCount}"
-								th:onclick="'javascript:rocid(\''+${item.rocidString}+'\')'"></a></td> -->
+							<td>
+								<!-- <a th:href="'url/'+${item.id}" title="修改"><span
+									class="glyphicon glyphicon-pencil"></span></a> -->&nbsp;&nbsp;<a
+								th:onclick="'javascript:deleteUrl(\''+${item.id}+'\')'"
+								title="删除"><span class="glyphicon glyphicon-trash"></span></a>
+							</td>
+						</tr>
+					</table>
+				</div>
 
 
-							<td><a th:href="@{toModifyUrl(id=${item.id})}" title="修改"><span
+				<!--  单品维度部分-->
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						颜色尺码
+						<div style="float: right;">
+							<button type="button" value="添加颜色尺码" onclick="color()"
+								class="btn btn-info">添加颜色</button>
+							&nbsp;
+							<button type="button" value="添加颜色尺码" onclick="size()"
+								class="btn btn-info">添加尺码</button>
+						</div>
+					</h3>
+				</div>
+				<div class="panel-body">
+					<ul class="nav nav-tabs" role="tablist" id="refinedlist">
+						<li role="presentation" class="active"><a href="#color"
+							aria-controls="color" role="tab" data-toggle="tab">颜色<span
+								class="badge"></span></a></li>
+						<li role="presentation"><a href="#size" aria-controls="size"
+							role="tab" data-toggle="tab">尺码<span class="badge"></span></a></li>
+					</ul>
+
+					<div class="tab-content">
+						<div role="tabpanel" class="tab-pane active" id="color">
+							<div class="table-responsive">
+								<table class="table table-bordered table-condensed table-hover "
+									style="width: 90%;" align="center">
+									<thead>
+										<tr class="success">
+											<th>ID</th>
+											<th>颜色名称</th>
+											<th>相册名称</th>
+											<th>描述</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+
+										<tr th:each="color : ${merchandise.colors}">
+											<td th:text="${color.id}"></td>
+											<!-- <td th:text="${merchandise.createdAt}">2018-01-08</td> -->
+											<td th:text="${color.name}">2018-01-08</td>
+											<td th:text="${color.albumName}">2018-01-08</td>
+											<td th:text="${color.description}">2018-01-08</td>
+											<td><a th:href="'color/'+${color.id}" title="修改"><span
+													class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp; <a
+												th:onclick="'javascript:deleteColor(\''+${color.id}+'\')'"
+												title="删除"><span class="glyphicon glyphicon-trash"></span></a>
+											</td>
+										</tr>
+
+									</tbody>
+								</table>
+								<!-- <ul id='pagination'></ul>
+							<input type="hidden" id="totalPages" name="totalPages"
+								th:value="*{merchandise.totalPages}" /> <input type="hidden"
+								id="page" name="page" th:value="*{merchandise.page}" /> <input
+								type="hidden" id="action" name="action"
+								value="queryList?show=all&amp;pageNum=" /> -->
+
+							</div>
+						</div>
+						<div role="tabpanel" class="tab-pane" id="size">
+							<div class="table-responsive">
+								<table class="table table-bordered table-condensed table-hover "
+									style="width: 90%;" align="center">
+									<thead>
+										<tr class="success">
+											<th>ID</th>
+											<th>尺码名称</th>
+											<th>相册</th>
+											<th>描述</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+
+										<tr th:each="size : *{sizes}">
+											<td th:text="${size.id}"></td>
+											<!-- <td th:text="${merchandise.createdAt}">2018-01-08</td> -->
+											<td th:text="${size.name}">2018-01-08</td>
+											<td th:text="${size.albumName}">2018-01-08</td>
+											<td th:text="${size.description}">2018-01-08</td>
+											<td><a th:href="'size/'+${size.id}" title="修改"><span
+													class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp; <a
+												th:onclick="'javascript:deleteSize(\''+${size.id}+'\')'"
+												title="删除"><span class="glyphicon glyphicon-trash"></span></a>
+											</td>
+										</tr>
+
+									</tbody>
+								</table>
+								<!-- <ul id='pagination'></ul>
+							<input type="hidden" id="totalPages" name="totalPages"
+								th:value="*{merchandise.totalPages}" /> <input type="hidden"
+								id="page" name="page" th:value="*{merchandise.page}" /> <input
+								type="hidden" id="action" name="action"
+								value="queryList?show=all&amp;pageNum=" /> -->
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--  单品信息部分-->
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						单品信息
+						<button type="button" value="添加单品" onclick="toItem()"
+							style="float: right;" class="btn btn-info">添加单品信息</button>
+					</h3>
+				</div>
+				<div class="panel-body">
+					<table class="table table-bordered table-condensed table-hover "
+						style="width: 90%;" align="center">
+						<tr class="success">
+							<th>编号</th>
+							<th>颜色</th>
+							<th>尺码</th>
+							<th>库存</th>
+							<th>价格</th>
+							<th>相册</th>
+							<th>操作</th>
+						</tr>
+						<tr th:each="item : ${merchandise.lineItems}">
+							<td th:text="${item.id}" class="itemId">12</td>
+							<td th:text="${item.color}">12</td>
+							<td th:text="${item.size}">12</td>
+							<td th:text="${item.stock}">12</td>
+							<td th:text="${item.price}">12</td>
+							<td th:text="${item.albumName}">12</td>
+							<td><a th:href="'lineItem/'+${item.id}" title="修改"><span
 									class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
-								th:onclick="'javascript:deleteOne(\''+${item.id}+'\')'"
+								th:onclick="'javascript:deleteItem(\''+${item.id}+'\')'"
 								title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
 						</tr>
 
@@ -129,59 +309,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-				<!-- <div class="panel-body">
-					<div class="form-group form-inline"
-						th:if="${#arrays.isEmpty(merchandise.sourceUrls)}">
-						<label for="targetUrl1" class="col-sm-1 control-label">链接</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" name="mpn"
-								placeholder="请添加货号" /> <input type="url"
-								class="form-control targetUrl" id="targetUrl1" name="targetUrl"
-								placeholder="请添加网址 #" />
-						</div>
-						<a href="javascript:"><span class="glyphicon glyphicon-plus "
-							aria-hidden="true" data-template="targetUrl"></span></a> <a
-							href="javascript:"><span class="glyphicon glyphicon-remove "
-							aria-hidden="true" data-template="targetUrl"></span></a>
-					</div>
-					<div class="form-group form-inline"
-						th:each="turl :${merchandise.sourceUrls}">
-						<label for="targetUrl1" class="col-sm-1 control-label">链接</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" name="mpn"
-								th:value="${#strings.substringBefore(turl,',')}"
-								placeholder="请添加货号" /> <input type="url"
-								class="form-control targetUrl"
-								th:value="${#strings.substringAfter(turl,',')} "
-								name="targetUrl" placeholder="请添加网址 #" />
-						</div>
-						<a href="javascript:"><span class="glyphicon glyphicon-plus "
-							aria-hidden="true" data-template="targetUrl"></span></a> <a
-							href="javascript:"><span class="glyphicon glyphicon-remove "
-							aria-hidden="true" data-template="targetUrl"></span></a>
-					</div>
-
-					<div class="form-group form-inline hide" id="targetUrlTemplate">
-						<label class="col-sm-1 control-label">链接</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" name="mpn"
-								placeholder="请添加货号" /> <input type="url"
-								class="form-control targetUrl" />
-						</div>
-						<a href="javascript:"><span class="glyphicon glyphicon-remove"
-							aria-hidden="true"></span></a>
-					</div>
-
-				</div> -->
 				<div class="form-group " style="text-align: center;">
 					<div class="col-sm-4 ">
 						<button class="btn btn-default" onclick="draft()">仅保存草稿</button>
@@ -205,7 +332,7 @@
 		</div>
 
 	</div>
-
+	<script type="text/javascript" src="/js/sparrow/ajax.js"></script>
 	<script src="/js/alert.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/bootstrap-select.min.js"></script>
@@ -214,189 +341,123 @@
 	<script type="text/javascript" src="/js/language/zh_CN.js"></script>
 
 	<script type="text/javascript">
-	function deleteOne(id) {
-		if (confirm("确定删除此条信息？")) {
-			defaultForm.action = "sourceUrl/" + id;
+		function toItem() {
+			defaultForm.action = "lineItem";
 			defaultForm.submit();
+
 		}
-	}
+		function color() {
+			defaultForm.action = "color";
+			defaultForm.submit();
+
+		}
+		function size() {
+			defaultForm.action = "size";
+			defaultForm.submit();
+
+		}
+		function basic() {
+			defaultForm.action = "basic/toModify";
+			defaultForm.submit();
+
+			//$('input').attr("disabled",false);
+			//$('#taxon3').attr("disabled",false);
+			// $('.modify').prop('disabled', false);
+			//$('.modify').selectpicker('refresh');
+		}
+		function album() {
+			defaultForm.action = "albums";
+			defaultForm.submit();
+
+		}
+
+		function deleteUrl(id) {
+			if (confirm("确定删除此条信息？")) {
+				defaultForm.action = "deleteUrl/" + id;
+				defaultForm.submit();
+			}
+		}
+		function deleteItem(id) {
+			if (confirm("确定删除此条信息？")) {
+				defaultForm.action = "deleteItem/" + id;
+				defaultForm.submit();
+			}
+		}
+		function deleteColor(id) {
+			if (confirm("确定删除此条信息？")) {
+				defaultForm.action = "deleteColor/" + id;
+				defaultForm.submit();
+			}
+		}
+		function deleteSize(id) {
+			if (confirm("确定删除此条信息？")) {
+				defaultForm.action = "deleteSize/" + id;
+				defaultForm.submit();
+			}
+		}
 		function back() {
 
-			defaultForm.action = "list";
+			defaultForm.action = "../list";
 			defaultForm.submit();
 
 		}
 		function toUrl() {
-			var id = $("#id").val();
-			defaultForm.action = "toUrl?id=" + id;
+			defaultForm.action = "url";
 			defaultForm.submit();
 
 		}
 		function draft() {
-			if ($("#storeId").val() == 0) {
-				alert("请选择店铺！");
-				return false;
-			}
-			if ($("#url").val() == "" || $("#url").val() == null) {
-				alert("url不能为空！");
-				return false;
-			}
 			if ($("#title").val() == "" || $("#title").val() == null) {
-				alert("标题不能为空！");
+				alert("title不能为空！");
 				return false;
 			}
-			if ($("#itemId").val() == "" || $("#itemId").val() == null) {
-				alert("商品编号不能为空！");
+
+			if ($("#brandId").val() == 0) {
+				alert("请选择品牌！");
 				return false;
 			}
-		//	if ($(".targetUrl").val() == "" || $(".targetUrl").val() == null) {
-		//		alert("请至少添加一条源网链接！");
-		//		return false;
-		//	}
-			defaultForm.action = "modify?newState=草稿";
+			if ($("#genderId").val() == 0) {
+				alert("请选择性别！");
+				return false;
+			}
+			if ($("#taxon2").val() == 0) {
+				alert("请选择类目！");
+				return false;
+			}
+			if ($("#albumId").val() == 0) {
+				alert("请选择相册！");
+				return false;
+			}
+			defaultForm.action = "draft";
 			defaultForm.submit();
 
 		}
 
 		function publish() {
-			if ($("#storeId").val() == 0) {
-				alert("请选择店铺！");
-				return false;
-			}
-			if ($("#url").val() == "" || $("#url").val() == null) {
-				alert("url不能为空！");
-				return false;
-			}
 			if ($("#title").val() == "" || $("#title").val() == null) {
-				alert("标题不能为空！");
+				alert("title不能为空！");
 				return false;
 			}
-			if ($("#itemId").val() == "" || $("#itemId").val() == null) {
-				alert("商品编号不能为空！");
+
+			if ($("#brandId").val() == 0) {
+				alert("请选择品牌！");
 				return false;
 			}
-		//	if ($(".targetUrl").val() == "" || $(".targetUrl").val() == null) {
-		//		alert("请至少添加一条源网链接！");
-		//		return false;
-		//	}
-			defaultForm.action = "modify?newState=待审核";
+			if ($("#genderId").val() == 0) {
+				alert("请选择性别！");
+				return false;
+			}
+			if ($("#taxon2").val() == 0) {
+				alert("请选择类目！");
+				return false;
+			}
+			if ($("#albumId").val() == 0) {
+				alert("请选择相册！");
+				return false;
+			}
+			defaultForm.action = "publish";
 			defaultForm.submit();
 		}
-
-		$(document)
-				.ready(
-						function() {
-							//动态添加HTML元素并绑定事件
-							$('.glyphicon-plus')
-									.on(
-											'click',
-											function() {
-												var index = $(this).data(
-														'index');
-
-												if (!index) {
-													index = 1;
-													$(this).data('index', 1);
-												}
-
-												index++;
-												$(this).data('index', index);
-												var template = $(this).attr(
-														'data-template'), $templateEle = $('#'
-														+ template + 'Template'), $row = $templateEle
-														.clone().removeAttr(
-																'id')
-														.insertBefore(
-																$templateEle)
-														.removeClass('hide'), $el = $row
-														.find('input').eq(1)
-														.attr('name', template), $le = $row
-														.find('label')
-														.eq(1)
-														.attr(
-																'for',
-																template
-																		+ index);
-
-												$('#defaultForm')
-														.formValidation(
-																'addField', $el);
-
-												$el.attr('placeholder',
-														'请添加网址 #' + index);
-												$el
-														.attr('id', template
-																+ index);
-												$row
-														.on(
-																'click',
-																'.glyphicon-remove',
-																function(e) {
-																	$(
-																			'#defaultForm')
-																			.formValidation(
-																					'removeField',
-																					$el);
-																	$row
-																			.remove();
-																});
-											});
-
-							$('.glyphicon-remove').on('click', function() {
-								$(this).closest(".form-group").remove();
-
-							});
-
-							$('#defaultForm').formValidation({
-								message : 'This value is not valid',
-								icon : {
-									valid : 'glyphicon glyphicon-ok',
-									invalid : 'glyphicon glyphicon-remove',
-									validating : 'glyphicon glyphicon-refresh'
-								},
-								fields : {
-									inputTitel : {
-										message : 'The username is not valid',
-										validators : {
-											notEmpty : {
-												message : '标题'
-											},
-											stringLength : {
-												min : 6,
-												max : 60,
-												message : '标题必须在6-60个字符之间'
-											}
-
-										}
-									},
-									url : {
-										validators : {
-											notEmpty : {
-												message : '链接不能为空'
-											},
-											stringLength : {
-												min : 10,
-												max : 300,
-												message : 'URL长度在10-300个字符之间'
-											}
-										}
-									},
-									targetUrl : {
-										validators : {
-											notEmpty : {
-												message : '链接不能为空'
-											},
-											stringLength : {
-												min : 10,
-												max : 300,
-												message : 'URL长度在10-300个字符之间'
-											}
-										}
-									}
-
-								}
-							});
-						});
 	</script>
 </body>
 </html>

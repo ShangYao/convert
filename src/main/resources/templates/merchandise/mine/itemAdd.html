@@ -4,7 +4,8 @@
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viveport" content="width=device-width, initial-scale=1" />
-<link rel="icon" type="image/x-icon" class="js-site-favicon" href="/images/jing.jpg"/>
+<link rel="icon" type="image/x-icon" class="js-site-favicon"
+	href="/images/jing.jpg" />
 
 <title>精编系统-修改精编</title>
 <link href="/css/bootstrap.min.css" rel="stylesheet" />
@@ -26,18 +27,17 @@
 		<ol class="breadcrumb">
 			<li><a href="queryList">我的精编</a></li>
 			<li><a href="#">设置单品</a></li>
-			<li class="active">修改单品</li>
+			<li class="active">添加单品</li>
 		</ol>
 		<div class="panel panel-default">
 
 			<form class="form-horizontal" id="defaultForm" th:object="${item}"
-				method="POST" action="../modifyItem" onsubmit="return false">
+				method="POST" action="addItem" onsubmit="return false">
 				<input type="hidden" name="id" th:value="*{id}" /> <input
 					type="hidden" name="mId" th:value="*{mId}" /> <input type="hidden"
 					id="login_user"
 					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
 				<input type="hidden" id="message" th:value="*{alertMessage}" />
-				<input type="hidden" name="createdAt" th:value="*{createdAt}" />
 				<div class="panel-heading">
 					<h3 class="panel-title">基本信息</h3>
 				</div>
@@ -46,54 +46,54 @@
 					<div class="form-group">
 						<label for="color" class="col-sm-2 control-label">颜色</label>
 						<div class="col-sm-10">
-							<select class="selectpicker show-tick form-control" name="colorId"
-								id="color" >
+							<select class="selectpicker show-tick form-control" name="colors"
+								id="color" multiple="multiple">
 								<option th:each="color:${colors}" th:value="${color.id}"
-									th:text="${color.name}" th:selected="${color.id}==*{colorId}"></option>
+									th:text="${color.name}"></option>
 							</select>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="color" class="col-sm-2 control-label">尺码</label>
 						<div class="col-sm-10">
-							<select class="selectpicker show-tick form-control" name="sizeId"
-								id="size" >
+							<select class="selectpicker show-tick form-control" name="sizes" id="size" multiple="multiple">
 								<option th:each="size:${sizes}" th:value="${size.id}"
-									th:text="${size.name}" th:selected="${size.id}==*{sizeId}"></option>
+									th:text="${size.name}"></option>
+
+
 							</select>
+
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="size" class="col-sm-2 control-label">库存</label>
 						<div class="col-sm-10">
-							<input type="number"  step="1" class="form-control" name="stock" id="stock"
-								th:value="*{stock}" placeholder="库存" />
+							<input type="number" step="1" class="form-control" name="stock"
+								id="stock" th:value="*{stock}" placeholder="库存" />
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="basePrice" class="col-sm-2 control-label">价格</label>
 						<div class="col-sm-10">
-							<input type="number" class="form-control" id="price"
-								step="0.1"  name="price" th:value="*{price}"
-								placeholder="价格" />
+							<input type="number" class="form-control" id="price" step="0.1"
+								name="price" th:value="*{price}" placeholder="价格" />
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="salesState" class="col-sm-2 control-label">相册名称</label>
 						<div class="col-sm-10">
-						<select id="albumId" class="selectpicker show-tick form-control"
-								 name="albumId" data-live-search="true">
+							<select id="albumId" class="selectpicker show-tick form-control"
+								name="albumId" data-live-search="true">
 								<option value="0">选择商品相册</option>
 								<option th:each="album:${albums}" th:value="${album.id}"
-									th:selected="${album.id}==*{albumId}" th:text="${album.name}"
-									></option>
-							</select> 
+									th:selected="${album.id}==*{albumId}" th:text="${album.name}"></option>
+							</select>
 						</div>
 					</div>
 
 
 				</div>
-			<!-- 	<div class="panel-heading">
+				<!-- 	<div class="panel-heading">
 					<h3 class="panel-title">添加尺码</h3>
 				</div>
 
@@ -145,7 +145,7 @@
 	<script type="text/javascript">
 		function back() {
 
-			defaultForm.action = "../modify";
+			defaultForm.action = "modify";
 			defaultForm.submit();
 		}
 
@@ -171,6 +171,7 @@
 				alert("stock不能为空！");
 				return false;
 			}
+			
 			defaultForm.submit();
 
 		}

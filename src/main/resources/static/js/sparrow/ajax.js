@@ -58,7 +58,7 @@ function getTaxon2(id) {
 		return;
 	}
 	$.ajax({
-		url : "/merchandise/mine/taxon2",
+		url : "/merchandise/taxon2",
 		type : "post",
 		data : {
 			id : id
@@ -85,7 +85,7 @@ function getTaxon3(id) {
 		return;
 	}
 	$.ajax({
-		url : "/merchandise/mine/taxon3",
+		url : "/merchandise/taxon3",
 		type : "post",
 		data : {
 			id : id

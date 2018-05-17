@@ -26,16 +26,14 @@
 	<div class="container">
 		<ol class="breadcrumb">
 			<li><a href="queryList">我的精编</a></li>
-			<li><a href="#"></a>修改精编</li>
-			<li class="active">修改源网连接</li>
+			<li><a href="#">修改精编</a></li>
+			<li class="active">添加尺码</li>
 		</ol>
 		<div class="panel panel-default">
 
-			<form class="form-horizontal" id="defaultForm" th:object="${url}"
-				method="POST" action="update" onsubmit="return false">
+			<form class="form-horizontal" id="defaultForm" th:object="${size}"
+				method="POST" action="addSize" onsubmit="return false">
 				<input type="hidden" name="id" th:value="*{id}" /> <input
-					type="hidden" name="createdAt" th:value="*{createdAt}" /> <input
-					type="hidden" name="state" th:value="*{state}" /> <input
 					type="hidden" name="merchandiseId" th:value="*{merchandiseId}" />
 				<input type="hidden" id="login_user"
 					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
@@ -46,30 +44,48 @@
 				<div class="panel-body">
 
 					<div class="form-group">
-						<label for="name" class="col-sm-2 control-label">货号</label>
+						<label for="color" class="col-sm-2 control-label">尺码</label>
 						<div class="col-sm-10">
-							<input class="form-control" id="mpn" name="mpn" th:value="*{mpn}"
-								placeholder="货号" />
+							<input class="form-control" id="name" name="name"
+								th:value="*{name}" placeholder="尺码" />
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="name" class="col-sm-2 control-label">url</label>
+						<label for="salesState" class="col-sm-2 control-label">相册名称</label>
 						<div class="col-sm-10">
-							<input class="form-control" id="url" name="url" th:value="*{url}"
-								placeholder="url" />
+							<select id="albumId" class="selectpicker show-tick form-control"
+								name="albumId" data-live-search="true">
+								<option value="0">选择商品相册</option>
+								<option th:each="album:${albums}" th:value="${album.id}"
+									th:selected="${album.id}==*{albumId}" th:text="${album.name}"></option>
+							</select>
 						</div>
 					</div>
+					<div class="form-group">
+						<label for="size" class="col-sm-2 control-label">描述</label>
+						<div class="col-sm-10">
+							<input class="form-control" name="description" id="description"
+								th:value="*{description}" placeholder="描述" />
+						</div>
+					</div>
+
+
 
 
 				</div>
 
 
+
+
 				<div class="form-group " style="text-align: center;">
-					<div class="col-sm-4 ">
-						<button class="btn btn-default" onclick="add()">保存</button>
+					<div th:if="*{id}!=0" class="col-sm-4 ">
+						<button class="btn btn-default" onclick="modify()">修改</button>
+					</div>
+					<div th:if="*{id}==0" class="col-sm-4 ">
+						<button class="btn btn-default" onclick="add()">添加</button>
 					</div>
 					<div class="col-sm-4 ">
-						<button class="btn btn-default" onclick="history.go(-1)">返回</button>
+						<button class="btn btn-default" onclick="back()">返回</button>
 
 					</div>
 
@@ -91,25 +107,29 @@
 	<script type="text/javascript">
 		function back() {
 
-			defaultForm.action = "list";
+			defaultForm.action = "modify";
 			defaultForm.submit();
 		}
 
 		function add() {
-			if ($("#mpn").val() == "" || $("#mpn").val() == null) {
-				alert("mpn不能为空！");
+			if ($("#name").val() == "" || $("#name").val() == null) {
+				alert("name不能为空！");
 				return false;
 			}
 
-			if ($("#url").val() == "" || $("#url").val() == null) {
-				alert("url不能为空！");
-				return false;
-			}
 			defaultForm.submit();
 
 		}
+		function modify() {
+			if ($("#name").val() == "" || $("#name").val() == null) {
+				alert("name不能为空！");
+				return false;
+			}
 
-	
+			defaultForm.action="../modifySize";
+			defaultForm.submit();
+
+		}
 	</script>
 </body>
 </html>

@@ -1,15 +1,10 @@
 package com.jinanlongen.sparrow.controller;
 
-import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.lokra.seaweedfs.core.FileSource;
-import org.lokra.seaweedfs.core.FileTemplate;
-import org.lokra.seaweedfs.core.file.FileHandleStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,22 +12,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import com.jinanlongen.sparrow.domain.LineItem;
 import com.jinanlongen.sparrow.domain.Merchandise;
 import com.jinanlongen.sparrow.domain.SourceUrl;
 import com.jinanlongen.sparrow.domain.StateChange;
+import com.jinanlongen.sparrow.repository.AlbumRep;
+import com.jinanlongen.sparrow.repository.ImageRep;
 import com.jinanlongen.sparrow.repository.LineItemRep;
 import com.jinanlongen.sparrow.repository.MerchandiseRep;
 import com.jinanlongen.sparrow.repository.SourceUrlRep;
 import com.jinanlongen.sparrow.repository.StateChangeRep;
 import com.jinanlongen.sparrow.repository.UserRep;
-import com.jinanlongen.sparrow.roc.domain.Taxon;
 import com.jinanlongen.sparrow.roc.repository.BrandRep;
 import com.jinanlongen.sparrow.roc.repository.GenderRep;
 import com.jinanlongen.sparrow.roc.repository.TaxonRep;
-import com.jinanlongen.sparrow.service.InitService;
+import com.jinanlongen.sparrow.service.CacheService;
 import com.jinanlongen.sparrow.service.RefinedMineService;
 
 /**
@@ -42,7 +36,7 @@ import com.jinanlongen.sparrow.service.RefinedMineService;
  * @date 2018年2月12日
  */
 @Controller
-@RequestMapping("merchandise/mine/")
+@RequestMapping("merchandise/")
 public class RefinedMineController extends BaseController {
   private static final String BASE_PATH = "merchandise/mine/";
 
@@ -65,94 +59,12 @@ public class RefinedMineController extends BaseController {
   @Autowired
   private TaxonRep TaxonRep;
   @Autowired
-  private InitService initService;
+  private CacheService initService;
+  @Autowired
+  private AlbumRep albumRep;
+  @Autowired
+  private ImageRep imageRep;
 
-  @RequestMapping("taxon2")
-  @ResponseBody
-  public List<Taxon> getTaxon2(Long id) {
-    return TaxonRep.findByAncestry(id + "");
-  }
-
-  @RequestMapping("taxon3")
-  @ResponseBody
-  public List<Taxon> getTaxon3(Long id) {
-    return TaxonRep.getTaxon3("%" + id);
-  }
-
-  // 跳转添加源网连接
-  @RequestMapping("sourceUrl/{urlId}")
-  // @DeleteMapping("sourceUrl/delete/{urlId}")
-  public String deleteUrl(@PathVariable(name = "urlId") Long urlId, Merchandise merchandise) {
-    SourceUrl oldUrl = urlRep.findOne(urlId);
-    oldUrl.setState(0);
-    urlRep.save(oldUrl);
-
-    // urlRep.updateState(urlId);
-    return "redirect:../toModify?id=" + merchandise.getId();
-  }
-
-  // 跳转添加源网连接
-  @RequestMapping("toUrl")
-  public String toUrl(Long id, Model model) {
-    SourceUrl url = new SourceUrl();
-    url.setMerchandiseId(id);
-    model.addAttribute("url", url);
-    return BASE_PATH + "url";
-  }
-
-  // 保存添加源网连接
-  @RequestMapping("addUrl")
-  public String addUrl(SourceUrl url) {
-    url.setState(1);
-    urlRep.save(url);
-    return "redirect:toModify?id=" + url.getMerchandiseId();
-  }
-
-  // 跳转修改源网连接
-  @RequestMapping("toModifyUrl")
-  public String toUpdateUrl(Long id, Model model) {
-    model.addAttribute("url", urlRep.findOne(id));
-    return BASE_PATH + "updateUrl";
-  }
-
-  // 保存修改源网连接
-  @RequestMapping("updateUrl")
-  @Transactional(rollbackFor = {Exception.class})
-  public String updateUrl(SourceUrl url, Model model) {
-    SourceUrl oldUrl = urlRep.findOne(url.getId());
-    oldUrl.setState(0);
-    urlRep.save(oldUrl);
-
-    // urlRep.updateState(url.getId());
-    SourceUrl newUrl = new SourceUrl();
-    newUrl.setMpn(url.getMpn());
-    newUrl.setUrl(url.getUrl());
-    newUrl.setMerchandiseId(url.getMerchandiseId());
-    newUrl.setState(1);
-    urlRep.save(newUrl);
-    model.addAttribute("url", newUrl);
-    return "redirect:toModify?id=" + url.getMerchandiseId();
-  }
-
-  // 测试tinymce上传图片
-  @RequestMapping("upload")
-  @ResponseBody
-  public String uploa(MultipartFile thumbnail) {
-    FileSource fileSource = new FileSource();
-    fileSource.setHost("192.168.200.71");
-    fileSource.setPort(8888);
-    try {
-      fileSource.startup();
-      FileTemplate template = new FileTemplate(fileSource.getConnection());
-      FileHandleStatus f =
-          template.saveFileByStream("sparrow/test.jpg", thumbnail.getInputStream());
-      System.out.println(f.getFileName());
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    return "http://192.168.200.71:8888/areatrend_b/e0ca50c25f5c3b4957da6145ee3c9878.jpg?mode=2f&width=150&height=150";
-  }
 
   // 首页
   @RequestMapping("index")
@@ -236,8 +148,8 @@ public class RefinedMineController extends BaseController {
   }
 
   // 跳转详情页
-  @RequestMapping("show")
-  public String show(Model model, Long id) {
+  @RequestMapping("{id}")
+  public String show(Model model, @PathVariable Long id) {
     Merchandise merchandise = mcdRep.findOne(id);
     Set<LineItem> ids = itemRep.findByMId(merchandise.getId());
     merchandise.setLineItems(ids);
@@ -310,25 +222,7 @@ public class RefinedMineController extends BaseController {
   @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
   public String modify(LineItem item, Model model) {
     int rocidCount = 0;
-    if (null != item.getRocid()) {
-      List<String> rocIds = new ArrayList<String>();
-      String rocids = "";
-      int num = 0;
-      for (String rocid : item.getRocid()) {
-        if (null != rocid && !"".equals(rocid)) {
-          if (itemRep.countRocid(rocid, item.getmId()) > 0) {
-            rocidCount = itemRep.countRocid2(rocid, item.getmId(), item.getId());
-          }
 
-          rocIds.add(rocid);
-          rocids = rocids + rocid + ",";
-          num += 1;
-        }
-      }
-      item.setRocIds(rocIds);
-      item.setRocidString(rocids);
-      item.setRocidCount(num);
-    }
     int count = itemRep.count(item.getmId(), item.getColor(), item.getSize(), item.getId());
     if (count > 0) {
       item.setAlertMessage("单品已存在，请重新输入颜色，尺码！");
@@ -382,25 +276,7 @@ public class RefinedMineController extends BaseController {
   @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
   public String addItem(LineItem item, Model model) {
     int rocidCount = 0;
-    if (null != item.getRocid()) {
-      List<String> rocIds = new ArrayList<String>();
-      String rocids = "";
-      int num = 0;
-      for (String rocid : item.getRocid()) {
-        if (null != rocid && !"".equals(rocid)) {
-          if (itemRep.countRocid(rocid, item.getmId()) > 0) {
-            rocidCount = itemRep.countRocid(rocid, item.getmId());
-          }
 
-          rocIds.add(rocid);
-          rocids = rocids + rocid + ",";
-          num += 1;
-        }
-      }
-      item.setRocIds(rocIds);
-      item.setRocidString(rocids);
-      item.setRocidCount(num);
-    }
     int count = itemRep.count2(item.getmId(), item.getColor(), item.getSize());
     if (count > 0) {
       item.setAlertMessage("单品已存在，请重新输入颜色，尺码！");
@@ -417,20 +293,9 @@ public class RefinedMineController extends BaseController {
     return "redirect:set?id=" + item.getmId();
   }
 
-  // 跳转修改精编页
-  @RequestMapping("toModify")
-  public String toModify(Model model, @RequestParam(value = "id") Long id) {
-    Merchandise merchandise = mcdRep.findOne(id);
 
-    List<SourceUrl> list = urlRep.findByMerchandiseIdAndState(id, 1);
 
-    merchandise.setSourceUrl(list);
-
-    model.addAttribute("merchandise", merchandise);
-    return BASE_PATH + "modify";
-  }
-
-  // 保存修改的精编
+  // 保存修改的精编-draft
   @RequestMapping("modify")
   @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
   public String modify(Merchandise merchandise, String newState, Model model) {
@@ -439,51 +304,19 @@ public class RefinedMineController extends BaseController {
 
     String oldState = merchandise.getState();
     olderMerchandise.setTitle(merchandise.getTitle());
-    // olderMerchandise.setItemId(merchandise.getItemId());
-    // olderMerchandise.setUrl(merchandise.getUrl());
-    // olderMerchandise.setStore(storeRep.findOne(merchandise.getStoreId()));
-    // olderMerchandise.setStoreId(merchandise.getStoreId());
-    // if (null != merchandise.getTargetUrl() && merchandise.getTargetUrl().length >
-    // 0) {
-    // List<String> urlList2 = new ArrayList<String>();
-    // for (int a = 0; a < merchandise.getTargetUrl().length; a++) {
-    // if (!"".equals(merchandise.getTargetUrl()[a])) {
-    //
-    // urlList2.add(merchandise.getMpn()[a] + "," + merchandise.getTargetUrl()[a]);
-    //
-    // }
-    // }
-    //
-    // olderMerchandise.setSourceUrls(urlList2);
-    // }
+
     if ("待审核".equals(newState)) {
       if (!olderMerchandise.getReviewNeeded()) {
         newState = "已发布";
       }
     }
-    // if (0 != mcdRep.itemCount2(merchandise.getItemId(), merchandise.getId())) {
-    // model.addAttribute("shopList", storeRep.findAll());
-    // olderMerchandise.setAlertMessage("无法添加，平台商品编号已存在！！");
-    // model.addAttribute("merchandise", olderMerchandise);
-    // return BASE_PATH + "modify";
-    // }
+
     userRep.update(getUserId());
     olderMerchandise.setState(newState);
     mcdRep.save(olderMerchandise);
     saveChange(merchandise.getId(), oldState, newState);
     return "redirect:queryList";
 
-  }
-
-  // 跳转创建精编页
-  @RequestMapping("toAdd")
-  public String toAdd(Model model) {
-
-    model.addAttribute("merchandise", new Merchandise());
-    model.addAttribute("brands", initService.getBrands());
-    model.addAttribute("genders", initService.getGenders());
-    model.addAttribute("topTaxons", initService.getTopTaxons());
-    return BASE_PATH + "add";
   }
 
   // 保存创建的精编

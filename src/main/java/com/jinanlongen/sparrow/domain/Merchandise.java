@@ -18,6 +18,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
+import com.jinanlongen.sparrow.roc.domain.Brand;
+import com.jinanlongen.sparrow.roc.domain.Gender;
+import com.jinanlongen.sparrow.roc.domain.Taxon;
 import com.jinanlongen.sparrow.util.PageableUtils;
 
 /**
@@ -53,11 +56,21 @@ public class Merchandise extends BaseDomain implements Serializable {
   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private Date updatedAt;
   private Date maintainAt;
-
+  // @Column(nullable = true)
+  private long albumId;// 商品相册
   private long brandId;
   private long genderId;
   private long taxonId;
-
+  @Transient
+  private Taxon taxon1;
+  @Transient
+  private Taxon taxon2;
+  @Transient
+  private Taxon taxon3;
+  @Transient
+  private Brand brand;
+  @Transient
+  private Gender gender;
   @Transient
   private List<SourceUrl> sourceUrl = new ArrayList<SourceUrl>();
   @Transient
@@ -66,7 +79,10 @@ public class Merchandise extends BaseDomain implements Serializable {
   private List<Album> albums = new ArrayList<Album>();
   @Transient
   private Set<LineItem> lineItems;
-
+  @Transient
+  private List<Color> colors;
+  @Transient
+  private List<Size> sizes;
 
   @Transient
   private String targetUrl[];
@@ -142,6 +158,62 @@ public class Merchandise extends BaseDomain implements Serializable {
   @Transient
   private long oldId;
 
+  public List<Color> getColors() {
+    return colors;
+  }
+
+  public void setColors(List<Color> colors) {
+    this.colors = colors;
+  }
+
+  public List<Size> getSizes() {
+    return sizes;
+  }
+
+  public void setSizes(List<Size> sizes) {
+    this.sizes = sizes;
+  }
+
+  public Brand getBrand() {
+    return brand;
+  }
+
+  public void setBrand(Brand brand) {
+    this.brand = brand;
+  }
+
+  public Gender getGender() {
+    return gender;
+  }
+
+  public void setGender(Gender gender) {
+    this.gender = gender;
+  }
+
+  public Taxon getTaxon1() {
+    return taxon1;
+  }
+
+  public void setTaxon1(Taxon taxon1) {
+    this.taxon1 = taxon1;
+  }
+
+  public Taxon getTaxon2() {
+    return taxon2;
+  }
+
+  public void setTaxon2(Taxon taxon2) {
+    this.taxon2 = taxon2;
+  }
+
+  public Taxon getTaxon3() {
+    return taxon3;
+  }
+
+  public void setTaxon3(Taxon taxon3) {
+    this.taxon3 = taxon3;
+  }
+
   public long getBrandId() {
     return brandId;
   }
@@ -180,6 +252,16 @@ public class Merchandise extends BaseDomain implements Serializable {
 
   public void setSourceUrl(List<SourceUrl> sourceUrl) {
     this.sourceUrl = sourceUrl;
+  }
+
+
+
+  public long getAlbumId() {
+    return albumId;
+  }
+
+  public void setAlbumId(long albumId) {
+    this.albumId = albumId;
   }
 
 

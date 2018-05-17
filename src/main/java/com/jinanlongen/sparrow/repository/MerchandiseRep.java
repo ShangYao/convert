@@ -19,6 +19,11 @@ public interface MerchandiseRep
 
   @Transactional
   @Modifying
+  @Query(value = "UPDATE MERCHANDISES SET REVIEW_NEEDED=?,STATE=? WHERE ID=?", nativeQuery = true)
+  void updateSate(boolean needed, String state, Long id);
+
+  @Transactional
+  @Modifying
   @Query(value = "UPDATE MERCHANDISES SET MAINTAIN_AT=? WHERE ID=?", nativeQuery = true)
   void updateMaintainTime(Date timme, Long id);
 
