@@ -1,13 +1,11 @@
 package com.jinanlongen.sparrow.util;
 
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-
 import com.jinanlongen.sparrow.domain.BaseDomain;
 
 /**
@@ -17,75 +15,75 @@ import com.jinanlongen.sparrow.domain.BaseDomain;
  * @date 2018年2月23日
  */
 public class PageableUtils {
-	private int page;
-	private int pageSize = 15;
-	private int totalPages;
-	private long totleElements;
-	private Sort sort;
-	private Page<? extends BaseDomain> pages;
-	private List<? extends BaseDomain> queryList;
+  private int page;
+  private int pageSize = 2;
+  private int totalPages;
+  private long totleElements;
+  private Sort sort;
+  private Page<? extends BaseDomain> pages;
+  private List<? extends BaseDomain> queryList;
 
-	public long getTotleElements() {
-		return totleElements;
-	}
+  public long getTotleElements() {
+    return totleElements;
+  }
 
-	public void setTotleElements(long totleElements) {
-		this.totleElements = totleElements;
-	}
+  public void setTotleElements(long totleElements) {
+    this.totleElements = totleElements;
+  }
 
-	public List<? extends BaseDomain> getQueryList() {
-		return queryList;
-	}
+  public List<? extends BaseDomain> getQueryList() {
+    return queryList;
+  }
 
-	public void setQueryList(List<? extends BaseDomain> queryList) {
-		this.queryList = queryList;
-	}
+  public void setQueryList(List<? extends BaseDomain> queryList) {
+    this.queryList = queryList;
+  }
 
-	public Page<? extends BaseDomain> getPages() {
-		return pages;
-	}
+  public Page<? extends BaseDomain> getPages() {
+    return pages;
+  }
 
-	public int getTotalPages() {
-		return totalPages;
-	}
+  public int getTotalPages() {
+    return totalPages;
+  }
 
-	public void setTotalPages(int totalPages) {
-		this.totalPages = totalPages;
-	}
+  public void setTotalPages(int totalPages) {
+    this.totalPages = totalPages;
+  }
 
-	public int getPage() {
-		return page;
-	}
+  public int getPage() {
+    return page;
+  }
 
-	public void setPage(int page) {
-		this.page = (page == 0 ? 0 : page - 1);
-	}
+  public void setPage(int page) {
+    this.page = (page == 0 ? 0 : page - 1);
+  }
 
-	public void setPages(Page<? extends BaseDomain> pages) {
-		this.pages = pages;
-		this.queryList = pages.getContent();
-		this.totalPages = pages.getTotalPages();
-		this.page = pages.getNumber() + 1;
-		this.totleElements = pages.getTotalElements();
-	}
+  public void setPages(Page<? extends BaseDomain> pages) {
+    this.pages = pages;
+    this.queryList = pages.getContent();
+    this.totalPages = pages.getTotalPages();
+    this.page = pages.getNumber() + 1;
+    this.totleElements = pages.getTotalElements();
+  }
 
-	public int getPageSize() {
-		return pageSize;
-	}
+  public int getPageSize() {
+    return pageSize;
+  }
 
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
+  public void setPageSize(int pageSize) {
+    this.pageSize = pageSize;
+  }
 
-	public Sort getSort() {
-		return new Sort(Direction.DESC, "id");
-	}
+  public Sort getSort() {
+    return new Sort(Direction.DESC, "id");
+  }
 
-	public void setSort(String name) {
-		this.sort = new Sort(Direction.ASC, name);
-	}
+  public void setSort(String name) {
+    this.sort = new Sort(Direction.ASC, name);
+  }
 
-	public Pageable getPageable() {
-		return new PageRequest(page, pageSize, sort);
-	}
+  public Pageable getPageable() {
+    return new PageRequest(page, pageSize, sort);
+  }
 }

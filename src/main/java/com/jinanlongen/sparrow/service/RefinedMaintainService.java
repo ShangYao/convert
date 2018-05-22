@@ -43,13 +43,13 @@ public class RefinedMaintainService {
           lstPredicates.add(cb.equal(root.get("ownerId").as(Long.class), merchandise.getOwnerId()));
         }
         if (StringUtils.isNotBlank(merchandise.getQueryString())) {
-          if (StringUtils.isNumeric(merchandise.getQueryString())) {
-            lstPredicates.add(cb.like(root.get("itemId").as(String.class),
-                "%" + merchandise.getQueryString() + "%"));
-          } else {
-            lstPredicates.add(cb.like(cb.upper(root.get("title").as(String.class)),
-                "%" + merchandise.getQueryString().toUpperCase() + "%"));
-          }
+          // if (StringUtils.isNumeric(merchandise.getQueryString())) {
+          // lstPredicates.add(cb.like(root.get("itemId").as(String.class),
+          // "%" + merchandise.getQueryString() + "%"));
+          // } else {
+          lstPredicates.add(cb.like(cb.upper(root.get("title").as(String.class)),
+              "%" + merchandise.getQueryString().toUpperCase() + "%"));
+          // }
         }
         if (StringUtils.isNotBlank(merchandise.getState())) {
           lstPredicates.add(cb.equal(root.get("state").as(String.class), merchandise.getState()));

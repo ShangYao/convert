@@ -11,22 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import com.jinanlongen.sparrow.domain.LineItem;
 import com.jinanlongen.sparrow.domain.Merchandise;
 import com.jinanlongen.sparrow.domain.SourceUrl;
 import com.jinanlongen.sparrow.domain.StateChange;
-import com.jinanlongen.sparrow.repository.AlbumRep;
-import com.jinanlongen.sparrow.repository.ImageRep;
 import com.jinanlongen.sparrow.repository.LineItemRep;
 import com.jinanlongen.sparrow.repository.MerchandiseRep;
 import com.jinanlongen.sparrow.repository.SourceUrlRep;
 import com.jinanlongen.sparrow.repository.StateChangeRep;
 import com.jinanlongen.sparrow.repository.UserRep;
-import com.jinanlongen.sparrow.roc.repository.BrandRep;
-import com.jinanlongen.sparrow.roc.repository.GenderRep;
-import com.jinanlongen.sparrow.roc.repository.TaxonRep;
-import com.jinanlongen.sparrow.service.CacheService;
 import com.jinanlongen.sparrow.service.RefinedMineService;
 
 /**
@@ -52,18 +45,7 @@ public class RefinedMineController extends BaseController {
   private StateChangeRep scRep;
   @Autowired
   private SourceUrlRep urlRep;
-  @Autowired
-  private BrandRep brandRep;
-  @Autowired
-  private GenderRep genderRep;
-  @Autowired
-  private TaxonRep TaxonRep;
-  @Autowired
-  private CacheService initService;
-  @Autowired
-  private AlbumRep albumRep;
-  @Autowired
-  private ImageRep imageRep;
+
 
 
   // 首页
@@ -77,49 +59,7 @@ public class RefinedMineController extends BaseController {
     return "index";
   }
 
-  // 跳转我的精编列表页
-  @RequestMapping("list")
-  public String list(Model model) {
-    return "redirect:queryList";
-  }
 
-  // 我的精编-查询
-  @RequestMapping("queryList")
-  public String queryList(Model model, Merchandise merchandise,
-      @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum,
-      @RequestParam(value = "show", defaultValue = "all") String show) {
-    merchandise.setTabShow(show == null ? "" : show);
-    switch (show) {
-      case "all":
-        merchandise.setPage(pageNum);
-        break;
-      case "draft":
-        merchandise.setDraftPageNum(pageNum);
-        break;
-      case "committed":
-        merchandise.setCommittedPageNum(pageNum);
-        break;
-      case "published":
-        merchandise.setPublishedPageNum(pageNum);
-        break;
-      case "declined":
-        merchandise.setDeclinedPageNum(pageNum);
-        break;
-      case "retired":
-        merchandise.setRetiredPageNum(pageNum);
-        break;
-      case "trash":
-        merchandise.setTrashPageNum(pageNum);
-        break;
-      default:
-        break;
-    }
-    merchandise.setOwnerId(getUserId());
-    Merchandise mcd = refinedService.queryList(merchandise);
-    // refinedService.importOld2();
-    model.addAttribute("merchandise", mcd);
-    return BASE_PATH + "list";
-  }
 
   // 我的精编-删除
   @RequestMapping("delete")
@@ -148,7 +88,7 @@ public class RefinedMineController extends BaseController {
   }
 
   // 跳转详情页
-  @RequestMapping("{id}")
+  // @RequestMapping("{id}")
   public String show(Model model, @PathVariable Long id) {
     Merchandise merchandise = mcdRep.findOne(id);
     Set<LineItem> ids = itemRep.findByMId(merchandise.getId());

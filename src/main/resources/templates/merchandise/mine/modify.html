@@ -35,21 +35,22 @@
 				th:object="${merchandise}" method="POST" action="add"
 				onsubmit="return false">
 				<input type="hidden" name="id" id="id" th:value="*{id}" /> <input
-					type="hidden" name="alertEnabled" th:value="*{alertEnabled}" /> <input
-					type="hidden" name="reviewerId" th:value="*{reviewerId}" /> <input
-					type="hidden" name="createdAt" th:value="*{createdAt}" /> <input
-					type="hidden" name="state" th:value="*{state}" /> <input
-					type="hidden" name="reviewNeeded" th:value="*{reviewNeeded}" /> <input
-					type="hidden" name="declinedCount" th:value="*{declinedCount}" />
-				<input type="hidden" id="login_user"
+					type="hidden" id="login_user"
 					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
-
+<input type="hidden" name="reviewNeeded" id="reviewNeeded" th:value="*{reviewNeeded}" />
 				<div class="panel-heading">
 					<h3 class="panel-title">基本信息</h3>
 					<button type="button" value="修改基本信息" onclick="basic()"
 						style="float: right;" class="btn btn-info">修改基本信息</button>
 				</div>
 				<div class="panel-body">
+				<div class="form-group">
+						<label for="title" class="col-sm-2 control-label">精编状态</label>
+						<div class="col-sm-10">
+							<input class="form-control" name="state" id="state"
+								disabled="disabled" th:value="*{state}" placeholder="" />
+						</div>
+					</div>
 					<div class="form-group">
 						<label for="title" class="col-sm-2 control-label">商品标题</label>
 						<div class="col-sm-10">
@@ -63,11 +64,8 @@
 							<select id="genderId"
 								class="selectpicker show-tick form-control modify"
 								disabled="disabled" name="genderId" data-live-search="true">
-								<!-- <option value="0">选择性别</option> -->
 								<option th:text="*{gender.name}"></option>
-								<!-- <option th:each="gender:${genders}" th:value="${gender.id}"
-									th:selected="${gender.id}==*{genderId}"
-									th:text="${gender.name}" ></option> -->
+
 							</select>
 						</div>
 					</div>
@@ -79,10 +77,7 @@
 								disabled="disabled" name="brandId" data-live-search="true">
 
 								<option th:text="*{brand.name}"></option>
-								<!-- <option value="0">选择品牌</option>
-								<option th:each="brand:${brands}" th:value="${brand.id}"
-									th:selected="${brand.id}==*{brandId}" th:text="${brand.name}"
-									></option> -->
+
 							</select>
 						</div>
 					</div>
@@ -302,11 +297,65 @@
 					</table>
 				</div>
 
+				<!--  规格信息部分-->
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						规格信息
+						<button type="button" value="添加规格信息" onclick="toSpec()"
+							style="float: right;" class="btn btn-info">添加规格信息</button>
+					</h3>
+				</div>
 
+				<div class="panel-body">
+					<table class="table table-bordered table-condensed table-hover "
+						style="width: 90%;" align="center">
+						<tr class="success">
+							<th>编号</th>
+							<th>属性名称</th>
+							<th>规格值</th>
+							<th>操作</th>
+						</tr>
+						<tr th:each="spec : ${merchandise.specs}">
+							<td th:text="${spec.id}" class="itemId">12</td>
+							<td th:text="${spec.key}">12</td>
+							<td th:text="${spec.value}">12</td>
+							<td><a th:href="'spec/'+${spec.id}" title="修改"><span
+									class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+								th:onclick="'javascript:deleteSpec(\''+${spec.id}+'\')'"
+								title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+						</tr>
 
+					</table>
+				</div>
 
+				<!--  详情部分-->
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						详情信息
+						<button type="button" value="添加详情信息" onclick="toDesc()"
+							style="float: right;" class="btn btn-info">添加详情信息</button>
+					</h3>
+				</div>
 
+				<div class="panel-body">
+					<table class="table table-bordered table-condensed table-hover "
+						style="width: 90%;" align="center">
+						<tr class="success">
+							<th>编号</th>
+							<th>名称</th>
+							<th>操作</th>
+						</tr>
+						<tr th:each="desc : ${merchandise.descs}">
+							<td th:text="${desc.id}" class="itemId">12</td>
+							<td th:text="${desc.name}">12</td>
+							<td><a th:href="'desc/'+${desc.id}" title="修改"><span
+									class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+								th:onclick="'javascript:deleteDesc(\''+${desc.id}+'\')'"
+								title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+						</tr>
 
+					</table>
+				</div>
 
 
 				<div class="form-group " style="text-align: center;">
@@ -341,6 +390,16 @@
 	<script type="text/javascript" src="/js/language/zh_CN.js"></script>
 
 	<script type="text/javascript">
+		function toDesc() {
+			defaultForm.action = "desc";
+			defaultForm.submit();
+
+		}
+		function toSpec() {
+			defaultForm.action = "spec";
+			defaultForm.submit();
+
+		}
 		function toItem() {
 			defaultForm.action = "lineItem";
 			defaultForm.submit();
@@ -371,6 +430,18 @@
 
 		}
 
+		function deleteDesc(id) {
+			if (confirm("确定删除此条信息？")) {
+				defaultForm.action = "deleteDesc/" + id;
+				defaultForm.submit();
+			}
+		}
+		function deleteSpec(id) {
+			if (confirm("确定删除此条信息？")) {
+				defaultForm.action = "deleteSpec/" + id;
+				defaultForm.submit();
+			}
+		}
 		function deleteUrl(id) {
 			if (confirm("确定删除此条信息？")) {
 				defaultForm.action = "deleteUrl/" + id;

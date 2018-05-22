@@ -5,7 +5,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,7 +21,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class LineItem extends BaseDomain {
   private static final long serialVersionUID = 1L;
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "m_part")
+  @SequenceGenerator(name = "m_part", sequenceName = "par_seq", allocationSize = 1)
   private long id;
   @Column(nullable = false)
   private long mId;

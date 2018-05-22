@@ -24,7 +24,10 @@ import com.jinanlongen.sparrow.repository.MerchandiseRep;
 import com.jinanlongen.sparrow.repository.SourceUrlRep;
 import com.jinanlongen.sparrow.repository.StateChangeRep;
 import com.jinanlongen.sparrow.repository.UserRep;
+import com.jinanlongen.sparrow.roc.domain.CacheKey;
+import com.jinanlongen.sparrow.service.CacheService;
 import com.jinanlongen.sparrow.service.RefinedMaintainService;
+import com.jinanlongen.sparrow.service.RefinedMineService;
 
 /**
  * 
@@ -51,6 +54,10 @@ public class RefinedMaintainController extends BaseController {
   private UserRep userRep;
   @Autowired
   private SourceUrlRep urlRep;
+  @Autowired
+  private RefinedMineService refinedService;
+  @Autowired
+  private CacheService initService;
 
   @RequestMapping("list")
   public String list(Model model) {
@@ -73,8 +80,17 @@ public class RefinedMaintainController extends BaseController {
     return basePath + "list";
   }
 
+  @RequestMapping("{id}")
+  public String show(Model model, @PathVariable Long id) {
+    Merchandise merchandise = refinedService.toModify(id);
+
+    model.addAttribute("topTaxons", initService.getRocDataList(CacheKey.TOPTAXONS));
+    model.addAttribute("merchandise", merchandise);
+    return basePath + "detail";
+  }
+
   @RequestMapping("show")
-  public String show(Model model, Long id) {
+  public String show2(Model model, Long id) {
     Merchandise merchandise = mcdRep.findOne(id);
     Set<LineItem> ids = itemRep.findByMId(merchandise.getId());
     merchandise.setLineItems(ids);
@@ -102,125 +118,125 @@ public class RefinedMaintainController extends BaseController {
   @RequestMapping("remove")
   @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
   public String remove(Long id, int page, Merchandise merchandise, RedirectAttributes attr) {
-    mcdRep.updateSateBuId("已下架", id);
-    itemRep.updateState(id);
-    saveChange(id, "已发布", "已下架");
+    mcdRep.updateSateById("已禁用", id);
+    // itemRep.updateState(id);
+    saveChange(id, "已发布", "已禁用");
     logger.info("下架id为{}的精编信息", id);
     attr.addFlashAttribute("merchandise", merchandise);
     return "redirect:queryAll?pageNum=" + page;
   }
 
-  @RequestMapping("toModify")
-  @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
-  public String toModify(Long id, Model model) {
-    Merchandise merchandise = mcdRep.findOne(id);
-    List<SourceUrl> urls = urlRep.findByMerchandiseIdAndState(merchandise.getId(), 1);
-    merchandise.setSourceUrl(urls);
-    model.addAttribute("merchandise", merchandise);
+  // @RequestMapping("toModify")
+  // @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+  // public String toModify(Long id, Model model) {
+  // Merchandise merchandise = mcdRep.findOne(id);
+  // List<SourceUrl> urls = urlRep.findByMerchandiseIdAndState(merchandise.getId(), 1);
+  // merchandise.setSourceUrl(urls);
+  // model.addAttribute("merchandise", merchandise);
+  //
+  // return basePath + "modify";
+  // }
+  //
+  // // 保存修改的精编
+  // @RequestMapping("modify")
+  // @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+  // public String modify(Merchandise merchandise, String newState, Model model) {
+  //
+  // Merchandise olderMerchandise = mcdRep.findOne(merchandise.getId());
+  //
+  // String oldState = merchandise.getState();
+  // olderMerchandise.setTitle(merchandise.getTitle());
+  // // olderMerchandise.setItemId(merchandise.getItemId());
+  // // olderMerchandise.setUrl(merchandise.getUrl());
+  // // olderMerchandise.setStore(storeRep.findOne(merchandise.getStoreId()));
+  // // olderMerchandise.setStoreId(merchandise.getStoreId());
+  // // if (null != merchandise.getTargetUrl() && merchandise.getTargetUrl().length >
+  // // 0) {
+  // // List<String> urlList2 = new ArrayList<String>();
+  // // for (int a = 0; a < merchandise.getTargetUrl().length; a++) {
+  // // if (!"".equals(merchandise.getTargetUrl()[a])) {
+  // //
+  // // urlList2.add(merchandise.getMpn()[a] + "," + merchandise.getTargetUrl()[a]);
+  // //
+  // // }
+  // // }
+  // //
+  // // olderMerchandise.setSourceUrls(urlList2);
+  // // }
+  // if ("待审核".equals(newState)) {
+  // if (!olderMerchandise.getReviewNeeded()) {
+  // newState = "已发布";
+  // }
+  // }
+  // // if (0 != mcdRep.itemCount2(merchandise.getItemId(), merchandise.getId())) {
+  // // model.addAttribute("shopList", storeRep.findAll());
+  // // olderMerchandise.setAlertMessage("无法添加，平台商品编号已存在！！");
+  // // model.addAttribute("merchandise", olderMerchandise);
+  // // return basePath + "modify";
+  // // }
+  // userRep.update(getUserId());
+  // olderMerchandise.setState(newState);
+  // mcdRep.save(olderMerchandise);
+  // saveChange(merchandise.getId(), oldState, newState);
+  // return "redirect:queryAll";
+  //
+  // }
 
-    return basePath + "modify";
-  }
-
-  // 保存修改的精编
-  @RequestMapping("modify")
-  @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
-  public String modify(Merchandise merchandise, String newState, Model model) {
-
-    Merchandise olderMerchandise = mcdRep.findOne(merchandise.getId());
-
-    String oldState = merchandise.getState();
-    olderMerchandise.setTitle(merchandise.getTitle());
-    // olderMerchandise.setItemId(merchandise.getItemId());
-    // olderMerchandise.setUrl(merchandise.getUrl());
-    // olderMerchandise.setStore(storeRep.findOne(merchandise.getStoreId()));
-    // olderMerchandise.setStoreId(merchandise.getStoreId());
-    // if (null != merchandise.getTargetUrl() && merchandise.getTargetUrl().length >
-    // 0) {
-    // List<String> urlList2 = new ArrayList<String>();
-    // for (int a = 0; a < merchandise.getTargetUrl().length; a++) {
-    // if (!"".equals(merchandise.getTargetUrl()[a])) {
-    //
-    // urlList2.add(merchandise.getMpn()[a] + "," + merchandise.getTargetUrl()[a]);
-    //
-    // }
-    // }
-    //
-    // olderMerchandise.setSourceUrls(urlList2);
-    // }
-    if ("待审核".equals(newState)) {
-      if (!olderMerchandise.getReviewNeeded()) {
-        newState = "已发布";
-      }
-    }
-    // if (0 != mcdRep.itemCount2(merchandise.getItemId(), merchandise.getId())) {
-    // model.addAttribute("shopList", storeRep.findAll());
-    // olderMerchandise.setAlertMessage("无法添加，平台商品编号已存在！！");
-    // model.addAttribute("merchandise", olderMerchandise);
-    // return basePath + "modify";
-    // }
-    userRep.update(getUserId());
-    olderMerchandise.setState(newState);
-    mcdRep.save(olderMerchandise);
-    saveChange(merchandise.getId(), oldState, newState);
-    return "redirect:queryAll";
-
-  }
-
-  // 跳转添加源网连接
-  @RequestMapping("sourceUrl/{urlId}")
-  // @DeleteMapping("sourceUrl/delete/{urlId}")
-  public String deleteUrl(@PathVariable(name = "urlId") Long urlId, Merchandise merchandise) {
-    SourceUrl oldUrl = urlRep.findOne(urlId);
-    oldUrl.setState(0);
-    urlRep.save(oldUrl);
-
-    // urlRep.updateState(urlId);
-    return "redirect:../toModify?id=" + merchandise.getId();
-  }
-
-  // 跳转添加源网连接
-  @RequestMapping("toUrl")
-  public String toUrl(Long id, Model model) {
-    SourceUrl url = new SourceUrl();
-    url.setMerchandiseId(id);
-    model.addAttribute("url", url);
-    return basePath + "url";
-  }
-
-  // 保存添加源网连接
-  @RequestMapping("addUrl")
-  public String addUrl(SourceUrl url) {
-    url.setState(1);
-    urlRep.save(url);
-
-    return "redirect:toModify?id=" + url.getMerchandiseId();
-  }
-
-  // 跳转修改源网连接
-  @RequestMapping("toModifyUrl")
-  public String toUpdateUrl(Long id, Model model) {
-    model.addAttribute("url", urlRep.findOne(id));
-    return basePath + "updateUrl";
-  }
-
-  // 保存修改源网连接
-  @RequestMapping("updateUrl")
-  @Transactional(rollbackFor = {Exception.class})
-  public String updateUrl(SourceUrl url, Model model) {
-    SourceUrl oldUrl = urlRep.findOne(url.getId());
-    oldUrl.setState(0);
-    urlRep.save(oldUrl);
-
-    // urlRep.updateState(url.getId());
-    SourceUrl newUrl = new SourceUrl();
-    newUrl.setMpn(url.getMpn());
-    newUrl.setUrl(url.getUrl());
-    newUrl.setMerchandiseId(url.getMerchandiseId());
-    newUrl.setState(1);
-    urlRep.save(newUrl);
-    model.addAttribute("url", newUrl);
-    return "redirect:toModify?id=" + url.getMerchandiseId();
-  }
+  // // 跳转添加源网连接
+  // @RequestMapping("sourceUrl/{urlId}")
+  // // @DeleteMapping("sourceUrl/delete/{urlId}")
+  // public String deleteUrl(@PathVariable(name = "urlId") Long urlId, Merchandise merchandise) {
+  // SourceUrl oldUrl = urlRep.findOne(urlId);
+  // oldUrl.setState(0);
+  // urlRep.save(oldUrl);
+  //
+  // // urlRep.updateState(urlId);
+  // return "redirect:../toModify?id=" + merchandise.getId();
+  // }
+  //
+  // // 跳转添加源网连接
+  // @RequestMapping("toUrl")
+  // public String toUrl(Long id, Model model) {
+  // SourceUrl url = new SourceUrl();
+  // url.setMerchandiseId(id);
+  // model.addAttribute("url", url);
+  // return basePath + "url";
+  // }
+  //
+  // // 保存添加源网连接
+  // @RequestMapping("addUrl")
+  // public String addUrl(SourceUrl url) {
+  // url.setState(1);
+  // urlRep.save(url);
+  //
+  // return "redirect:toModify?id=" + url.getMerchandiseId();
+  // }
+  //
+  // // 跳转修改源网连接
+  // @RequestMapping("toModifyUrl")
+  // public String toUpdateUrl(Long id, Model model) {
+  // model.addAttribute("url", urlRep.findOne(id));
+  // return basePath + "updateUrl";
+  // }
+  //
+  // // 保存修改源网连接
+  // @RequestMapping("updateUrl")
+  // @Transactional(rollbackFor = {Exception.class})
+  // public String updateUrl(SourceUrl url, Model model) {
+  // SourceUrl oldUrl = urlRep.findOne(url.getId());
+  // oldUrl.setState(0);
+  // urlRep.save(oldUrl);
+  //
+  // // urlRep.updateState(url.getId());
+  // SourceUrl newUrl = new SourceUrl();
+  // newUrl.setMpn(url.getMpn());
+  // newUrl.setUrl(url.getUrl());
+  // newUrl.setMerchandiseId(url.getMerchandiseId());
+  // newUrl.setState(1);
+  // urlRep.save(newUrl);
+  // model.addAttribute("url", newUrl);
+  // return "redirect:toModify?id=" + url.getMerchandiseId();
+  // }
 
   private void saveChange(Long id, String oldeState, String newState) {
     StateChange sc = new StateChange();

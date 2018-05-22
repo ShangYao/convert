@@ -5,7 +5,8 @@
 <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viveport" content="width=device-width, initial-scale=1" /> -->
 <title>精编系统-我的精编</title>
-<link rel="icon" type="image/x-icon" class="js-site-favicon" href="/images/jing.jpg"/>
+<link rel="icon" type="image/x-icon" class="js-site-favicon"
+	href="/images/jing.jpg" />
 <link href="/css/bootstrap.min.css" rel="stylesheet" />
 <link href="/css/bootstrap-select.min.css" rel="stylesheet" />
 <link href="/css/bootstrap-datetimepicker.min.css" rel="stylesheet"
@@ -65,32 +66,52 @@
 		} else {
 			$("a[href=#all]").tab("show");
 		}
-
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+			//	alert($("#tabShow").val());
+			var start = e.target.href.indexOf("#");
+			var end = e.target.href.length;
+			var tab = e.target.href.substring(start + 1, end); // 
+			$("#tabShow").val(tab);
+			//	alert(e.relatedTarget.value );// previous active tab
+		})
 	});
 
 	function empty() {
+		//getSelectedTabIndex();
 		$("#beginCreated").val("");
 		$("#endCreated").val("");
 		$("#beginUpdated").val("");
 		$("#endUpdated").val("");
 		$("#queryString").val("");
 
-		document.getElementById("selectStore").options.selectedIndex = 0;
-		$("#selectStore").selectpicker('refresh');
+		//document.getElementById("selectStore").options.selectedIndex = 0;
+		//$("#selectStore").selectpicker('refresh');
 
 	}
 
 	function deleteOne(id) {
 		if (confirm("确定删除此条信息？")) {
-			myform.action = "delete?id=" + id;
+			myform.action = id + "/delete";
 			myform.submit();
 		}
 	}
 	function removeOne(id) {
-		if (confirm("确定下架此条精编？")) {
-			myform.action = "delete?id=" + id;
+		if (confirm("确定禁用此条精编？")) {
+			myform.action = id + "/disable";
 			myform.submit();
 		}
+	}
+	function enableOne(id) {
+		if (confirm("确定启用此条精编？")) {
+			myform.action = id + "/enable";
+			myform.submit();
+		}
+	}
+	function getSelectedTabIndex() {
+		var retIndex = $("#refinedlist").tabs('option', 'active');
+
+		alert("retIndex=" + retIndex);
+
 	}
 </script>
 </head>
@@ -130,8 +151,11 @@
 						th:value="${merchandise.tabShow}" /> <input type="hidden"
 						id="login_user"
 						th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
+					<input type="hidden" id="page" name="page"
+						th:value="${merchandise.page}" />
+					<input type="hidden" id="redirectPage" name="redirectPage"
+						th:value="${merchandise.page}" />
 
-					
 
 					<div class="form-group">
 						<input type="text" class="form-control" name="queryString"
@@ -148,9 +172,10 @@
 			<div class="panel-body">
 				<!-- Nav tabs -->
 				<ul class="nav nav-tabs" role="tablist" id="refinedlist">
-					<li role="presentation" class="active"><a href="#all"
-						aria-controls="all" role="tab" data-toggle="tab">全部<span
-							class="badge" th:text="${merchandise.totleElements}">..</span></a></li>
+					<li role="presentation" class="active" value="all"><a
+						href="#all" aria-controls="all" role="tab" data-toggle="tab"
+						value="all">全部<span class="badge"
+							th:text="${merchandise.totleElements}">..</span></a></li>
 					<li role="presentation"><a href="#draft" aria-controls="draft"
 						role="tab" data-toggle="tab">草稿<span class="badge"
 							th:text="${merchandise.draftPage.totleElements}">..</span></a></li>
@@ -166,7 +191,7 @@
 							class="badge"
 							th:text="${merchandise.publishedPage.totleElements}">..</span></a></li>
 					<li role="presentation"><a href="#retired"
-						aria-controls="retired" role="tab" data-toggle="tab">已下架<span
+						aria-controls="retired" role="tab" data-toggle="tab">已禁用<span
 							class="badge" th:text="${merchandise.retiredPage.totleElements}">..</span></a></li>
 					<li role="presentation"><a href="#trash" aria-controls="trash"
 						role="tab" data-toggle="tab">回收站<span class="badge"
@@ -205,40 +230,43 @@
 											th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 										<td th:text="${merchandise.title}">抄袭</td>
 										<td th:text="${merchandise.state}">草稿</td>
-										<td th:if="${merchandise.state}=='草稿'"><a
-											th:href="@{set(id=${merchandise.id})}" title="设置"><span
-												class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+										<td th:if="${merchandise.state}=='草稿'">&nbsp;&nbsp;<a
 											th:href="${merchandise.id}+'/modify'" title="修改"><span
 												class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
 											th:onclick="'javascript:deleteOne(\''+${merchandise.id}+'\')'"
 											title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
 										<td th:if="${merchandise.state}=='待审核'"><a
-											th:href="@{set(id=${merchandise.id})}" title="设置"><span
-												class="glyphicon glyphicon-cog"></span></a></td>
-										<td th:if="${merchandise.state}=='已发布'"><a
-											th:href="@{set(id=${merchandise.id})}" title="设置"><span
-												class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
+											th:href="${merchandise.id}+'/modify'" title="修改"><span
+												class="glyphicon glyphicon-pencil"></span></a></td>
+										<td th:if="${merchandise.state}=='已发布'">&nbsp;&nbsp;<a
 											th:href="${merchandise.id}+'/modify'" title="修改"><span
 												class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
 											th:onclick="'javascript:removeOne(\''+${merchandise.id}+'\')'"
-											title="下架"><span class="glyphicon glyphicon-remove"></span></a></td>
-										<td th:if="${merchandise.state}=='审核未过'"><a
-											th:href="@{set(id=${merchandise.id})}" title="设置"><span
-												class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
-											th:href="@{toModify(id=${merchandise.id})}" title="修改"><span
+											title="禁用"><span class="glyphicon glyphicon-remove"></span></a>&nbsp;&nbsp;<a
+											th:onclick="'javascript:deleteOne(\''+${merchandise.id}+'\')'"
+											title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+										<td th:if="${merchandise.state}=='审核未过'">&nbsp;&nbsp;<a
+											th:href="${merchandise.id}+'/modify'" title="修改"><span
 												class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
 											th:onclick="'javascript:deleteOne(\''+${merchandise.id}+'\')'"
 											title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
-										<td th:if="${merchandise.state}=='已下架'"><a
+										<td th:if="${merchandise.state}=='已禁用'">
+											<!-- <a
 											th:href="@{toCopy(id=${merchandise.id})}" title="复制"><span
-												class="glyphicon glyphicon-duplicate"></span></a></td>
+												class="glyphicon glyphicon-duplicate"></span></a> --> <a
+											th:href="${merchandise.id}+'/modify'" title="修改"><span
+												class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+											th:onclick="'javascript:enableOne(\''+${merchandise.id}+'\')'"
+											title="启用"><span class="glyphicon glyphicon-ok"></span></a>&nbsp;&nbsp;<a
+											th:onclick="'javascript:deleteOne(\''+${merchandise.id}+'\')'"
+											title="删除"><span class="glyphicon glyphicon-trash"></span></a>
+										</td>
 										<td th:if="${merchandise.state}=='回收站'"><a
-											th:href="@{toModify(id=${merchandise.id})}" title="修改"><span
-												class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;
-												<!-- <a
+											th:href="${merchandise.id}+'/modify'" title="修改"><span
+												class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp; <!-- <a
 											th:onclick="'javascript:deleteOne(\''+${merchandise.id}+'\')'"
 											title="彻底删除"><span class="glyphicon glyphicon-trash"></span></a> -->
-											</td>
+										</td>
 									</tr>
 
 								</tbody>
@@ -246,8 +274,7 @@
 							<ul id='pagination'></ul>
 							<input type="hidden" id="totalPages" name="totalPages"
 								th:value="*{merchandise.totalPages}" /> <input type="hidden"
-								id="page" name="page" th:value="*{merchandise.page}" /> <input
-								type="hidden" id="action" name="action"
+								id="action" name="action"
 								value="queryList?show=all&amp;pageNum=" />
 
 						</div>
@@ -268,21 +295,19 @@
 							<tbody>
 
 								<tr th:each="merchandise : ${merchandise.draftPage.queryList}">
-									<td><a th:href="@{show(id=${merchandise.id})}"
+									<td><a th:href="'./'+${merchandise.id}"
 										th:text="${merchandise.id}">111</a></td>
 									<td
 										th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 									<td
 										th:text="${#dates.format(merchandise.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-										<td th:if="${merchandise.maintainAt}==null"
-								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-							<td th:if="${merchandise.maintainAt}!=null"
-								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
+									<td th:if="${merchandise.maintainAt}==null"
+										th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
+									<td th:if="${merchandise.maintainAt}!=null"
+										th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 									<td th:text="${merchandise.title}">抄袭</td>
 									<td th:text="${merchandise.state}">草稿</td>
-									<td><a th:href="@{set(id=${merchandise.id})}" title="设置"><span
-											class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
-										th:href="@{toModify(id=${merchandise.id})}" title="修改"><span
+									<td><a th:href="${merchandise.id}+'/modify'" title="修改"><span
 											class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
 										th:onclick="'javascript:deleteOne(\''+${merchandise.id}+'\')'"
 										title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
@@ -314,20 +339,20 @@
 
 								<tr
 									th:each="merchandise : ${merchandise.committedPage.queryList}">
-									<td><a th:href="@{show(id=${merchandise.id})}"
+									<td><a th:href="'./'+${merchandise.id}"
 										th:text="${merchandise.id}">111</a></td>
 									<td
 										th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 									<td
 										th:text="${#dates.format(merchandise.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-										<td th:if="${merchandise.maintainAt}==null"
-								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-							<td th:if="${merchandise.maintainAt}!=null"
-								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
+									<td th:if="${merchandise.maintainAt}==null"
+										th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
+									<td th:if="${merchandise.maintainAt}!=null"
+										th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 									<td th:text="${merchandise.title}">抄袭</td>
 									<td th:text="${merchandise.state}">草稿</td>
-									<td><a th:href="@{set(id=${merchandise.id})}" title="设置"><span
-											class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;</td>
+									<td><a th:href="${merchandise.id}+'/modify'" title="修改"><span
+											class="glyphicon glyphicon-pencil"></span></a></td>
 								</tr>
 
 							</tbody>
@@ -351,30 +376,29 @@
 									<th>最后维护</th>
 									<th>标题</th>
 									<th>状态</th>
-<!-- 									<th>审核人</th>
- -->									<th>操作</th>
+									<!-- 									<th>审核人</th>
+ -->
+									<th>操作</th>
 								</tr>
 							</thead>
 							<tbody>
 
 								<tr
 									th:each="merchandise : ${merchandise.declinedPage.queryList}">
-									<td><a th:href="@{show(id=${merchandise.id})}"
+									<td><a th:href="'./'+${merchandise.id}"
 										th:text="${merchandise.id}">111</a></td>
 									<td
 										th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 									<td
 										th:text="${#dates.format(merchandise.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-										<td th:if="${merchandise.maintainAt}==null"
-								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-							<td th:if="${merchandise.maintainAt}!=null"
-								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
+									<td th:if="${merchandise.maintainAt}==null"
+										th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
+									<td th:if="${merchandise.maintainAt}!=null"
+										th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 									<td th:text="${merchandise.title}">抄袭</td>
 									<td th:text="${merchandise.state}">草稿</td>
-								<!-- 	<td th:text="${merchandise.reviewer.userName}">李海利</td> -->
-									<td><a th:href="@{set(id=${merchandise.id})}" title="设置"><span
-											class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
-										th:href="@{toModify(id=${merchandise.id})}" title="修改"><span
+									<!-- 	<td th:text="${merchandise.reviewer.userName}">李海利</td> -->
+									<td><a th:href="${merchandise.id}+'/modify'" title="修改"><span
 											class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
 										th:onclick="'javascript:deleteOne(\''+${merchandise.id}+'\')'"
 										title="删除"><span class="glyphicon glyphicon-trash"></span></a>
@@ -402,7 +426,7 @@
 									<th>最后维护</th>
 									<th>标题</th>
 									<th>状态</th>
-									<!-- <th>审核人</th> -->
+									<th>审核人</th>
 									<th>操作</th>
 								</tr>
 							</thead>
@@ -410,25 +434,26 @@
 
 								<tr
 									th:each="merchandise : ${merchandise.publishedPage.queryList}">
-									<td><a th:href="@{show(id=${merchandise.id})}"
+									<td><a th:href="'./'+${merchandise.id}"
 										th:text="${merchandise.id}">111</a></td>
 									<td
 										th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 									<td
 										th:text="${#dates.format(merchandise.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-										<td th:if="${merchandise.maintainAt}==null"
-								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-							<td th:if="${merchandise.maintainAt}!=null"
-								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
+									<td th:if="${merchandise.maintainAt}==null"
+										th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
+									<td th:if="${merchandise.maintainAt}!=null"
+										th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 									<td th:text="${merchandise.title}">抄袭</td>
 									<td th:text="${merchandise.state}">草稿</td>
+									<td th:text="${merchandise.reviewerName}">草稿</td>
 									<!-- <td th:text="${merchandise.reviewer.userName}">李海利</td> -->
-									<td><a th:href="@{set(id=${merchandise.id})}" title="设置"><span
-											class="glyphicon glyphicon-cog"></span></a> &nbsp;&nbsp;<a
-										th:href="@{toModify(id=${merchandise.id})}" title="修改"><span
+									<td><a th:href="${merchandise.id}+'/modify'" title="修改"><span
 											class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
 										th:onclick="'javascript:removeOne(\''+${merchandise.id}+'\')'"
-										title="下架"><span class="glyphicon glyphicon-remove"></span></a>
+										title="禁用"><span class="glyphicon glyphicon-remove"></span></a>&nbsp;&nbsp;<a
+										th:onclick="'javascript:deleteOne(\''+${merchandise.id}+'\')'"
+										title="删除"><span class="glyphicon glyphicon-trash"></span></a>
 									</td>
 								</tr>
 
@@ -452,31 +477,36 @@
 									<th>最后维护</th>
 									<th>标题</th>
 									<th>状态</th>
-									<!-- <th>审核人</th> -->
+									<th>审核人</th> 
 									<th>操作</th>
 								</tr>
 							</thead>
 							<tbody>
 
 								<tr th:each="merchandise : ${merchandise.retiredPage.queryList}">
-									<td><a th:href="@{show(id=${merchandise.id})}"
+									<td><a th:href="'./'+${merchandise.id}"
 										th:text="${merchandise.id}">111</a></td>
 									<td
 										th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 									<td
 										th:text="${#dates.format(merchandise.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-										<td th:if="${merchandise.maintainAt}==null"
-								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-							<td th:if="${merchandise.maintainAt}!=null"
-								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
+									<td th:if="${merchandise.maintainAt}==null"
+										th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
+									<td th:if="${merchandise.maintainAt}!=null"
+										th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 									<td th:text="${merchandise.title}">抄袭</td>
 									<td th:text="${merchandise.state}">草稿</td>
+									<td th:text="${merchandise.reviewerName}">草稿</td>
 									<!-- <td th:text="${merchandise.reviewer.userName}">李海利</td> -->
 									<td>
 										<!-- <a  th:href="@{set(id=${merchandise.id})}" title="设置"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;<a
                                         th:href="@{toModify(id=${merchandise.id})}" title="修改"><span class="glyphicon glyphicon-pencil"></span></a> -->&nbsp;&nbsp;<a
-										th:href="@{toCopy(id=${merchandise.id})}" title="复制"><span
-											class="glyphicon glyphicon-duplicate"></span></a>
+										th:href="${merchandise.id}+'/modify'" title="修改"><span
+											class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
+										th:onclick="'javascript:enableOne(\''+${merchandise.id}+'\')'"
+										title="启用"><span class="glyphicon glyphicon-ok"></span></a>&nbsp;&nbsp;<a
+										th:onclick="'javascript:deleteOne(\''+${merchandise.id}+'\')'"
+										title="删除"><span class="glyphicon glyphicon-trash"></span></a>
 									</td>
 								</tr>
 
@@ -507,21 +537,20 @@
 							<tbody>
 
 								<tr th:each="merchandise : ${merchandise.trashPage.queryList}">
-									<td><a th:href="@{show(id=${merchandise.id})}"
+									<td><a th:href="'./'+${merchandise.id}"
 										th:text="${merchandise.id}">111</a></td>
 									<td
 										th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 									<td
 										th:text="${#dates.format(merchandise.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-										<td th:if="${merchandise.maintainAt}==null"
-								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-							<td th:if="${merchandise.maintainAt}!=null"
-								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
+									<td th:if="${merchandise.maintainAt}==null"
+										th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
+									<td th:if="${merchandise.maintainAt}!=null"
+										th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 									<td th:text="${merchandise.title}">抄袭</td>
 									<td th:text="${merchandise.state}">草稿</td>
-									<td><a th:href="@{toModify(id=${merchandise.id})}"
-										title="修改"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;
-										<!-- <a
+									<td><a th:href="${merchandise.id}+'/modify'" title="修改"><span
+											class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp; <!-- <a
 										th:onclick="'javascript:deleteOne(\''+${merchandise.id}+'\')'"
 										title="彻底删除"><span class="glyphicon glyphicon-trash"></span></a> -->
 									</td>

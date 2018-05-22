@@ -5,6 +5,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.jinanlongen.sparrow.domain.LineItem;
@@ -16,7 +17,10 @@ import com.jinanlongen.sparrow.repository.MerchandiseRep;
 import com.jinanlongen.sparrow.repository.SourceUrlRep;
 import com.jinanlongen.sparrow.repository.StateChangeRep;
 import com.jinanlongen.sparrow.repository.UserRep;
+import com.jinanlongen.sparrow.roc.domain.CacheKey;
+import com.jinanlongen.sparrow.service.CacheService;
 import com.jinanlongen.sparrow.service.RefinedAuditService;
+import com.jinanlongen.sparrow.service.RefinedMineService;
 import com.jinanlongen.sparrow.service.StateChangeService;
 
 /**
@@ -43,6 +47,10 @@ public class RefinedAuditController extends BaseController {
   private LineItemRep itemRep;
   @Autowired
   private SourceUrlRep urlRep;
+  @Autowired
+  private RefinedMineService refinedService;
+  @Autowired
+  private CacheService initService;
 
   @RequestMapping("audit")
   public String audit() {
@@ -65,12 +73,22 @@ public class RefinedAuditController extends BaseController {
 
   // 跳转精编审核页
   @RequestMapping("toAudit")
-  public String toAudit(Model model, Long id) {
+  public String toAuditold(Model model, Long id) {
     Merchandise merchandise = mcdRep.findOne(id);
     Set<LineItem> ids = itemRep.findByMId(merchandise.getId());
     merchandise.setLineItems(ids);
     List<SourceUrl> urls = urlRep.findByMerchandiseIdAndState(merchandise.getId(), 1);
     merchandise.setSourceUrl(urls);
+    model.addAttribute("merchandise", merchandise);
+    return refinede_html_path + "audit";
+  }
+
+  // 跳转精编详情
+  @RequestMapping("{id}")
+  public String toAudit(Model model, @PathVariable Long id) {
+    Merchandise merchandise = refinedService.toModify(id);
+
+    model.addAttribute("topTaxons", initService.getRocDataList(CacheKey.TOPTAXONS));
     model.addAttribute("merchandise", merchandise);
     return refinede_html_path + "audit";
   }
@@ -96,10 +114,11 @@ public class RefinedAuditController extends BaseController {
       merchandise.setDeclinedCount(merchandise.getDeclinedCount() + 1);
     }
     merchandise.setReviewerId(getUserId());
+    merchandise.setReviewerName(getUserName());
     mcdRep.save(merchandise);
     saveChange(merchandise.getId(), oldeState, newState, mer.getDeclinedReason());
 
-    return "redirect:show?id=" + id;
+    return "redirect:../" + id;
   }
 
   // 跳转详情页

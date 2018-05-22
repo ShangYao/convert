@@ -6,7 +6,9 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -27,7 +29,8 @@ public class Album extends BaseDomain {
    */
   private static final long serialVersionUID = 1L;
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "m_album")
+  @SequenceGenerator(name = "m_album", sequenceName = "album_seq", allocationSize = 1)
   private long id;
   private long merchandiseId;
   private String name;

@@ -5,8 +5,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.jinanlongen.sparrow.repository.MerchandiseRep;
-import com.jinanlongen.sparrow.repository.StateChangeRep;
 import com.jinanlongen.sparrow.result.RefinedData;
 import com.jinanlongen.sparrow.result.Result;
 import com.jinanlongen.sparrow.result.ResultGenerator;
@@ -21,10 +19,6 @@ import com.jinanlongen.sparrow.service.APiService;
 @RestController
 @RequestMapping("/api/")
 public class ApiController {
-  @Autowired
-  private MerchandiseRep mcdRep;
-  @Autowired
-  private StateChangeRep scRep;
   @Autowired
   APiService apiService;
 

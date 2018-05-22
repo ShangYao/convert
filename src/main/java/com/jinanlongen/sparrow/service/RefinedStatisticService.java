@@ -27,11 +27,11 @@ public class RefinedStatisticService {
 
   private Merchandise statistics(Merchandise merchandise) {
     StringBuffer storeSql = new StringBuffer(
-        "SELECT D.NAME,C.B  FROM (SELECT STORE_ID A,COUNT(*) B FROM MERCHANDISES WHERE 1=1 AND STATE NOT IN('回收站','草稿') ");
+        "SELECT distinct D.NAME,C.B  FROM (SELECT STORE_ID A,COUNT(*) B FROM MERCHANDISES WHERE 1=1 AND STATE NOT IN('回收站','草稿') ");
     StringBuffer userSql = new StringBuffer(
-        "SELECT D.USER_NAME ,C.B COUNT FROM (SELECT OWNER_ID A,COUNT(*) B FROM MERCHANDISES WHERE 1=1 AND STATE NOT IN('回收站','草稿')  ");
+        "SELECT distinct * from(select  D.USER_NAME ,C.B COUNT FROM (SELECT OWNER_ID A,COUNT(*) B FROM MERCHANDISES WHERE 1=1 AND STATE NOT IN('回收站','草稿')  ");
     String auidtSql =
-        "SELECT USER_NAME,SUCESS,PASS FROM (SELECT ID,SUCESS,PASS FROM (SELECT CREATED_USER_ID ID,COUNT(*) SUCESS   FROM STATE_CHANGES WHERE 1=1 and OLD_STATE='待审核' AND NEW_STATE='已发布' GROUP BY CREATED_USER_ID)A,(SELECT CREATED_USER_ID ID2,COUNT(*) PASS FROM STATE_CHANGES WHERE 1=1 and OLD_STATE='待审核' AND NEW_STATE='审核未过' GROUP BY CREATED_USER_ID)B WHERE A.ID=B.ID2) F LEFT JOIN USERS ON F.ID=USERS.ID";
+        "SELECT distinct USER_NAME,SUCESS,PASS FROM (SELECT ID,SUCESS,PASS FROM (SELECT CREATED_USER_ID ID,COUNT(*) SUCESS   FROM STATE_CHANGES WHERE 1=1 and OLD_STATE='待审核' AND NEW_STATE='已发布' GROUP BY CREATED_USER_ID)A,(SELECT CREATED_USER_ID ID2,COUNT(*) PASS FROM STATE_CHANGES WHERE 1=1 and OLD_STATE='待审核' AND NEW_STATE='审核未过' GROUP BY CREATED_USER_ID)B WHERE A.ID=B.ID2) F LEFT JOIN USERS ON F.ID=USERS.ID";
 
     if (0 != merchandise.getOwnerId()) {
       storeSql.append(" AND OWNER_ID=" + merchandise.getOwnerId());
@@ -63,9 +63,9 @@ public class RefinedStatisticService {
     }
 
     storeSql.append("  ) D ON C.A=D.ID ORDER BY D.PARENT_ID,D.GID,D.NAME ");
-    userSql.append(" ) D ON C.A=D.ID ORDER BY D.PARENT_ID,D.GID");
+    userSql.append(" ) D ON C.A=D.ID ORDER BY D.PARENT_ID,D.GID)f");
 
-    merchandise.setsSlist(query(storeSql.toString(), 2));
+    // merchandise.setsSlist(query(storeSql.toString(), 2));
     merchandise.setUserSlist(query(userSql.toString(), 2));
     merchandise.setaSlist(query(auidtSql, 3));
     return merchandise;

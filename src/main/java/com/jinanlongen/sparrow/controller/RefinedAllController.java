@@ -18,7 +18,10 @@ import com.jinanlongen.sparrow.repository.MerchandiseRep;
 import com.jinanlongen.sparrow.repository.SourceUrlRep;
 import com.jinanlongen.sparrow.repository.StateChangeRep;
 import com.jinanlongen.sparrow.repository.UserRep;
+import com.jinanlongen.sparrow.roc.domain.CacheKey;
+import com.jinanlongen.sparrow.service.CacheService;
 import com.jinanlongen.sparrow.service.RefinedAllService;
+import com.jinanlongen.sparrow.service.RefinedMineService;
 
 /**
  * 
@@ -42,6 +45,10 @@ public class RefinedAllController extends BaseController {
   private LineItemRep itemRep;
   @Autowired
   private SourceUrlRep urlRep;
+  @Autowired
+  private RefinedMineService refinedService;
+  @Autowired
+  private CacheService initService;
 
   @RequestMapping("all")
   public String all(Model model) {
@@ -108,8 +115,17 @@ public class RefinedAllController extends BaseController {
 
   }
 
+  @RequestMapping("{id}")
+  public String show(Model model, @PathVariable Long id) {
+    Merchandise merchandise = refinedService.toModify(id);
+
+    model.addAttribute("topTaxons", initService.getRocDataList(CacheKey.TOPTAXONS));
+    model.addAttribute("merchandise", merchandise);
+    return refinede_html_path + "detail";
+  }
+
   @RequestMapping("show/{id}")
-  public String show(Model model, @PathVariable("id") Long id) {
+  public String show2(Model model, @PathVariable("id") Long id) {
     Merchandise merchandise = mcdRep.findOne(id);
     Set<LineItem> ids = itemRep.findByMId(merchandise.getId());
     merchandise.setLineItems(ids);

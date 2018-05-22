@@ -13,11 +13,14 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import com.jinanlongen.sparrow.domain.Merchandise;
 import com.jinanlongen.sparrow.domain.SourceUrl;
+import com.jinanlongen.sparrow.repository.AlbumRep;
 import com.jinanlongen.sparrow.repository.ColorRep;
+import com.jinanlongen.sparrow.repository.DescRep;
 import com.jinanlongen.sparrow.repository.LineItemRep;
 import com.jinanlongen.sparrow.repository.MerchandiseRep;
 import com.jinanlongen.sparrow.repository.SizeRep;
 import com.jinanlongen.sparrow.repository.SourceUrlRep;
+import com.jinanlongen.sparrow.repository.SpecRep;
 import com.jinanlongen.sparrow.roc.domain.Taxon;
 import com.jinanlongen.sparrow.roc.repository.BrandRep;
 import com.jinanlongen.sparrow.roc.repository.GenderRep;
@@ -49,6 +52,12 @@ public class RefinedMineService {
   private SizeRep sizeRep;
   @Autowired
   private LineItemRep itemRep;
+  @Autowired
+  private SpecRep specRrep;
+  @Autowired
+  private AlbumRep albumRep;
+  @Autowired
+  private DescRep descRep;
 
   public String getUrl(String id) {
     return id;
@@ -69,6 +78,9 @@ public class RefinedMineService {
     merchandise.setColors(colorRep.findByMerchandiseId(id));
     merchandise.setSizes(sizeRep.findByMerchandiseId(id));
     merchandise.setLineItems(itemRep.findByMId(id));
+    merchandise.setSpecs(specRrep.findByMerchandiseId(id));
+    merchandise.setAlbums(albumRep.findByMerchandiseId(id));
+    merchandise.setDescs(descRep.findByMerchandiseId(id));
 
 
     return merchandise;
@@ -102,7 +114,7 @@ public class RefinedMineService {
         .setDeclinedPage(getStatePage("审核未过", merchandise, merchandise.getDeclinedPageNum()));
     merchandise
         .setPublishedPage(getStatePage("已发布", merchandise, merchandise.getPublishedPageNum()));
-    merchandise.setRetiredPage(getStatePage("已下架", merchandise, merchandise.getRetiredPageNum()));
+    merchandise.setRetiredPage(getStatePage("已禁用", merchandise, merchandise.getRetiredPageNum()));
     merchandise.setTrashPage(getStatePage("回收站", merchandise, merchandise.getTrashPageNum()));
     return merchandise;
 
@@ -128,13 +140,13 @@ public class RefinedMineService {
           lstPredicates.add(cb.equal(root.get("ownerId").as(Long.class), merchandise.getOwnerId()));
         }
         if (StringUtils.isNotBlank(merchandise.getQueryString())) {
-          if (StringUtils.isNumeric(merchandise.getQueryString())) {
-            lstPredicates.add(cb.like(root.get("itemId").as(String.class),
-                "%" + merchandise.getQueryString() + "%"));
-          } else {
-            lstPredicates.add(cb.like(cb.upper(root.get("title").as(String.class)),
-                "%" + merchandise.getQueryString().toUpperCase() + "%"));
-          }
+          // if (StringUtils.isNumeric(merchandise.getQueryString())) {
+          // lstPredicates.add(cb.like(root.get("itemId").as(String.class),
+          // "%" + merchandise.getQueryString() + "%"));
+          // } else {
+          lstPredicates.add(cb.like(cb.upper(root.get("title").as(String.class)),
+              "%" + merchandise.getQueryString().toUpperCase() + "%"));
+          // }
         }
         if (StringUtils.isNotBlank(merchandise.getState())) {
           lstPredicates.add(cb.equal(root.get("state").as(String.class), merchandise.getState()));

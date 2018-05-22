@@ -11,7 +11,11 @@
 <link href="/css/bootstrap.min.css" rel="stylesheet" />
 <link href="/css/bootstrap-select.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="/css/formValidation.css" />
-<script src="/js/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="/js/tinymce/jquery.tinymce.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
 
 </head>
 <body>
@@ -25,16 +29,15 @@
 	<!-- 内容部分 -->
 	<div class="container">
 		<ol class="breadcrumb">
-			<li><a href="queryList">我的精编</a></li>
-			<li><a href="#">修改精编</a></li>
-			<li class="active">添加颜色</li>
+			<li><a href="#">精编管理</a></li>
+			<li class="active">精编描述</li>
 		</ol>
 		<div class="panel panel-default">
 
-			<form class="form-horizontal" id="defaultForm" th:object="${color}"
-				method="POST" action="addColor" onsubmit="return false">
+			<form class="form-horizontal" id="defaultForm" th:object="${desc}"
+				method="POST" action="addDesc" onsubmit="return false">
 				<input type="hidden" name="id" th:value="*{id}" /> <input
-					type="hidden" name="merchandiseId" th:value="*{merchandiseId}" />
+					type="hidden" name="merchandiseId" id="merchandiseId" th:value="*{merchandiseId}" />
 				<input type="hidden" id="login_user"
 					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
 				<input type="hidden" id="message" th:value="*{alertMessage}" />
@@ -44,28 +47,18 @@
 				<div class="panel-body">
 
 					<div class="form-group">
-						<label for="color" class="col-sm-2 control-label">颜色</label>
+						<label for="color" class="col-sm-2 control-label">名称</label>
 						<div class="col-sm-10">
 							<input class="form-control" id="name" name="name"
-								th:value="*{name}" placeholder="颜色" />
+								th:value="*{name}" placeholder="名称" disabled="disabled"/>
 						</div>
 					</div>
+					
 					<div class="form-group">
-						<label for="salesState" class="col-sm-2 control-label">相册名称</label>
+					
+						<label for="size" class="col-sm-2 control-label">详情</label>
 						<div class="col-sm-10">
-							<select id="albumId" class="selectpicker show-tick form-control"
-								name="albumId" data-live-search="true">
-								<option value="0">选择商品相册</option>
-								<option th:each="album:${albums}" th:value="${album.id}"
-									th:selected="${album.id}==*{albumId}" th:text="${album.name}"></option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="size" class="col-sm-2 control-label">描述</label>
-						<div class="col-sm-10">
-							<input class="form-control" name="description" id="description"
-								th:value="*{description}" placeholder="描述" />
+								<textarea name="content" th:value="*{content}"  th:text="*{content}" disabled="disabled"> </textarea>
 						</div>
 					</div>
 
@@ -77,8 +70,7 @@
 
 
 
-				<div th:if="*{id}!=0" class="form-group "
-					style="text-align: center;">
+			<!-- 	<div th:if="*{id}!=0"  class="form-group " style="text-align: center;">
 					<div class="col-sm-4 ">
 						<button class="btn btn-default" onclick="modify()">修改</button>
 					</div>
@@ -86,21 +78,45 @@
 						<button class="btn btn-default" onclick="modifyBack()">返回</button>
 					</div>
 				</div>
-				<div th:if="*{id}==0" class="form-group "
-					style="text-align: center;">
+				<div th:if="*{id}==0"  class="form-group " style="text-align: center;">
 					<div th:if="*{id}==0" class="col-sm-4 ">
 						<button class="btn btn-default" onclick="add()">添加</button>
 					</div>
 					<div class="col-sm-4 ">
 						<button class="btn btn-default" onclick="back()">返回</button>
 					</div>
-				</div>
+				</div> -->
 
 			</form>
 		</div>
 
 	</div>
-
+<script>
+var mid=$("#merchandiseId").val();
+	tinymce
+			.init({
+				selector : "textarea",
+				upload_image_url : '/merchandise/upload?mid='+mid, //配置的上传图片的路由
+				height : 400,
+				language : 'zh_CN',
+				plugins : [
+						'advlist autolink lists link  charmap print preview hr anchor pagebreak',
+						'searchreplace wordcount visualblocks visualchars code fullscreen',
+						'insertdatetime media nonbreaking save table contextmenu directionality',
+						'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help uploadimage' ],
+				toolbar1 : 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+				toolbar2 : 'print preview media | forecolor backcolor  | codesample help uploadimage',
+				image_advtab : true,
+				templates : [ {
+					title : 'Test template 1',
+					content : 'Test 1'
+				}, {
+					title : 'Test template 2',
+					content : 'Test 2'
+				} ],
+				menubar : false
+			});
+</script>
 
 	<script src="/js/alert.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
@@ -120,9 +136,10 @@
 			defaultForm.action = "../modify";
 			defaultForm.submit();
 		}
+
 		function add() {
 			if ($("#name").val() == "" || $("#name").val() == null) {
-				alert("name不能为空！");
+				alert("属性值不能为空！");
 				return false;
 			}
 
@@ -131,11 +148,11 @@
 		}
 		function modify() {
 			if ($("#name").val() == "" || $("#name").val() == null) {
-				alert("name不能为空！");
+				alert("属性值不能为空！");
 				return false;
 			}
 
-			defaultForm.action = "../modifyColor";
+			defaultForm.action="../modifyDesc";
 			defaultForm.submit();
 
 		}

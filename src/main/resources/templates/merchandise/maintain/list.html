@@ -18,35 +18,34 @@
 <script src="/js/bootstrap-paginator.js"></script>
 <script src="/js/qunit-1.11.0.js"></script>
 <script type="text/javascript">
-$(function() {
-	function getInputForCopy() {
-		var input_id = '_CLIPBOARD_INPUT_FOR_COPY';
-		var input = document.getElementById(input_id);
-		if (input)
+	$(function() {
+		function getInputForCopy() {
+			var input_id = '_CLIPBOARD_INPUT_FOR_COPY';
+			var input = document.getElementById(input_id);
+			if (input)
+				return input;
+
+			input = document.createElement('input');
+			input.id = input_id;
+			input.style = 'position: fixed; z-index: -100; bottom: 0; right: 0;'
+			document.body.append(input);
 			return input;
-
-		input = document.createElement('input');
-		input.id = input_id;
-		input.style = 'position: fixed; z-index: -100; bottom: 0; right: 0;'
-		document.body.append(input);
-		return input;
-	}
-
-	$('.js-clipboard').on('click', function() {
-		//    var data = this.dataset.data;
-		var data = $(this).attr("value");
-		var copy_input = getInputForCopy();
-		copy_input.value = data;
-		copy_input.select();
-		try {
-			document.execCommand('copy');
-		} catch (e) {
-			window.prompt("请复制以下内容", data);
 		}
-		copy_input.value = null;
-	});
-})
 
+		$('.js-clipboard').on('click', function() {
+			//    var data = this.dataset.data;
+			var data = $(this).attr("value");
+			var copy_input = getInputForCopy();
+			copy_input.value = data;
+			copy_input.select();
+			try {
+				document.execCommand('copy');
+			} catch (e) {
+				window.prompt("请复制以下内容", data);
+			}
+			copy_input.value = null;
+		});
+	})
 
 	function empty() {
 		$("#beginMaintain").val("");
@@ -55,7 +54,6 @@ $(function() {
 
 		document.getElementById("selectStore").options.selectedIndex = 0;
 		$("#selectStore").selectpicker('refresh');
-		
 
 	}
 </script>
@@ -90,20 +88,11 @@ $(function() {
 						type="hidden" name="tabShow" id="tabShow"
 						th:value="${merchandise.tabShow}" />
 
-					<div class="form-group">
-						<select id="selectStore"
-							class="selectpicker show-tick form-control" name="storeId"
-							data-live-search="true">
-							<option value="0">选择店铺</option>
-							<option th:each="shop:${shopList}" th:value="${shop.id}"
-								th:text="${shop.name}"
-								th:selected="(${shop.id} == ${merchandise.storeId})"></option>
-						</select>
-					</div>
+
 
 					<div class="form-group">
 						<input type="text" class="form-control" name="queryString"
-							id="queryString" th:value="*{queryString}" placeholder="编号/标题" />
+							id="queryString" th:value="*{queryString}" placeholder="标题" />
 					</div>
 
 					<div class="form-group">
@@ -120,8 +109,6 @@ $(function() {
 						<tr class="success">
 							<th>ID</th>
 							<th>维护日期</th>
-							<th>店铺</th>
-							<th>商品编号</th>
 							<th>标题</th>
 							<th>源网链接</th>
 							<th>操作</th>
@@ -130,19 +117,16 @@ $(function() {
 					<tbody>
 
 						<tr th:each="merchandise : ${merchandise.queryList}">
-							<td><a th:href="@{show(id=${merchandise.id})}"
+							<td><a th:href="'./'+${merchandise.id}"
 								th:text="${merchandise.id}">111</a></td>
 							<td th:if="${merchandise.maintainAt}==null"
 								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 							<td th:if="${merchandise.maintainAt}!=null"
 								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-							<td th:text="${merchandise.store.name}">121212112121</td>
-							<td><a class="js-clipboard" th:text="${merchandise.itemId}"
-								title="复制商品链接" th:value="${merchandise.url}"></a></td>
+
 							<td th:text="${merchandise.title}">阿迪达斯男士运动篮球鞋</td>
 							<td><span th:each="surl :${merchandise.sourceUrl}"><a
-									th:href="${surl.url}" th:text="链接"
-									target="_blank"></a>&nbsp;&nbsp;&nbsp;</span></td>
+									th:href="${surl.url}" th:text="链接" target="_blank"></a>&nbsp;&nbsp;&nbsp;</span></td>
 							<!-- th:href="@{maintain(id=${merchandise.id})}" -->
 							<td><a
 								th:onclick="'javascript:maintain(\''+${merchandise.id}+'\')'"
@@ -150,7 +134,7 @@ $(function() {
 								th:onclick="'javascript:toModify(\''+${merchandise.id}+'\')'"
 								title="修改精编"><span>修改</span></a> <a
 								th:onclick="'javascript:remove(\''+${merchandise.id}+'\')'"
-								title="下架精编"><span>下架</span></a></td>
+								title="禁用精编"><span>禁用</span></a></td>
 						</tr>
 
 					</tbody>
@@ -179,27 +163,27 @@ $(function() {
 	<script type="text/javascript"
 		src="/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
 	<script type="text/javascript">
-	 /*<![CDATA[*/
-	function maintain(id) {
-	var page=$("#page").val();
-			myform.action = "maintain?id=" + id+"&page="+page ;
-			myform.submit();
-	}
-	function remove(id) {
-		if (confirm("确定下架此条精编？")) {
-			var page=$("#page").val();
-			myform.action = "remove?id=" + id+"&page="+page ;
+		/*<![CDATA[*/
+		function maintain(id) {
+			var page = $("#page").val();
+			myform.action = "maintain?id=" + id + "&page=" + page;
 			myform.submit();
 		}
-	
-	}
-	function toModify(id) {
-		myform.target="_blank";
-			myform.action = "toModify?id=" + id ;
+		function remove(id) {
+			if (confirm("确定禁用此条精编？")) {
+				var page = $("#page").val();
+				myform.action = "remove?id=" + id + "&page=" + page;
+				myform.submit();
+			}
+
+		}
+		function toModify(id) {
+			myform.target = "_blank";
+			myform.action = "../" + id + "/modify";
 			myform.submit();
-	}
-	
-	<!--日期插件调用-->
+		}
+
+		<!--日期插件调用-->
 		$(".datetimepicker").datetimepicker({
 			language : 'zh-CN',
 			weekStart : 1,
@@ -211,23 +195,26 @@ $(function() {
 			forceParse : 0,
 			format : 'yyyy-mm-dd'
 		});
-		
-		$(document).ready(function(){ 
-			var count=$("#totleElements").val();
-			
-			if(300 > count >0){
-				$("#advice").html("");
-				$("#advice").append("共有已发布精编"+count+"条，建议每天维护数量：5");
-			}else{
-				$("#advice").html("");
-				$("#advice").append("共有已发布精编"+count+"条，建议每天维护数量："+Math.ceil(count/60))
-			}
 
-			}); 
+		$(document)
+				.ready(
+						function() {
+							var count = $("#totleElements").val();
 
+							if (300 > count > 0) {
+								$("#advice").html("");
+								$("#advice").append(
+										"共有已发布精编" + count + "条，建议每天维护数量：5");
+							} else {
+								$("#advice").html("");
+								$("#advice").append(
+										"共有已发布精编" + count + "条，建议每天维护数量："
+												+ Math.ceil(count / 60))
+							}
 
-		  /*]]>*/
-		
+						});
+
+		/*]]>*/
 	</script>
 
 </body>

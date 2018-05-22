@@ -8,29 +8,35 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.jinanlongen.sparrow.domain.Album;
 import com.jinanlongen.sparrow.domain.Color;
+import com.jinanlongen.sparrow.domain.Desc;
 import com.jinanlongen.sparrow.domain.Image;
 import com.jinanlongen.sparrow.domain.LineItem;
 import com.jinanlongen.sparrow.domain.Merchandise;
 import com.jinanlongen.sparrow.domain.Size;
 import com.jinanlongen.sparrow.domain.SourceUrl;
+import com.jinanlongen.sparrow.domain.Spec;
 import com.jinanlongen.sparrow.domain.StateChange;
+import com.jinanlongen.sparrow.domain.UploadImage;
 import com.jinanlongen.sparrow.repository.AlbumRep;
 import com.jinanlongen.sparrow.repository.ColorRep;
+import com.jinanlongen.sparrow.repository.DescRep;
 import com.jinanlongen.sparrow.repository.ImageRep;
 import com.jinanlongen.sparrow.repository.LineItemRep;
 import com.jinanlongen.sparrow.repository.MerchandiseRep;
 import com.jinanlongen.sparrow.repository.SizeRep;
 import com.jinanlongen.sparrow.repository.SourceUrlRep;
+import com.jinanlongen.sparrow.repository.SpecRep;
 import com.jinanlongen.sparrow.repository.StateChangeRep;
+import com.jinanlongen.sparrow.repository.UploadImageRep;
 import com.jinanlongen.sparrow.repository.UserRep;
 import com.jinanlongen.sparrow.roc.domain.CacheKey;
 import com.jinanlongen.sparrow.roc.domain.Taxon;
-import com.jinanlongen.sparrow.roc.repository.BrandRep;
-import com.jinanlongen.sparrow.roc.repository.GenderRep;
 import com.jinanlongen.sparrow.roc.repository.TaxonRep;
 import com.jinanlongen.sparrow.service.CacheService;
 import com.jinanlongen.sparrow.service.RefinedMineService;
@@ -61,10 +67,6 @@ public class MerchandiseMineController extends BaseController {
   @Autowired
   private SourceUrlRep urlRep;
   @Autowired
-  private BrandRep brandRep;
-  @Autowired
-  private GenderRep genderRep;
-  @Autowired
   private TaxonRep TaxonRep;
   @Autowired
   private CacheService initService;
@@ -76,7 +78,91 @@ public class MerchandiseMineController extends BaseController {
   private ColorRep colorRep;
   @Autowired
   private SizeRep sizeRep;
+  @Autowired
+  private SpecRep specRep;
+  @Autowired
+  private DescRep descRep;
+  @Autowired
+  private UploadImageRep uploadrep;
 
+  // ------------------------desc------------------
+  @RequestMapping("{id}/desc")
+  public String desc(@PathVariable Long id, Model model) {
+
+    Desc desc = new Desc();
+    desc.setMerchandiseId(id);
+    model.addAttribute("desc", desc);
+    return BASE_PATH + "desc";
+  }
+
+  @RequestMapping("{mid}/desc/{id}")
+  public String modifyDesc(@PathVariable Long id, Model model) {
+    Desc desc = descRep.findOne(id);
+    model.addAttribute("desc", desc);
+    return BASE_PATH + "desc";
+  }
+
+  @RequestMapping("desc/show/{id}")
+  public String showDesc(@PathVariable Long id, Model model) {
+    Desc desc = descRep.findOne(id);
+    model.addAttribute("desc", desc);
+    return BASE_PATH + "descShow";
+  }
+
+  @RequestMapping("{id}/addDesc")
+  public String addDesc(Desc desc) {
+    descRep.save(desc);
+    return "redirect:modify";
+  }
+
+  // ?
+  @RequestMapping("{mid}/deleteDesc/{id}")
+  public String deleteDesc(@PathVariable Long id) {
+    descRep.delete(id);
+    return "redirect:../modify";
+  }
+
+  @RequestMapping("{id}/modifyDesc")
+  public String saveModifyDesc(Desc desc) {
+    descRep.save(desc);
+    return "redirect:modify";
+  }
+
+  // --------------------------spec--------------------
+  @RequestMapping("{id}/spec")
+  public String spec(@PathVariable Long id, Model model) {
+    Spec spec = new Spec();
+    spec.setMerchandiseId(id);
+    model.addAttribute("spec", spec);
+    return BASE_PATH + "spec";
+  }
+
+  @RequestMapping("{mid}/spec/{id}")
+  public String modifySpec(@PathVariable Long id, Model model) {
+    Spec spec = specRep.findOne(id);
+    model.addAttribute("spec", spec);
+    return BASE_PATH + "spec";
+  }
+
+  @RequestMapping("{id}/addSpec")
+  public String addSpec(Spec spec) {
+    specRep.save(spec);
+
+    return "redirect:modify";
+  }
+
+  // ?
+  @RequestMapping("{mid}/deleteSpec/{id}")
+  public String deleteSpec(@PathVariable Long id) {
+    specRep.delete(id);
+    return "redirect:../modify";
+  }
+
+  @RequestMapping("{id}/modifySpec")
+  public String saveModifySpec(Spec spec) {
+    specRep.save(spec);
+    return "redirect:modify";
+  }
 
 
   // ------------------------color---------------------
@@ -314,36 +400,32 @@ public class MerchandiseMineController extends BaseController {
     return "redirect:../modify";
   }
 
-  // 测试tinymce上传图片
+  // --------------------------- tinymce上传图片
   @RequestMapping("upload")
   @ResponseBody
-  public String uploa(MultipartFile thumbnail) {
-    // FileSource fileSource = new FileSource();
-    // fileSource.setHost("192.168.200.71");
-    // fileSource.setPort(8888);
-    // try {
-    // fileSource.startup();
-    // FileTemplate template = new FileTemplate(fileSource.getConnection());
-    // FileHandleStatus f =
-    // template.saveFileByStream("sparrow/test.jpg", thumbnail.getInputStream());
-    // System.out.println(f.getFileName());
-    // } catch (IOException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    // File file = new File(thumbnail.getOriginalFilename());
+  public String uploa(MultipartFile thumbnail, long mid) {
+    String fileName = generateFileName(mid);
     boolean result = false;;
     try {
-      result =
-          Httptest.post(thumbnail.getBytes(), "http://192.168.200.71:8888/sparrow/test/shoes2.jpg");
+      result = Httptest.post(thumbnail.getBytes(), fileName);
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
     if (result) {
-      return "http://192.168.200.71:8888/sparrow/test/shoes2.jpg";
+      UploadImage upload = new UploadImage();
+      upload.setHref(fileName);
+      upload.setMerchandiseId(mid);
+      uploadrep.save(upload);
+      return fileName;
     }
     return "http://192.168.200.71:8888/areatrend_b/e0ca50c25f5c3b4957da6145ee3c9878.jpg?mode=2f&width=150&height=150";
+  }
+
+  private String generateFileName(long mid) {
+    // TODO Auto-generated method stub
+    return "http://192.168.200.71:8888/sparrow/" + mid + "/desc/" + DateUtils.dateString() + ".jpg";
+
   }
 
   // ---------------------------------------------------album---------------------------------------
@@ -389,6 +471,16 @@ public class MerchandiseMineController extends BaseController {
     model.addAttribute("album", album);
     model.addAttribute("merchandise", mcdRep.findOne(id));
     return BASE_PATH + "album";
+  }
+
+  // 跳转单个相册管理
+  @RequestMapping("/album/show/{id}")
+  public String showAlbum(@PathVariable long id, Model model) {
+    Album album = albumRep.findOne(id);
+    album.setImages(imageRep.findByAlbumId(id));
+    model.addAttribute("album", album);
+    model.addAttribute("merchandise", mcdRep.findOne(id));
+    return BASE_PATH + "albumShow";
   }
 
   // 添加相册
@@ -473,11 +565,17 @@ public class MerchandiseMineController extends BaseController {
 
   // 跳转相册管理
   @RequestMapping("albums")
+  @Transactional(rollbackFor = {Exception.class})
   public String album(Merchandise merchandise) {
     merchandise.setOwnerId(getUserId());
     merchandise.setHolderId(getUserId());
+    merchandise.setHolderName(getUserName());
+    merchandise.setOwnerName(getUserName());
     merchandise.setState("草稿");
     mcdRep.save(merchandise);
+    userRep.update(getUserId());
+    StateChange sc = new StateChange(merchandise.getId(), "", "草稿", "新建精编");
+    saveChange(sc);
     return "redirect:" + merchandise.getId() + "/albums";
   }
 
@@ -522,28 +620,29 @@ public class MerchandiseMineController extends BaseController {
   @RequestMapping("{id}/basic/save")
   @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
   public String saveBasic(Merchandise merchandise) {
-    saveMerchandise(merchandise, merchandise.getState());
+    // saveMerchandise(merchandise, merchandise.getState());
+    Merchandise newM = mcdRep.findOne(merchandise.getId());
+    newM.setTitle(merchandise.getTitle());
+    newM.setAlbumId(merchandise.getAlbumId());
+    newM.setBrandId(merchandise.getBrandId());
+    newM.setGenderId(merchandise.getGenderId());
+    if (merchandise.getTaxonId3() != 0) {
+      newM.setTaxonId(merchandise.getTaxonId3());
+    } else if (merchandise.getTaxonId2() != 0) {
+      newM.setTaxonId(merchandise.getTaxonId2());
+    }
     return "redirect:../modify";
 
   }
 
-  private void saveMerchandise(Merchandise merchandise, String string) {
-    merchandise.setHolderId(getUserId());
-    merchandise.setOwnerId(getUserId());
-    merchandise.setState(string);
 
-    userRep.update(getUserId());
-    mcdRep.save(merchandise);
-    StateChange sc = new StateChange(merchandise.getId(), "", string, "新建精编");
-    saveChange(sc);
-  }
 
+  // --------------------------------------修改精编----------------------------
   // 保存修改精编-draft
   @RequestMapping("{id}/draft")
   @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
   public String draft(Merchandise merchandise) {
-    mcdRep.updateSate(true, "草稿", merchandise.getId());
-
+    mcdRep.updateSateById("草稿", merchandise.getId());
     return "redirect:../queryList";
 
   }
@@ -552,7 +651,11 @@ public class MerchandiseMineController extends BaseController {
   @RequestMapping("{id}/publish")
   @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
   public String publish(Merchandise merchandise) {
-    mcdRep.updateSate(true, "待审核", merchandise.getId());
+    if (merchandise.getReviewNeeded()) {
+      mcdRep.updateSateById("待审核", merchandise.getId());
+    } else {
+      mcdRep.updateSateById("已发布", merchandise.getId());
+    }
     return "redirect:../queryList";
 
   }
@@ -561,12 +664,101 @@ public class MerchandiseMineController extends BaseController {
   @RequestMapping("{id}/modify")
   public String toModify2(Model model, @PathVariable Long id) {
     Merchandise merchandise = refinedService.toModify(id);
-    merchandise.setAlbums(albumRep.findByMerchandiseId(id));
-    // model.addAttribute("brands", initService.getBrands());
-    // model.addAttribute("genders", initService.getGenders());
+
     model.addAttribute("topTaxons", initService.getRocDataList(CacheKey.TOPTAXONS));
     model.addAttribute("merchandise", merchandise);
     return BASE_PATH + "modify";
+  }
+
+  // 跳转精编详情
+  @RequestMapping("{id}")
+  public String show(Model model, @PathVariable Long id) {
+    Merchandise merchandise = refinedService.toModify(id);
+
+    model.addAttribute("topTaxons", initService.getRocDataList(CacheKey.TOPTAXONS));
+    model.addAttribute("merchandise", merchandise);
+    return BASE_PATH + "detail";
+  }
+
+  // 删除精编
+  @RequestMapping("{id}/delete")
+  public String delete(@PathVariable Long id, Merchandise m, RedirectAttributes model) {
+    Merchandise merchandise = mcdRep.findOne(id);
+    StateChange sc = new StateChange(id, merchandise.getState(), "回收站", "删除精编");
+    saveChange(sc);
+    // mcdRep.updateSateBuId("回收站", id);
+    mcdRep.updateSate(true, "回收站", id);
+    model.addFlashAttribute("redirectAttr", m);
+    return "redirect:../queryList";
+  }
+
+
+  @RequestMapping("{id}/enable")
+  public String enable(@PathVariable Long id, Merchandise m, RedirectAttributes model) {
+    StateChange sc = new StateChange(id, "已禁用", "已发布", "");
+    saveChange(sc);
+    mcdRep.updateSateById("已发布", id);
+
+    model.addFlashAttribute("redirectAttr", m);
+    return "redirect:../queryList";
+    // return queryList(model, m, m.getPage());
+  }
+
+  @RequestMapping("{id}/disable")
+  public String disable(@PathVariable Long id, Merchandise m, RedirectAttributes model) {
+    StateChange sc = new StateChange(id, "已发布", "已禁用", "");
+    saveChange(sc);
+    mcdRep.updateSateById("已禁用", id);
+    model.addFlashAttribute("redirectAttr", m);
+    return "redirect:../queryList";
+  }
+
+  // 跳转我的精编列表页
+  @RequestMapping("list")
+  public String list(Model model) {
+    return "redirect:queryList";
+  }
+
+  // 我的精编-查询
+  @RequestMapping("queryList")
+  public String queryList(Model model, Merchandise merchandise,
+      @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum) {
+    // merchandise.setTabShow(show == null ? "" : show);
+    if (model.containsAttribute("redirectAttr")) {
+      merchandise = (Merchandise) model.asMap().get("redirectAttr");
+      pageNum = merchandise.getRedirectPage();
+    }
+    String show = merchandise.getTabShow();
+    switch (show) {
+      case "all":
+        merchandise.setPage(pageNum);
+        break;
+      case "draft":
+        merchandise.setDraftPageNum(pageNum);
+        break;
+      case "committed":
+        merchandise.setCommittedPageNum(pageNum);
+        break;
+      case "published":
+        merchandise.setPublishedPageNum(pageNum);
+        break;
+      case "declined":
+        merchandise.setDeclinedPageNum(pageNum);
+        break;
+      case "retired":
+        merchandise.setRetiredPageNum(pageNum);
+        break;
+      case "trash":
+        merchandise.setTrashPageNum(pageNum);
+        break;
+      default:
+        merchandise.setPage(pageNum);
+        break;
+    }
+    merchandise.setOwnerId(getUserId());
+    Merchandise mcd = refinedService.queryList(merchandise);
+    model.addAttribute("merchandise", mcd);
+    return BASE_PATH + "list";
   }
 
   private void saveChange(StateChange sc) {

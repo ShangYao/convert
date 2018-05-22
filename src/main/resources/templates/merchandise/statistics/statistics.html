@@ -59,7 +59,7 @@
 						th:value="*{endCreated}" placeholder="创建日期结束" />
 
 
-					<div class="form-group">
+					<!-- <div class="form-group">
 						<select id="selectStore"
 							class="selectpicker show-tick form-control" name="storeId"
 							data-live-search="true">
@@ -68,7 +68,7 @@
 								th:text="${shop.name}"
 								th:selected="(${shop.id} == ${merchandise.storeId})"></option>
 						</select>
-					</div>
+					</div> -->
 
 					<div class="form-group">
 						<select id="selectUser"
@@ -92,8 +92,8 @@
 			<div class="panel-body">
 				<!-- Nav tabs -->
 				<ul class="nav nav-pills" role="tablist" id="refinedlist">
-					<li role="presentation" class="active"><a href="#store"
-						aria-controls="store" role="tab" data-toggle="tab">店铺统计</a></li>
+					<!-- <li role="presentation" class="active"><a href="#store"
+						aria-controls="store" role="tab" data-toggle="tab">店铺统计</a></li> -->
 					<li role="presentation"><a href="#user" aria-controls="user"
 						role="tab" data-toggle="tab">个人统计</a></li>
 					<li role="presentation"><a href="#audit"
@@ -105,18 +105,14 @@
 					<div role="tabpanel" class="tab-pane active" id="store">
 						<div class="table-responsive">
 							<table class="table table-bordered table-condensed table-hover ">
-
 								<tr class="success">
 									<th>店铺名称</th>
 									<th>精编总数</th>
 								</tr>
-
 								<tr th:each=" sta:${merchandise.sSlist} ">
 									<td th:text="*{sta.name}">马明明-66</td>
 									<td th:text="*{sta.count}">200</td>
-
 								</tr>
-
 							</table>
 						</div>
 					</div>
@@ -129,11 +125,9 @@
 									<th>员工</th>
 									<th>精编总数</th>
 								</tr>
-
 								<tr th:each=" sta:${merchandise.userSlist} ">
 									<td th:text="*{sta.name}">马明明-66</td>
 									<td th:text="*{sta.count}">200</td>
-
 								</tr>
 							</table>
 						</div>

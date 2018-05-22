@@ -7,15 +7,9 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-/**
- * 
- * @description
- * @author shangyao
- * @date 2018年5月8日
- */
 @Entity
-@Table(name = "specs")
-public class Spec extends BaseDomain {
+@Table(name = "descs")
+public class Desc extends BaseDomain {
 
   /**
    * 
@@ -25,8 +19,8 @@ public class Spec extends BaseDomain {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "m_part")
   @SequenceGenerator(name = "m_part", sequenceName = "par_seq", allocationSize = 1)
   private long id;
-  private String key;
-  private String value;
+  private String name;
+  private String content;
   private long merchandiseId;
 
   public long getId() {
@@ -37,6 +31,24 @@ public class Spec extends BaseDomain {
     this.id = id;
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+
+
+  public String getContent() {
+    return content;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
+  }
+
   public long getMerchandiseId() {
     return merchandiseId;
   }
@@ -45,24 +57,9 @@ public class Spec extends BaseDomain {
     this.merchandiseId = merchandiseId;
   }
 
-  public String getKey() {
-    return key;
-  }
-
-  public void setKey(String key) {
-    this.key = key;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
-
   public static long getSerialversionuid() {
     return serialVersionUID;
   }
+
 
 }

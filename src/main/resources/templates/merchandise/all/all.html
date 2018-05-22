@@ -99,17 +99,7 @@ $(function() {
 						type="hidden" name="tabShow" id="tabShow"
 						th:value="${merchandise.tabShow}" />
 
-					<div class="form-group">
-						<select id="selectStore"
-							class="selectpicker show-tick form-control" name="storeId"
-							data-live-search="true">
-							<option value="0">选择店铺</option>
-							<option th:if="${shopList}==null" value="0">无相关店铺</option>
-							<option th:if="${shopList}!=null" th:each="shop:${shopList}" th:value="${shop.id}"
-								th:text="${shop.name}"
-								th:selected="(${shop.id} == ${merchandise.storeId})"></option>
-						</select>
-					</div>
+					
 
 					<div class="form-group">
 						<select id="selectUser"
@@ -129,14 +119,14 @@ $(function() {
 							<option th:selected="${merchandise.state}=='待审核'" value="待审核">待审核</option>
 							<option th:selected="${merchandise.state}=='审核未过'" value="审核未过">审核未过</option>
 							<option th:selected="${merchandise.state}=='已发布'" value="已发布">已发布</option>
-							<option th:selected="${merchandise.state}=='已下架'" value="已下架">已下架</option>
+							<option th:selected="${merchandise.state}=='已下架'" value="已禁用">已下架</option>
 
 						</select>
 					</div>
 
 					<div class="form-group">
 						<input type="text" class="form-control" name="queryString"
-							id="queryString" th:value="*{queryString}" placeholder="编号/标题" />
+							id="queryString" th:value="*{queryString}" placeholder="标题" />
 					</div>
 
 
@@ -156,19 +146,19 @@ $(function() {
 							<th>创建日期</th>
 							<th>最后更新</th>
 							<th>最后维护</th>
-							<th>店铺</th>
+							<!-- <th>店铺</th>
 							<th>商品编号</th>
-							<th>商品链接</th>
+							<th>商品链接</th> -->
 							<th>标题</th>
 							<th>状态</th>
 							<th>创建人</th>
-							<th>操作</th>
+							<!-- <th>操作</th> -->
 						</tr>
 					</thead>
 					<tbody>
 
 						<tr th:each="merchandise : ${merchandise.queryList}">
-							<td><a th:href="'./show/'+${merchandise.id} "
+							<td><a th:href="'./'+${merchandise.id} "
 								th:text="${merchandise.id}">111</a></td>
 							<td
 								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
@@ -178,16 +168,16 @@ $(function() {
 								th:text="${#dates.format(merchandise.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
 							<td th:if="${merchandise.maintainAt}!=null"
 								th:text="${#dates.format(merchandise.maintainAt, 'yyyy/MM/dd HH:mm:ss')}">2018-01-08</td>
-							<td th:if="${merchandise.store}!=null" th:text="${merchandise.store.name}">121212112121</td>
+							<!-- <td th:if="${merchandise.store}!=null" th:text="${merchandise.store.name}">121212112121</td>
 							<td th:if="${merchandise.store}==null" th:text="无店铺">121212112121</td>
 							<td th:text="${merchandise.itemId}">阿迪达斯男士运动篮球鞋</td>
 							<td><a class="js-clipboard" 
-											th:value="${merchandise.url}">复制链接</a></td>
+											th:value="${merchandise.url}">复制链接</a></td> -->
 							<td th:text="${merchandise.title}">抄袭</td>
 							<td th:text="${merchandise.state}">草稿</td>
-							<td th:text="${merchandise.owner.userName}">李海利</td>
-							<td><a th:href="@{toCopy(id=${merchandise.id})}" title="复制"><span
-									class="glyphicon glyphicon-duplicate"></span></a>&nbsp;&nbsp;</td>
+							<td th:text="${merchandise.ownerName}">李海利</td>
+						<!-- 	<td><a th:href="@{toCopy(id=${merchandise.id})}" title="复制"><span
+									class="glyphicon glyphicon-duplicate"></span></a>&nbsp;&nbsp;</td> -->
 						</tr>
 
 					</tbody>
