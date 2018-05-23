@@ -31,7 +31,7 @@ public class RefinedStatisticService {
     StringBuffer userSql = new StringBuffer(
         "SELECT D.USER_NAME ,C.B COUNT FROM (SELECT OWNER_ID A,COUNT(*) B FROM MERCHANDISES WHERE 1=1 AND STATE NOT IN('回收站','草稿')  ");
     String auidtSql =
-        "SELECT USER_NAME,SUCESS,PASS FROM (SELECT ID,SUCESS,PASS FROM (SELECT CREATED_USER_ID ID,COUNT(*) SUCESS   FROM STATE_CHANGES WHERE 1=1 and OLD_STATE='待审核' AND NEW_STATE='已发布' GROUP BY CREATED_USER_ID)A,(SELECT CREATED_USER_ID ID2,COUNT(*) PASS FROM STATE_CHANGES WHERE 1=1 and OLD_STATE='待审核' AND NEW_STATE='审核未过' GROUP BY CREATED_USER_ID)B WHERE A.ID=B.ID2) F LEFT JOIN USERS ON F.ID=USERS.ID";
+        "SELECT USER_NAME,SUCESS,PASS FROM (SELECT ID,SUCESS,PASS FROM (SELECT CREATED_USER_ID ID,COUNT(*) SUCESS   FROM STATE_CHANGES WHERE 1=1 and 2=2 and OLD_STATE='待审核' AND NEW_STATE='已发布' GROUP BY CREATED_USER_ID)A,(SELECT CREATED_USER_ID ID2,COUNT(*) PASS FROM STATE_CHANGES WHERE 3=3 and 4=4 and OLD_STATE='待审核' AND NEW_STATE='审核未过' GROUP BY CREATED_USER_ID)B WHERE A.ID=B.ID2) F LEFT JOIN USERS ON F.ID=USERS.ID";
 
     if (0 != merchandise.getOwnerId()) {
       storeSql.append(" AND OWNER_ID=" + merchandise.getOwnerId());
@@ -44,13 +44,17 @@ public class RefinedStatisticService {
           + DateUtils.getDate(merchandise.getBeginCreated() + " 00-00-00") + "'");
       auidtSql = auidtSql.replace("1=1",
           "CREATED_AT>='" + DateUtils.getDate(merchandise.getBeginCreated() + " 00-00-00") + "'");
+      auidtSql = auidtSql.replace("3=3",
+          "CREATED_AT>='" + DateUtils.getDate(merchandise.getBeginCreated() + " 00-00-00") + "'");
     }
     if (StringUtils.isNotBlank(merchandise.getEndCreated())) {
       storeSql.append(" AND CREATED_AT<='"
           + DateUtils.getDate(merchandise.getEndCreated() + " 23-59-59") + "'");
       userSql.append(" AND CREATED_AT<='"
           + DateUtils.getDate(merchandise.getEndCreated() + " 23-59-59") + "'");
-      auidtSql = auidtSql.replace("1=1",
+      auidtSql = auidtSql.replace("2=2",
+          " CREATED_AT<='" + DateUtils.getDate(merchandise.getEndCreated() + " 23-59-59") + "'");
+      auidtSql = auidtSql.replace("4=4",
           " CREATED_AT<='" + DateUtils.getDate(merchandise.getEndCreated() + " 23-59-59") + "'");
     }
     storeSql.append(
