@@ -13,7 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "brands")
-public class Brand {
+public class Brand extends RocData {
   @Id
   private long id;
   private String name;

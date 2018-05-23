@@ -10,6 +10,7 @@
 <link href="/css/bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="/css/formValidation.css" />
 <script src="/js/jquery.min.js"></script>
+
 </head>
 <body>
 	<!-- 导航部分开始 修改密码包含在导航里面 -->
@@ -32,8 +33,8 @@
 			</div>
 			<div class="panel-body">
 				<dl class="dl-horizontal">
-					<dt>当前状态:</dt>
-					<dd th:text="${merchandise.state}"></dd>
+					<dt>驳回次数:</dt>
+					<dd th:text="${merchandise.declinedCount}"></dd>
 					<dt>店铺名称:</dt>
 					<dd th:text="${merchandise.store.name}"></dd>
 					<dt>商品编号:</dt>
@@ -59,7 +60,6 @@
 						<dd>
 							<a th:href="${turl.url}" target="_blank" th:text="${turl.url}"></a>
 						</dd>
-
 					</dl>
 				</div>
 			</div>
@@ -93,57 +93,56 @@
 						</tr>
 					</table>
 				</div>
-				
-				<input type="hidden" id="login_user"
-					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
-
-			</form>
-			
-			
-			
-			<div class="panel-heading">
-				<h3 class="panel-title">变更历史</h3>
-			</div>
-
-
-			<div class="panel-body">
-				<table class="table table-bordered table-condensed table-hover "
-					id="table-skus">
-					<tr class="success">
-						<th>时间</th>
-						<th>新状态</th>
-						<th>旧状态</th>
-						<th>操作人</th>
-						<th>备注</th>
-					</tr>
-					<tr th:each="item : ${changeList}">
-						<td th:text="${#dates.format(item.createdAt, 'yyyy/MM/dd HH:mm:ss')}"></td>
-						<td th:text="${item.newState}">12</td>
-						<td th:text="${item.oldState}">12</td>
-						<td th:text="${item.createdBy}">12</td>
-						<td th:text="${item.note}">12</td>
-					</tr>
-				</table>
-			</div>
-			
-			
-			<div class="panel-body">
 				<div class="form-group " style="text-align: center;">
-
+					<div class="col-sm-4 ">
+						<button class="btn btn-default" onclick="draft()">通过</button>
+					</div>
+					<div class="col-sm-4 ">
+						<input type="button" class="btn btn-default" onclick="pub()"
+							value="驳回" />
+					</div>
 					<div class="col-sm-4 ">
 						<input type="button" value="返回" class="btn btn-default"
-							onclick="back()" />
+							onclick="history.go(-1)" />
 					</div>
 				</div>
-			</div>
-			
-			
+				<input type="hidden" id="login_user"
+					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
+				<input type="hidden" id="reason" name="declinedReason" />
+			</form>
 		</div>
 	</div>
-	
+	<!-- Modal -->
+	<div class="modal fade" id="set-rocid" tabindex="-1" role="dialog"
+		aria-labelledby="SetRocIdModal">
+		<div class="modal-dialog " role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="SetRocIdModal">驳回原因</h4>
+				</div>
+				<form class="form-inline">
+					<div class="modal-body">
+						<div>
+							<div class="form-group">
+								<input type="text" id="declinedReason" name="declinedReason"
+									class="form-control" placeholder="原因" />
+							</div>
+						</div>
 
-	<!-- 内容部分结束 -->
-<!-- Modal -->
+					</div>
+				</form>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-primary" onclick="declined()">提交</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
 		aria-labelledby="SetRocIdModal">
 		<div class="modal-dialog " role="document">
@@ -164,7 +163,9 @@
 		</div>
 	</div>
 
-	
+	<!-- 内容部分结束 -->
+
+
 	<script src="/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/js/formValidation.js"></script>
 	<script type="text/javascript" src="/js/framework/bootstrap.js"></script>
@@ -188,14 +189,29 @@
 		}
 		$("#myModal").modal("show");
 	}
-		function back() {
+	
+		function draft() {
 
-			defaultForm.action = "myQuery";
+			defaultForm.action = "audited?state=已发布";
 			defaultForm.submit();
 
 		}
-		/*]]>*/
 
+		function pub() {
+			$('#set-rocid').modal("show");
+		}
+		function declined() {
+
+			$("#reason").val($("#declinedReason").val());
+			if (null == $("#declinedReason").val()
+					|| "" == $("#declinedReason").val()) {
+				alert("请输入驳回原因");
+				return ;
+			}
+			defaultForm.action = "audited?state=审核未过";
+			defaultForm.submit();
+		}
+		/*]]>*/
 	</script>
 
 </body>

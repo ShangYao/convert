@@ -18,6 +18,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
+import com.jinanlongen.sparrow.roc.domain.Brand;
+import com.jinanlongen.sparrow.roc.domain.Gender;
+import com.jinanlongen.sparrow.roc.domain.Taxon;
 import com.jinanlongen.sparrow.util.PageableUtils;
 
 /**
@@ -33,7 +36,7 @@ public class Merchandise extends BaseDomain implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "m_seq")
-  @SequenceGenerator(name = "m_seq", sequenceName = "mer_seq", allocationSize = '1')
+  @SequenceGenerator(name = "m_seq", sequenceName = "mer_seq", allocationSize = 1)
   private long id;
   private String state;
   private boolean alertEnabled;
@@ -53,20 +56,44 @@ public class Merchandise extends BaseDomain implements Serializable {
   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private Date updatedAt;
   private Date maintainAt;
-
+  // @Column(nullable = true)
+  private long albumId;// 商品相册
   private long brandId;
   private long genderId;
   private long taxonId;
-
+  private String ownerName;
+  private String reviewerName;
+  private String holderName;
+  @Transient
+  private int redirectPage;
+  @Transient
+  private Taxon taxon1;
+  @Transient
+  private Taxon taxon2;
+  @Transient
+  private Taxon taxon3;
+  @Transient
+  private int taxonId3;
+  @Transient
+  private int taxonId2;
+  @Transient
+  private Brand brand;
+  @Transient
+  private Gender gender;
   @Transient
   private List<SourceUrl> sourceUrl = new ArrayList<SourceUrl>();
-  @Transient
-  private List<Spec> spcs = new ArrayList<Spec>();
   @Transient
   private List<Album> albums = new ArrayList<Album>();
   @Transient
   private Set<LineItem> lineItems;
-
+  @Transient
+  private List<Color> colors;
+  @Transient
+  private List<Size> sizes;
+  @Transient
+  private List<Spec> specs;
+  @Transient
+  private List<Desc> descs;
 
   @Transient
   private String targetUrl[];
@@ -142,6 +169,126 @@ public class Merchandise extends BaseDomain implements Serializable {
   @Transient
   private long oldId;
 
+  public int getTaxonId3() {
+    return taxonId3;
+  }
+
+  public void setTaxonId3(int taxonId3) {
+    this.taxonId3 = taxonId3;
+  }
+
+  public int getTaxonId2() {
+    return taxonId2;
+  }
+
+  public void setTaxonId2(int taxonId2) {
+    this.taxonId2 = taxonId2;
+  }
+
+  public String getOwnerName() {
+    return ownerName;
+  }
+
+  public void setOwnerName(String ownerName) {
+    this.ownerName = ownerName;
+  }
+
+  public String getReviewerName() {
+    return reviewerName;
+  }
+
+  public void setReviewerName(String reviewerName) {
+    this.reviewerName = reviewerName;
+  }
+
+  public String getHolderName() {
+    return holderName;
+  }
+
+  public void setHolderName(String holderName) {
+    this.holderName = holderName;
+  }
+
+  public List<Desc> getDescs() {
+    return descs;
+  }
+
+  public void setDescs(List<Desc> descs) {
+    this.descs = descs;
+  }
+
+  public List<Spec> getSpecs() {
+    return specs;
+  }
+
+  public int getRedirectPage() {
+    return redirectPage;
+  }
+
+  public void setRedirectPage(int redirectPage) {
+    this.redirectPage = redirectPage;
+  }
+
+  public void setSpecs(List<Spec> specs) {
+    this.specs = specs;
+  }
+
+  public List<Color> getColors() {
+    return colors;
+  }
+
+  public void setColors(List<Color> colors) {
+    this.colors = colors;
+  }
+
+  public List<Size> getSizes() {
+    return sizes;
+  }
+
+  public void setSizes(List<Size> sizes) {
+    this.sizes = sizes;
+  }
+
+  public Brand getBrand() {
+    return brand;
+  }
+
+  public void setBrand(Brand brand) {
+    this.brand = brand;
+  }
+
+  public Gender getGender() {
+    return gender;
+  }
+
+  public void setGender(Gender gender) {
+    this.gender = gender;
+  }
+
+  public Taxon getTaxon1() {
+    return taxon1;
+  }
+
+  public void setTaxon1(Taxon taxon1) {
+    this.taxon1 = taxon1;
+  }
+
+  public Taxon getTaxon2() {
+    return taxon2;
+  }
+
+  public void setTaxon2(Taxon taxon2) {
+    this.taxon2 = taxon2;
+  }
+
+  public Taxon getTaxon3() {
+    return taxon3;
+  }
+
+  public void setTaxon3(Taxon taxon3) {
+    this.taxon3 = taxon3;
+  }
+
   public long getBrandId() {
     return brandId;
   }
@@ -180,6 +327,16 @@ public class Merchandise extends BaseDomain implements Serializable {
 
   public void setSourceUrl(List<SourceUrl> sourceUrl) {
     this.sourceUrl = sourceUrl;
+  }
+
+
+
+  public long getAlbumId() {
+    return albumId;
+  }
+
+  public void setAlbumId(long albumId) {
+    this.albumId = albumId;
   }
 
 
@@ -256,13 +413,7 @@ public class Merchandise extends BaseDomain implements Serializable {
     this.description = description;
   }
 
-  public List<Spec> getSpcs() {
-    return spcs;
-  }
 
-  public void setSpcs(List<Spec> spcs) {
-    this.spcs = spcs;
-  }
 
   public List<Album> getAlbums() {
     return albums;
@@ -468,7 +619,7 @@ public class Merchandise extends BaseDomain implements Serializable {
   }
 
   public String getTabShow() {
-    return tabShow;
+    return tabShow == null ? "" : tabShow;
   }
 
   public void setTabShow(String tabShow) {

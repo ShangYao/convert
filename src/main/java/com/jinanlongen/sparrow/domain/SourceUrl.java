@@ -2,12 +2,13 @@ package com.jinanlongen.sparrow.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.SequenceGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -23,82 +24,105 @@ import org.springframework.format.annotation.DateTimeFormat;
 @EntityListeners(AuditingEntityListener.class)
 public class SourceUrl extends BaseDomain implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue
-	private long id;
-	private String mpn;
-	private String url;
-	private long merchandiseId;
-	@CreatedDate
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date createdAt;
-	@LastModifiedDate
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date updatedAt;
-	private int state;// 0 no,1 ok
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "m_part")
+  @SequenceGenerator(name = "m_part", sequenceName = "par_seq", allocationSize = 1)
+  private long id;
+  private String mpn;
+  private String url;
+  @Column(nullable = true)
+  private long brandId;
+  @Column(nullable = true)
+  private String brandName;
+  private long merchandiseId;
+  @CreatedDate
+  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  private Date createdAt;
+  @LastModifiedDate
+  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  private Date updatedAt;
+  private int state;// 0 no,1 ok
 
-	public long getMerchandiseId() {
-		return merchandiseId;
-	}
+  public long getBrandId() {
+    return brandId;
+  }
 
-	public void setMerchandiseId(long merchandiseId) {
-		this.merchandiseId = merchandiseId;
-	}
+  public void setBrandId(long brandId) {
+    this.brandId = brandId;
+  }
 
-	public Date getCreatedAt() {
-		return createdAt;
-	}
 
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
 
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
+  public String getBrandName() {
+    return brandName;
+  }
 
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+  public void setBrandName(String brandName) {
+    this.brandName = brandName;
+  }
 
-	public int getState() {
-		return state;
-	}
+  public long getMerchandiseId() {
+    return merchandiseId;
+  }
 
-	public void setState(int state) {
-		this.state = state;
-	}
+  public void setMerchandiseId(long merchandiseId) {
+    this.merchandiseId = merchandiseId;
+  }
 
-	public long getId() {
-		return id;
-	}
+  public Date getCreatedAt() {
+    return createdAt;
+  }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
 
-	public String getMpn() {
-		return mpn;
-	}
+  public Date getUpdatedAt() {
+    return updatedAt;
+  }
 
-	public void setMpn(String mpn) {
-		this.mpn = mpn;
-	}
+  public void setUpdatedAt(Date updatedAt) {
+    this.updatedAt = updatedAt;
+  }
 
-	public String getUrl() {
-		return url;
-	}
+  public int getState() {
+    return state;
+  }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+  public void setState(int state) {
+    this.state = state;
+  }
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+  public long getId() {
+    return id;
+  }
+
+  public void setId(long id) {
+    this.id = id;
+  }
+
+  public String getMpn() {
+    return mpn;
+  }
+
+  public void setMpn(String mpn) {
+    this.mpn = mpn;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  public static long getSerialversionuid() {
+    return serialVersionUID;
+  }
 
 }

@@ -26,17 +26,18 @@
 		<ol class="breadcrumb">
 			<li><a href="queryList">我的精编</a></li>
 			<li><a href="#">设置单品</a></li>
-			<li class="active">添加单品</li>
+			<li class="active">修改单品</li>
 		</ol>
 		<div class="panel panel-default">
 
 			<form class="form-horizontal" id="defaultForm" th:object="${item}"
-				method="POST" action="addItem" onsubmit="return false">
+				method="POST" action="../modifyItem" onsubmit="return false">
 				<input type="hidden" name="id" th:value="*{id}" /> <input
 					type="hidden" name="mId" th:value="*{mId}" /> <input type="hidden"
 					id="login_user"
 					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
 				<input type="hidden" id="message" th:value="*{alertMessage}" />
+				<input type="hidden" name="createdAt" th:value="*{createdAt}" />
 				<div class="panel-heading">
 					<h3 class="panel-title">基本信息</h3>
 				</div>
@@ -45,61 +46,77 @@
 					<div class="form-group">
 						<label for="color" class="col-sm-2 control-label">颜色</label>
 						<div class="col-sm-10">
-							<input class="form-control" id="color" name="color"
-								th:value="*{color}" placeholder="颜色" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="size" class="col-sm-2 control-label">尺码</label>
-						<div class="col-sm-10">
-							<input class="form-control" name="size" id="size"
-								th:value="*{size}" placeholder="尺码" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="basePrice" class="col-sm-2 control-label">成本价</label>
-						<div class="col-sm-10">
-							<input type="number" class="form-control" id="basePrice"
-								step="0.1" name="basePrice" th:value="*{basePrice}"
-								placeholder="成本价" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="salesState" class="col-sm-2 control-label">在售状态</label>
-						<div class="col-sm-10">
-							<select class="form-control input-sm" name="salesState">
-								<option value="在售中">在售中</option>
-								<option value="已下架">已下架</option>
+							<select class="selectpicker show-tick form-control" name="colorId"
+								id="color" >
+								<option th:each="color:${colors}" th:value="${color.id}"
+									th:text="${color.name}" th:selected="${color.id}==*{colorId}"></option>
 							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="color" class="col-sm-2 control-label">尺码</label>
+						<div class="col-sm-10">
+							<select class="selectpicker show-tick form-control" name="sizeId"
+								id="size" >
+								<option th:each="size:${sizes}" th:value="${size.id}"
+									th:text="${size.name}" th:selected="${size.id}==*{sizeId}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="size" class="col-sm-2 control-label">库存</label>
+						<div class="col-sm-10">
+							<input type="number"  step="1" class="form-control" name="stock" id="stock"
+								th:value="*{stock}" placeholder="库存" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="basePrice" class="col-sm-2 control-label">价格</label>
+						<div class="col-sm-10">
+							<input type="number" class="form-control" id="price"
+								step="0.1"  name="price" th:value="*{price}"
+								placeholder="价格" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="salesState" class="col-sm-2 control-label">相册名称</label>
+						<div class="col-sm-10">
+						<select id="albumId" class="selectpicker show-tick form-control"
+								 name="albumId" data-live-search="true">
+								<option value="0">选择商品相册</option>
+								<option th:each="album:${albums}" th:value="${album.id}"
+									th:selected="${album.id}==*{albumId}" th:text="${album.name}"
+									></option>
+							</select> 
 						</div>
 					</div>
 
 
 				</div>
-				<div class="panel-heading">
-					<h3 class="panel-title">关联RocId</h3>
+			<!-- 	<div class="panel-heading">
+					<h3 class="panel-title">添加尺码</h3>
 				</div>
 
 				<div class="panel-body">
 					<div class="form-group">
-						<label for="targetUrl1" class="col-sm-1 control-label">id</label>
+						<label for="targetColor" class="col-sm-1 control-label">尺码</label>
 						<div class="col-sm-10">
-							<input class="form-control" id="targetUrl1" name="rocid"
-								placeholder="请添加RocId #" />
+							<input type="number"  step="0.5"  class="form-control" id="targetColor" name="colors"
+								placeholder="请添加尺码 #" />
 						</div>
 						<a href="javascript:"><span class="glyphicon glyphicon-plus"
-							aria-hidden="true" data-template="rocid"></span></a>
+							aria-hidden="true" data-template="colors"></span></a>
 					</div>
 
-					<div class="form-group hide" id="rocidTemplate">
-						<label class="col-sm-1 control-label">id</label>
+					<div class="form-group hide" id="colorsTemplate">
+						<label class="col-sm-1 control-label">尺码</label>
 						<div class="col-sm-10">
-							<input class="form-control" name="rocid" />
+							<input class="form-control" name="colors" />
 						</div>
 						<a href="javascript:"><span class="glyphicon glyphicon-remove"
 							aria-hidden="true"></span></a>
 					</div>
-				</div>
+				</div> -->
 
 				<div class="form-group " style="text-align: center;">
 					<div class="col-sm-4 ">
@@ -128,7 +145,7 @@
 	<script type="text/javascript">
 		function back() {
 
-			defaultForm.action = "list";
+			defaultForm.action = "../modify";
 			defaultForm.submit();
 		}
 
@@ -137,9 +154,21 @@
 				alert("color不能为空！");
 				return false;
 			}
+			if ($("#size").val() == "" || $("#size").val() == null) {
+				alert("size不能为空！");
+				return false;
+			}
 
-			if ($("#basePrice").val() == "" || $("#basePrice").val() == null) {
-				alert("basePrice不能为空！");
+			if ($("#price").val() == "" || $("#price").val() == null) {
+				alert("price不能为空！");
+				return false;
+			}
+			if ($("#albumId").val() == 0) {
+				alert("请选择相册！");
+				return false;
+			}
+			if ($("#stock").val() == "" || $("#stock").val() == null) {
+				alert("stock不能为空！");
 				return false;
 			}
 			defaultForm.submit();
@@ -173,7 +202,7 @@
 																$templateEle)
 														.removeClass('hide'), $el = $row
 														.find('input').eq(0)
-														.attr('name', 'rocid'), $le = $row
+														.attr('name', 'colors'), $le = $row
 														.find('label')
 														.eq(0)
 														.attr(
@@ -186,7 +215,7 @@
 																'addField', $el);
 
 												$el.attr('placeholder',
-														'请添加RocId #' + index);
+														'请添加尺码 #' + index);
 												$el
 														.attr('id', template
 																+ index);

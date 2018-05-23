@@ -1,13 +1,11 @@
 package com.jinanlongen.sparrow.domain;
 
 import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,126 +18,141 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity(name = "state_changes")
 @EntityListeners(AuditingEntityListener.class)
 public class StateChange extends BaseDomain {
-	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue
-	private long id;
-	private long merchandiseId;
-	private String oldState;
-	private String newState;
-	private long createdUserId;
-	@CreatedDate
-	private Date createdAt;
-	private String createdBy;
-	private String note;
-	@Transient
-	private String itemId;
-	@Transient
-	private String beginCreated;
-	@Transient
-	private String endCreated;
-	@Transient
-	private String mid;
+  private static final long serialVersionUID = 1L;
+  @Id
+  @GeneratedValue
+  private long id;
+  private long merchandiseId;
+  private String oldState;
+  private String newState;
+  private long createdUserId;
 
-	public String getMid() {
+  public StateChange(long merchandiseId, String oldState, String newState, String note) {
+    super();
+    this.merchandiseId = merchandiseId;
+    this.oldState = oldState;
+    this.newState = newState;
+    this.note = note;
+  }
 
-		return mid;
-	}
+  public StateChange() {
 
-	public void setMid(String mid) {
-		this.mid = mid;
-	}
+  }
 
-	public String getBeginCreated() {
-		return beginCreated;
-	}
+  @CreatedDate
+  private Date createdAt;
+  private String createdBy;
+  private String note;
 
-	public void setBeginCreated(String beginCreated) {
-		this.beginCreated = beginCreated;
-	}
 
-	public String getEndCreated() {
-		return endCreated;
-	}
+  @Transient
+  private String itemId;
+  @Transient
+  private String beginCreated;
+  @Transient
+  private String endCreated;
+  @Transient
+  private String mid;
 
-	public void setEndCreated(String endCreated) {
-		this.endCreated = endCreated;
-	}
+  public String getMid() {
 
-	public String getItemId() {
-		return itemId;
-	}
+    return mid;
+  }
 
-	public void setItemId(String itemId) {
-		this.itemId = itemId;
-	}
+  public void setMid(String mid) {
+    this.mid = mid;
+  }
 
-	public String getNote() {
-		return note;
-	}
+  public String getBeginCreated() {
+    return beginCreated;
+  }
 
-	public void setNote(String note) {
-		this.note = note;
-	}
+  public void setBeginCreated(String beginCreated) {
+    this.beginCreated = beginCreated;
+  }
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
+  public String getEndCreated() {
+    return endCreated;
+  }
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+  public void setEndCreated(String endCreated) {
+    this.endCreated = endCreated;
+  }
 
-	public long getId() {
-		return id;
-	}
+  public String getItemId() {
+    return itemId;
+  }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+  public void setItemId(String itemId) {
+    this.itemId = itemId;
+  }
 
-	public long getMerchandiseId() {
-		return merchandiseId;
-	}
+  public String getNote() {
+    return note;
+  }
 
-	public void setMerchandiseId(long merchandiseId) {
-		this.merchandiseId = merchandiseId;
-	}
+  public void setNote(String note) {
+    this.note = note;
+  }
 
-	public String getOldState() {
-		return oldState;
-	}
+  public String getCreatedBy() {
+    return createdBy;
+  }
 
-	public void setOldState(String oldState) {
-		this.oldState = oldState;
-	}
+  public void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
 
-	public String getNewState() {
-		return newState;
-	}
+  public long getId() {
+    return id;
+  }
 
-	public void setNewState(String newState) {
-		this.newState = newState;
-	}
+  public void setId(long id) {
+    this.id = id;
+  }
 
-	public long getCreatedUserId() {
-		return createdUserId;
-	}
+  public long getMerchandiseId() {
+    return merchandiseId;
+  }
 
-	public void setCreatedUserId(long createdUserId) {
-		this.createdUserId = createdUserId;
-	}
+  public void setMerchandiseId(long merchandiseId) {
+    this.merchandiseId = merchandiseId;
+  }
 
-	public Date getCreatedAt() {
-		return createdAt;
-	}
+  public String getOldState() {
+    return oldState;
+  }
 
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
+  public void setOldState(String oldState) {
+    this.oldState = oldState;
+  }
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+  public String getNewState() {
+    return newState;
+  }
+
+  public void setNewState(String newState) {
+    this.newState = newState;
+  }
+
+  public long getCreatedUserId() {
+    return createdUserId;
+  }
+
+  public void setCreatedUserId(long createdUserId) {
+    this.createdUserId = createdUserId;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public static long getSerialversionuid() {
+    return serialVersionUID;
+  }
 
 }

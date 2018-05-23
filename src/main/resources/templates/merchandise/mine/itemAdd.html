@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viveport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/x-icon" class="js-site-favicon"
+	href="/images/jing.jpg" />
+
+<title>精编系统-修改精编</title>
+<link href="/css/bootstrap.min.css" rel="stylesheet" />
+<link href="/css/bootstrap-select.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="/css/formValidation.css" />
+<script src="/js/jquery.min.js"></script>
+
+</head>
+<body>
+	<!-- 导航部分开始 修改密码包含在导航里面 -->
+	<script type="text/javascript" src="/js/head.js"></script>
+	<!-- Modal 修改密码 -->
+	<script type="text/javascript" src="/js/updatePassword.js"></script>
+	<!-- 导航部分结束 -->
+
+
+	<!-- 内容部分 -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="queryList">我的精编</a></li>
+			<li><a href="#">设置单品</a></li>
+			<li class="active">添加单品</li>
+		</ol>
+		<div class="panel panel-default">
+
+			<form class="form-horizontal" id="defaultForm" th:object="${item}"
+				method="POST" action="addItem" onsubmit="return false">
+				<input type="hidden" name="id" th:value="*{id}" /> <input
+					type="hidden" name="mId" th:value="*{mId}" /> <input type="hidden"
+					id="login_user"
+					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
+				<input type="hidden" id="message" th:value="*{alertMessage}" />
+				<div class="panel-heading">
+					<h3 class="panel-title">基本信息</h3>
+				</div>
+				<div class="panel-body">
+
+					<div class="form-group">
+						<label for="color" class="col-sm-2 control-label">颜色</label>
+						<div class="col-sm-10">
+							<select class="selectpicker show-tick form-control" name="colors"
+								id="color" multiple="multiple">
+								<option th:each="color:${colors}" th:value="${color.id}"
+									th:text="${color.name}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="color" class="col-sm-2 control-label">尺码</label>
+						<div class="col-sm-10">
+							<select class="selectpicker show-tick form-control" name="sizes" id="size" multiple="multiple">
+								<option th:each="size:${sizes}" th:value="${size.id}"
+									th:text="${size.name}"></option>
+
+
+							</select>
+
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="size" class="col-sm-2 control-label">库存</label>
+						<div class="col-sm-10">
+							<input type="number" step="1" class="form-control" name="stock"
+								id="stock" th:value="*{stock}" placeholder="库存" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="basePrice" class="col-sm-2 control-label">价格</label>
+						<div class="col-sm-10">
+							<input type="number" class="form-control" id="price" step="0.1"
+								name="price" th:value="*{price}" placeholder="价格" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="salesState" class="col-sm-2 control-label">相册名称</label>
+						<div class="col-sm-10">
+							<select id="albumId" class="selectpicker show-tick form-control"
+								name="albumId" data-live-search="true">
+								<option value="0">选择商品相册</option>
+								<option th:each="album:${albums}" th:value="${album.id}"
+									th:selected="${album.id}==*{albumId}" th:text="${album.name}"></option>
+							</select>
+						</div>
+					</div>
+
+
+				</div>
+				<!-- 	<div class="panel-heading">
+					<h3 class="panel-title">添加尺码</h3>
+				</div>
+
+				<div class="panel-body">
+					<div class="form-group">
+						<label for="targetColor" class="col-sm-1 control-label">尺码</label>
+						<div class="col-sm-10">
+							<input type="number"  step="0.5"  class="form-control" id="targetColor" name="colors"
+								placeholder="请添加尺码 #" />
+						</div>
+						<a href="javascript:"><span class="glyphicon glyphicon-plus"
+							aria-hidden="true" data-template="colors"></span></a>
+					</div>
+
+					<div class="form-group hide" id="colorsTemplate">
+						<label class="col-sm-1 control-label">尺码</label>
+						<div class="col-sm-10">
+							<input class="form-control" name="colors" />
+						</div>
+						<a href="javascript:"><span class="glyphicon glyphicon-remove"
+							aria-hidden="true"></span></a>
+					</div>
+				</div> -->
+
+				<div class="form-group " style="text-align: center;">
+					<div class="col-sm-4 ">
+						<button class="btn btn-default" onclick="add()">保存</button>
+					</div>
+					<div class="col-sm-4 ">
+						<button class="btn btn-default" onclick="back()">返回</button>
+
+					</div>
+
+				</div>
+
+			</form>
+		</div>
+
+	</div>
+
+
+	<script src="/js/alert.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/bootstrap-select.min.js"></script>
+	<script type="text/javascript" src="/js/formValidation.js"></script>
+	<script type="text/javascript" src="/js/framework/bootstrap.js"></script>
+	<script type="text/javascript" src="/js/language/zh_CN.js"></script>
+
+	<script type="text/javascript">
+		function back() {
+
+			defaultForm.action = "modify";
+			defaultForm.submit();
+		}
+
+		function add() {
+			if ($("#color").val() == "" || $("#color").val() == null) {
+				alert("color不能为空！");
+				return false;
+			}
+			if ($("#size").val() == "" || $("#size").val() == null) {
+				alert("size不能为空！");
+				return false;
+			}
+
+			if ($("#price").val() == "" || $("#price").val() == null) {
+				alert("price不能为空！");
+				return false;
+			}
+			if ($("#albumId").val() == 0) {
+				alert("请选择相册！");
+				return false;
+			}
+			if ($("#stock").val() == "" || $("#stock").val() == null) {
+				alert("stock不能为空！");
+				return false;
+			}
+			
+			defaultForm.submit();
+
+		}
+
+		$(document)
+				.ready(
+						function() {
+							//动态添加HTML元素并绑定事件
+							$('.glyphicon-plus')
+									.on(
+											'click',
+											function() {
+												var index = $(this).data(
+														'index');
+
+												if (!index) {
+													index = 1;
+													$(this).data('index', 1);
+												}
+
+												index++;
+												$(this).data('index', index);
+												var template = $(this).attr(
+														'data-template'), $templateEle = $('#'
+														+ template + 'Template'), $row = $templateEle
+														.clone().removeAttr(
+																'id')
+														.insertBefore(
+																$templateEle)
+														.removeClass('hide'), $el = $row
+														.find('input').eq(0)
+														.attr('name', 'colors'), $le = $row
+														.find('label')
+														.eq(0)
+														.attr(
+																'for',
+																template
+																		+ index);
+
+												$('#defaultForm')
+														.formValidation(
+																'addField', $el);
+
+												$el.attr('placeholder',
+														'请添加尺码 #' + index);
+												$el
+														.attr('id', template
+																+ index);
+												$row
+														.on(
+																'click',
+																'.glyphicon-remove',
+																function(e) {
+																	$(
+																			'#defaultForm')
+																			.formValidation(
+																					'removeField',
+																					$el);
+																	$row
+																			.remove();
+																});
+											});
+
+							$('.glyphicon-remove').on('click', function() {
+								$(this).closest(".form-group").remove();
+
+							});
+
+							$('#defaultForm').formValidation({
+								message : 'This value is not valid',
+								icon : {
+									valid : 'glyphicon glyphicon-ok',
+									invalid : 'glyphicon glyphicon-remove',
+									validating : 'glyphicon glyphicon-refresh'
+								},
+								fields : {
+									inputTitel : {
+										message : 'The username is not valid',
+										validators : {
+											notEmpty : {
+												message : '标题'
+											},
+											stringLength : {
+												min : 6,
+												max : 60,
+												message : '标题必须在6-60个字符之间'
+											}
+
+										}
+									},
+
+								}
+							});
+						});
+	</script>
+</body>
+</html>
