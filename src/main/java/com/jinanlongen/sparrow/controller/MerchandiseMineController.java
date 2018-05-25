@@ -572,6 +572,12 @@ public class MerchandiseMineController extends BaseController {
     merchandise.setHolderName(getUserName());
     merchandise.setOwnerName(getUserName());
     merchandise.setState("草稿");
+
+    if (merchandise.getTaxonId3() != 0) {
+      merchandise.setTaxonId(merchandise.getTaxonId3());
+    } else if (merchandise.getTaxonId2() != 0) {
+      merchandise.setTaxonId(merchandise.getTaxonId2());
+    }
     mcdRep.save(merchandise);
     userRep.update(getUserId());
     StateChange sc = new StateChange(merchandise.getId(), "", "草稿", "新建精编");

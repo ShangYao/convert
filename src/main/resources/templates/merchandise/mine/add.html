@@ -104,12 +104,12 @@
 								<option value="0">选择一级分类</option>
 								<option th:each="taxon:${topTaxons}" th:value="${taxon.id}"
 									th:text="${taxon.name}"></option>
-							</select> <select class="form-control" id="taxon2"
+							</select> <select class="form-control" id="taxon2" name="taxonId2" 
 								onchange="getTaxon3(this.value)">
 								<option value="0">选择二级分类</option>
 								<option th:if="*{taxon2}!=null" th:text="*{taxon2.name}"
 									th:value="*{taxon2.id}" th:selected="true"></option>
-							</select> <select class="form-control " name="taxonId" 
+							</select> <select class="form-control " name="taxonId3" 
 								id="taxon3">
 								<option th:if="*{taxon3}!=null" th:text="*{taxon3.name}"
 									th:value="*{taxon3.id}" th:selected="true"></option>

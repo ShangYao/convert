@@ -20,7 +20,7 @@ document.writeln("   <ul class=\"nav navbar-nav\"> <li class=\"dropdown\"><a hre
 document.writeln("   <ul class=\"dropdown-menu\"><li><a href=\"/basic/user/list\">用户管理</a></li><li><a href=\"/basic/store/list\">店铺管理</a></li><li><a href=\"/basic/group/list\">小组管理</a></li><li><a href=\"/basic/role/list\">角色管理</a></li></ul></li></ul>")
 document.writeln("  <ul class=\"nav navbar-nav navbar-right\"><li><a href=\"/merchandise/toAdd\">添加精编</a></li><li class=\"dropdown\">")
 document.writeln("  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\" id=\"cur_user\"><span class=\"caret\"></span></a>")
-document.writeln("  <ul class=\"dropdown-menu\"><li><a href=\"/merchandise/mine/index\">个人中心</a></li>")
+document.writeln("  <ul class=\"dropdown-menu\"><li><a href=\"/merchandise/index\">个人中心</a></li>")
 document.writeln(" <li role=\"separator\" class=\"divider\"></li><li><a href=\"/logout\">退出</a></li></ul></li></ul>")
 document.writeln(" </div></div></nav>")
 //<li><a href=\"#\" data-toggle=\"modal\" data-target=\"#updatePassword\">修改密码</a></li>
