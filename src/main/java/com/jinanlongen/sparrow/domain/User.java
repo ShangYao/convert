@@ -3,7 +3,6 @@ package com.jinanlongen.sparrow.domain;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,188 +13,197 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled",
+    "password", "username"})
 public class User extends BaseDomain implements UserDetails {
 
-	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue
-	private long id;
-	private String userName;
-	private String code;
+  private static final long serialVersionUID = 1L;
+  @Id
+  @GeneratedValue
+  private long id;
+  private String userName;
+  private String code;
+  @JsonIgnore
+  @Transient
+  private Long roleId[];
+  @JsonIgnore
+  @Transient
+  private List<? extends GrantedAuthority> authorities;
+  @JsonIgnore
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "UsersRoles", joinColumns = {@JoinColumn(name = "uid")},
+      inverseJoinColumns = {@JoinColumn(name = "roleId")})
+  private Set<Role> roleList;
+  @JsonIgnore
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "GroupsUsers", joinColumns = {@JoinColumn(name = "uid")},
+      inverseJoinColumns = {@JoinColumn(name = "groupId")})
+  private Set<Group> groupList;
+  @JsonIgnore
+  private String groupNameString;
+  @JsonIgnore
+  @Transient
+  private String groupIdString;
+  @JsonIgnore
+  private String roleNameString;
+  @JsonIgnore
+  @Transient
+  private String roleIdString;
+  @JsonIgnore
+  @Column(nullable = true)
+  private boolean hasRefined;
+  @JsonIgnore
+  @Transient
+  private boolean selected;
 
-	@Transient
-	private Long roleId[];
-	@Transient
-	private List<? extends GrantedAuthority> authorities;
+  public boolean isSelected() {
+    return selected;
+  }
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "UsersRoles", joinColumns = { @JoinColumn(name = "uid") }, inverseJoinColumns = {
-			@JoinColumn(name = "roleId") })
-	private Set<Role> roleList;
+  public void setSelected(boolean selected) {
+    this.selected = selected;
+  }
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "GroupsUsers", joinColumns = { @JoinColumn(name = "uid") }, inverseJoinColumns = {
-			@JoinColumn(name = "groupId") })
-	private Set<Group> groupList;
+  public boolean isHasRefined() {
+    return hasRefined;
+  }
 
-	private String groupNameString;
-	@Transient
-	private String groupIdString;
-	private String roleNameString;
-	@Transient
-	private String roleIdString;
-	@Column(nullable = true)
-	private boolean hasRefined;
-	@Transient
-	private boolean selected;
+  public void setHasRefined(boolean hasRefined) {
+    this.hasRefined = hasRefined;
+  }
 
-	public boolean isSelected() {
-		return selected;
-	}
+  public String getGroupNameString() {
+    return groupNameString;
+  }
 
-	public void setSelected(boolean selected) {
-		this.selected = selected;
-	}
+  public void setGroupNameString(String groupNameString) {
+    this.groupNameString = groupNameString;
+  }
 
-	public boolean isHasRefined() {
-		return hasRefined;
-	}
+  public String getGroupIdString() {
+    return groupIdString;
+  }
 
-	public void setHasRefined(boolean hasRefined) {
-		this.hasRefined = hasRefined;
-	}
+  public void setGroupIdString(String groupIdString) {
+    this.groupIdString = groupIdString;
+  }
 
-	public String getGroupNameString() {
-		return groupNameString;
-	}
+  public String getRoleIdString() {
+    return roleIdString;
+  }
 
-	public void setGroupNameString(String groupNameString) {
-		this.groupNameString = groupNameString;
-	}
+  public void setRoleIdString(String roleIdString) {
+    this.roleIdString = roleIdString;
+  }
 
-	public String getGroupIdString() {
-		return groupIdString;
-	}
+  public String getRoleNameString() {
+    return roleNameString;
+  }
 
-	public void setGroupIdString(String groupIdString) {
-		this.groupIdString = groupIdString;
-	}
+  public void setRoleNameString(String roleNameString) {
+    this.roleNameString = roleNameString;
+  }
 
-	public String getRoleIdString() {
-		return roleIdString;
-	}
+  public Set<Role> getRoleList() {
+    return roleList;
+  }
 
-	public void setRoleIdString(String roleIdString) {
-		this.roleIdString = roleIdString;
-	}
+  public void setRoleList(Set<Role> roleList) {
+    this.roleList = roleList;
+  }
 
-	public String getRoleNameString() {
-		return roleNameString;
-	}
+  public Set<Group> getGroupList() {
+    return groupList;
+  }
 
-	public void setRoleNameString(String roleNameString) {
-		this.roleNameString = roleNameString;
-	}
+  public void setGroupList(Set<Group> groupList) {
+    this.groupList = groupList;
+  }
 
-	public Set<Role> getRoleList() {
-		return roleList;
-	}
+  public Long[] getRoleId() {
+    return roleId;
+  }
 
-	public void setRoleList(Set<Role> roleList) {
-		this.roleList = roleList;
-	}
+  public void setRoleId(Long[] roleId) {
+    this.roleId = roleId;
+  }
 
-	public Set<Group> getGroupList() {
-		return groupList;
-	}
+  public String getUserName() {
+    return userName;
+  }
 
-	public void setGroupList(Set<Group> groupList) {
-		this.groupList = groupList;
-	}
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
 
-	public Long[] getRoleId() {
-		return roleId;
-	}
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
 
-	public void setRoleId(Long[] roleId) {
-		this.roleId = roleId;
-	}
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
 
-	public String getUserName() {
-		return userName;
-	}
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
 
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return authorities;
+  }
 
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
+  public void setGrantedAuthorities(List<? extends GrantedAuthority> authorities) {
+    this.authorities = authorities;
+  }
 
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
+  public long getId() {
+    return id;
+  }
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+  public void setId(long id) {
+    this.id = id;
+  }
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
-	}
+  public static long getSerialversionuid() {
+    return serialVersionUID;
+  }
 
-	public void setGrantedAuthorities(List<? extends GrantedAuthority> authorities) {
-		this.authorities = authorities;
-	}
+  public void setAuthorities(List<? extends GrantedAuthority> authorities) {
+    this.authorities = authorities;
+  }
 
-	public long getId() {
-		return id;
-	}
+  @Override
+  public String getUsername() {
+    return userName;
+  }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+  @Override
+  public String getPassword() {
+    return null;
+  }
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+  public String getCode() {
+    return code;
+  }
 
-	public void setAuthorities(List<? extends GrantedAuthority> authorities) {
-		this.authorities = authorities;
-	}
-
-	@Override
-	public String getUsername() {
-		return userName;
-	}
-
-	@Override
-	public String getPassword() {
-		return null;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
+  public void setCode(String code) {
+    this.code = code;
+  }
 
 }

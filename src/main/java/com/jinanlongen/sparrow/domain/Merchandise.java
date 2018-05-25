@@ -94,16 +94,18 @@ public class Merchandise extends BaseDomain implements Serializable {
   private List<Spec> specs;
   @Transient
   private List<Desc> descs;
+  @Transient
+  private List<StateChange> stateChanges;
 
-  @Transient
-  private String targetUrl[];
-  @Transient
-  private String mpn[];
-
-  @Transient
-  private int allCount;
-  @Transient
-  private String itemIds;
+  // @Transient
+  // private String targetUrl[];
+  // @Transient
+  // private String mpn[];
+  //
+  // @Transient
+  // private int allCount;
+  // @Transient
+  // private String itemIds;
 
   @Transient
   private PageableUtils draftPage = new PageableUtils();
@@ -145,18 +147,18 @@ public class Merchandise extends BaseDomain implements Serializable {
   private String endMaintain;
   @Transient
   private String queryString;
-  @Transient
-  private int itemSize;
-  @Transient
-  private String[] cost;
-  @Transient
-  private String[] color;
-  @Transient
-  private String[] size;
-  @Transient
-  private String[] salesStates;
-  @Transient
-  private String[] rocid;
+  // @Transient
+  // private int itemSize;
+  // @Transient
+  // private String[] cost;
+  // @Transient
+  // private String[] color;
+  // @Transient
+  // private String[] size;
+  // @Transient
+  // private String[] salesStates;
+  // @Transient
+  // private String[] rocid;
   @Transient
   private List<Statistics> userSlist;
   @Transient
@@ -168,6 +170,16 @@ public class Merchandise extends BaseDomain implements Serializable {
 
   @Transient
   private long oldId;
+
+
+
+  public List<StateChange> getStateChanges() {
+    return stateChanges;
+  }
+
+  public void setStateChanges(List<StateChange> stateChanges) {
+    this.stateChanges = stateChanges;
+  }
 
   public int getTaxonId3() {
     return taxonId3;
@@ -351,13 +363,7 @@ public class Merchandise extends BaseDomain implements Serializable {
     this.oldMerchandiseid = oldMerchandiseid;
   }
 
-  public String[] getMpn() {
-    return mpn;
-  }
 
-  public void setMpn(String[] mpn) {
-    this.mpn = mpn;
-  }
 
   public String getBeginMaintain() {
     return beginMaintain;
@@ -399,10 +405,6 @@ public class Merchandise extends BaseDomain implements Serializable {
     this.declinedReason = declinedReason;
   }
 
-  public String getItemIds() {
-    return itemIds;
-  }
-
 
 
   public String getDescription() {
@@ -423,9 +425,7 @@ public class Merchandise extends BaseDomain implements Serializable {
     this.albums = albums;
   }
 
-  public void setItemIds(String itemIds) {
-    this.itemIds = itemIds;
-  }
+
 
   public List<Statistics> getUserSlist() {
     return userSlist;
@@ -470,54 +470,6 @@ public class Merchandise extends BaseDomain implements Serializable {
 
   public void setDeclinedCount(int declinedCount) {
     this.declinedCount = declinedCount;
-  }
-
-  public String[] getRocid() {
-    return rocid;
-  }
-
-  public void setRocid(String[] rocid) {
-    this.rocid = rocid;
-  }
-
-  public String[] getCost() {
-    return cost;
-  }
-
-  public void setCost(String[] cost) {
-    this.cost = cost;
-  }
-
-  public String[] getColor() {
-    return color;
-  }
-
-  public void setColor(String[] color) {
-    this.color = color;
-  }
-
-  public String[] getSize() {
-    return size;
-  }
-
-  public void setSize(String[] size) {
-    this.size = size;
-  }
-
-  public String[] getSalesStates() {
-    return salesStates;
-  }
-
-  public void setSalesStates(String[] salesStates) {
-    this.salesStates = salesStates;
-  }
-
-  public int getItemSize() {
-    return itemSize;
-  }
-
-  public void setItemSize(int itemSize) {
-    this.itemSize = itemSize;
   }
 
 
@@ -666,21 +618,7 @@ public class Merchandise extends BaseDomain implements Serializable {
     this.trashPage = trashPage;
   }
 
-  public int getAllCount() {
-    return allCount;
-  }
 
-  public void setAllCount(int allCount) {
-    this.allCount = allCount;
-  }
-
-  public String[] getTargetUrl() {
-    return targetUrl;
-  }
-
-  public void setTargetUrl(String[] targetUrl) {
-    this.targetUrl = targetUrl;
-  }
 
   public long getId() {
     return id;

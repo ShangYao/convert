@@ -1,17 +1,12 @@
 package com.jinanlongen.sparrow;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lokra.seaweedfs.core.FileSource;
-import org.lokra.seaweedfs.core.FileTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import com.jinanlongen.sparrow.service.BasicUserService;
 import com.jinanlongen.sparrow.service.RefinedMineService;
 
 /**
@@ -23,8 +18,6 @@ import com.jinanlongen.sparrow.service.RefinedMineService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserServiceTests {
-  @Autowired
-  private BasicUserService userService;
   @Autowired
   RefinedMineService refinedMineService;
 
@@ -58,17 +51,10 @@ public class UserServiceTests {
       return;
     }
 
-    try {
-      InputStream is = new FileInputStream("D:/1.jpg");
-      FileTemplate template = new FileTemplate(fileSource.getConnection());
-      // template.saveFileByStream("flow.jpg", is);
-    } catch (FileNotFoundException e) {
-      System.out.println("Cannot save the file!");
-      return;
-    } catch (IOException e) {
-      System.out.println("Cannot write to Seaweed!");
-      return;
-    }
+    // InputStream is = new FileInputStream("D:/1.jpg");
+    // FileTemplate template = new FileTemplate(fileSource.getConnection());
+    // template.saveFileByStream("flow.jpg", is);
+
 
     System.out.println("Success and done!");
   }

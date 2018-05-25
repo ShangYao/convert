@@ -61,31 +61,14 @@
 								<textarea name="content" th:value="*{content}"  th:text="*{content}" disabled="disabled"> </textarea>
 						</div>
 					</div>
-
-
-
-
 				</div>
 
-
-
-
-			<!-- 	<div th:if="*{id}!=0"  class="form-group " style="text-align: center;">
+				<div   class="form-group " align="center">
+					
 					<div class="col-sm-4 ">
-						<button class="btn btn-default" onclick="modify()">修改</button>
+						<button class="btn btn-default" onclick="history.go(-1)">返回</button>
 					</div>
-					<div class="col-sm-4 ">
-						<button class="btn btn-default" onclick="modifyBack()">返回</button>
-					</div>
-				</div>
-				<div th:if="*{id}==0"  class="form-group " style="text-align: center;">
-					<div th:if="*{id}==0" class="col-sm-4 ">
-						<button class="btn btn-default" onclick="add()">添加</button>
-					</div>
-					<div class="col-sm-4 ">
-						<button class="btn btn-default" onclick="back()">返回</button>
-					</div>
-				</div> -->
+				</div> 
 
 			</form>
 		</div>

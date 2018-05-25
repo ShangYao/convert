@@ -13,6 +13,8 @@ import javax.persistence.Transient;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * 
@@ -22,6 +24,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@JsonIgnoreProperties({"merchandiseId"})
 public class Album extends BaseDomain {
 
   /**
@@ -32,6 +35,7 @@ public class Album extends BaseDomain {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "m_album")
   @SequenceGenerator(name = "m_album", sequenceName = "album_seq", allocationSize = 1)
   private long id;
+  @JsonIgnore
   private long merchandiseId;
   private String name;
   @CreatedDate

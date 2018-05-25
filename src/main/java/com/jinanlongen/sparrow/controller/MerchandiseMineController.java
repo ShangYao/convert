@@ -85,6 +85,17 @@ public class MerchandiseMineController extends BaseController {
   @Autowired
   private UploadImageRep uploadrep;
 
+  // 首页
+  @RequestMapping("index")
+  public String index(Model model) {
+
+    model.addAttribute("user", userRep.findOne(getUserId()));
+    Merchandise merchandise = new Merchandise();
+    merchandise.setOwnerId(getUserId());
+    model.addAttribute("merchandise", refinedService.queryList(merchandise));
+    return "index";
+  }
+
   // ------------------------desc------------------
   @RequestMapping("{id}/desc")
   public String desc(@PathVariable Long id, Model model) {
@@ -102,8 +113,15 @@ public class MerchandiseMineController extends BaseController {
     return BASE_PATH + "desc";
   }
 
-  @RequestMapping("desc/show/{id}")
+  @RequestMapping("desc/{id}")
   public String showDesc(@PathVariable Long id, Model model) {
+    Desc desc = descRep.findOne(id);
+    model.addAttribute("desc", desc);
+    return BASE_PATH + "descShow";
+  }
+
+  @RequestMapping("desc/show/{id}")
+  public String showd(@PathVariable Long id, Model model) {
     Desc desc = descRep.findOne(id);
     model.addAttribute("desc", desc);
     return BASE_PATH + "descShow";
@@ -290,10 +308,13 @@ public class MerchandiseMineController extends BaseController {
   @RequestMapping("{id}/modifyItem")
   @Transactional(rollbackFor = {Exception.class})
   public String modifyItem(LineItem item) {
-    item.setAlbumName(albumRep.findNameById(item.getAlbumId()));
-    item.setColor(colorRep.findNameById(item.getColorId()));
-    item.setSize(sizeRep.findNameById(item.getSizeId()));
-    itemRep.save(item);
+    LineItem newItem = itemRep.findOne(item.getId());
+    newItem.setAlbumId(item.getAlbumId());
+    newItem.setAlbumName(albumRep.findNameById(item.getAlbumId()));
+    newItem.setPrice(item.getPrice());
+    newItem.setStock(item.getStock());
+
+    itemRep.save(newItem);
     return "redirect:modify";
   }
 
@@ -311,19 +332,24 @@ public class MerchandiseMineController extends BaseController {
     long[] colorIds = item.getColors();
     long[] sizeIds = item.getSizes();
     LineItem newItem;
+    int count;
     for (long cid : colorIds) {
       for (long sid : sizeIds) {
-        newItem = new LineItem();
-        newItem.setAlbumId(item.getAlbumId());
-        newItem.setAlbumName(albumRep.findNameById(item.getAlbumId()));
-        newItem.setColor(colorRep.findNameById(cid));
-        newItem.setSize(sizeRep.findNameById(sid));
-        newItem.setColorId(cid);
-        newItem.setSizeId(sid);
-        newItem.setPrice(item.getPrice());
-        newItem.setStock(item.getStock());
-        newItem.setmId(item.getmId());
-        itemRep.save(newItem);
+        count = itemRep.countColorAndSize(cid, sid);
+        if (count == 0) {
+
+          newItem = new LineItem();
+          newItem.setAlbumId(item.getAlbumId());
+          newItem.setAlbumName(albumRep.findNameById(item.getAlbumId()));
+          newItem.setColor(colorRep.findNameById(cid));
+          newItem.setSize(sizeRep.findNameById(sid));
+          newItem.setColorId(cid);
+          newItem.setSizeId(sid);
+          newItem.setPrice(item.getPrice());
+          newItem.setStock(item.getStock());
+          newItem.setmId(item.getmId());
+          itemRep.save(newItem);
+        }
       }
     }
     // itemRep.save(item);
@@ -452,7 +478,7 @@ public class MerchandiseMineController extends BaseController {
   @RequestMapping("modifyAlbum")
   public String modifyAlbum(Album album) {
     albumRep.updateName(album.getName(), album.getId());
-    return "redirect:" + album.getMerchandiseId() + "/albumList";
+    return "redirect:" + album.getMerchandiseId() + "/albums";
   }
 
   // 删除相册
@@ -572,6 +598,11 @@ public class MerchandiseMineController extends BaseController {
     merchandise.setHolderName(getUserName());
     merchandise.setOwnerName(getUserName());
     merchandise.setState("草稿");
+    if (merchandise.getTaxonId3() != 0) {
+      merchandise.setTaxonId(merchandise.getTaxonId3());
+    } else if (merchandise.getTaxonId2() != 0) {
+      merchandise.setTaxonId(merchandise.getTaxonId2());
+    }
     mcdRep.save(merchandise);
     userRep.update(getUserId());
     StateChange sc = new StateChange(merchandise.getId(), "", "草稿", "新建精编");
@@ -631,6 +662,7 @@ public class MerchandiseMineController extends BaseController {
     } else if (merchandise.getTaxonId2() != 0) {
       newM.setTaxonId(merchandise.getTaxonId2());
     }
+    mcdRep.save(newM);
     return "redirect:../modify";
 
   }
@@ -642,7 +674,12 @@ public class MerchandiseMineController extends BaseController {
   @RequestMapping("{id}/draft")
   @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
   public String draft(Merchandise merchandise) {
-    mcdRep.updateSateById("草稿", merchandise.getId());
+    merchandise = mcdRep.findOne(merchandise.getId());
+    StateChange sc = new StateChange(merchandise.getId(), merchandise.getState(), "草稿", "");
+    saveChange(sc);
+    merchandise.setState("草稿");
+    mcdRep.save(merchandise);
+    // mcdRep.updateSateById("草稿", merchandise.getId());
     return "redirect:../queryList";
 
   }
@@ -651,11 +688,21 @@ public class MerchandiseMineController extends BaseController {
   @RequestMapping("{id}/publish")
   @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
   public String publish(Merchandise merchandise) {
+    StateChange sc;
+
+    merchandise = mcdRep.findOne(merchandise.getId());
     if (merchandise.getReviewNeeded()) {
-      mcdRep.updateSateById("待审核", merchandise.getId());
+      // mcdRep.updateSateById("待审核", merchandise.getId());
+      sc = new StateChange(merchandise.getId(), merchandise.getState(), "待审核", "");
+      merchandise.setState("待审核");
     } else {
-      mcdRep.updateSateById("已发布", merchandise.getId());
+      sc = new StateChange(merchandise.getId(), merchandise.getState(), "已发布", "");
+      merchandise.setState("已发布");
+      // mcdRep.updateSateById("已发布", merchandise.getId());
     }
+
+    mcdRep.save(merchandise);
+    saveChange(sc);
     return "redirect:../queryList";
 
   }
@@ -669,6 +716,8 @@ public class MerchandiseMineController extends BaseController {
     model.addAttribute("merchandise", merchandise);
     return BASE_PATH + "modify";
   }
+
+
 
   // 跳转精编详情
   @RequestMapping("{id}")
@@ -686,8 +735,11 @@ public class MerchandiseMineController extends BaseController {
     Merchandise merchandise = mcdRep.findOne(id);
     StateChange sc = new StateChange(id, merchandise.getState(), "回收站", "删除精编");
     saveChange(sc);
+    merchandise.setState("回收站");
+    merchandise.setReviewNeeded(true);
+    mcdRep.save(merchandise);
     // mcdRep.updateSateBuId("回收站", id);
-    mcdRep.updateSate(true, "回收站", id);
+    // mcdRep.updateSate(true, "回收站", id);
     model.addFlashAttribute("redirectAttr", m);
     return "redirect:../queryList";
   }
@@ -695,9 +747,13 @@ public class MerchandiseMineController extends BaseController {
 
   @RequestMapping("{id}/enable")
   public String enable(@PathVariable Long id, Merchandise m, RedirectAttributes model) {
+    Merchandise merchandise = mcdRep.findOne(id);
+    merchandise.setState("已发布");
+    mcdRep.save(merchandise);
     StateChange sc = new StateChange(id, "已禁用", "已发布", "");
     saveChange(sc);
-    mcdRep.updateSateById("已发布", id);
+
+    // mcdRep.updateSateById("已发布", id);
 
     model.addFlashAttribute("redirectAttr", m);
     return "redirect:../queryList";
@@ -706,9 +762,12 @@ public class MerchandiseMineController extends BaseController {
 
   @RequestMapping("{id}/disable")
   public String disable(@PathVariable Long id, Merchandise m, RedirectAttributes model) {
+    Merchandise merchandise = mcdRep.findOne(id);
+    merchandise.setState("已禁用");
+    mcdRep.save(merchandise);
     StateChange sc = new StateChange(id, "已发布", "已禁用", "");
     saveChange(sc);
-    mcdRep.updateSateById("已禁用", id);
+    // mcdRep.updateSateById("已禁用", id);
     model.addFlashAttribute("redirectAttr", m);
     return "redirect:../queryList";
   }
@@ -722,13 +781,16 @@ public class MerchandiseMineController extends BaseController {
   // 我的精编-查询
   @RequestMapping("queryList")
   public String queryList(Model model, Merchandise merchandise,
+      @RequestParam(value = "show", defaultValue = "") String show,
       @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum) {
     // merchandise.setTabShow(show == null ? "" : show);
     if (model.containsAttribute("redirectAttr")) {
       merchandise = (Merchandise) model.asMap().get("redirectAttr");
       pageNum = merchandise.getRedirectPage();
     }
-    String show = merchandise.getTabShow();
+    if (null == show || "".equals(show)) {
+      show = merchandise.getTabShow();
+    }
     switch (show) {
       case "all":
         merchandise.setPage(pageNum);

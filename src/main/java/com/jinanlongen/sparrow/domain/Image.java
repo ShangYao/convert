@@ -12,6 +12,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 
@@ -31,6 +32,7 @@ public class Image extends BaseDomain {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "m_album")
   @SequenceGenerator(name = "m_album", sequenceName = "album_seq", allocationSize = 1)
   private long id;
+  @JsonIgnore
   private long albumId;
   private String name;
   private String url;

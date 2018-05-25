@@ -111,6 +111,7 @@
 							<th>维护日期</th>
 							<th>标题</th>
 							<th>源网链接</th>
+							<th>状态</th>
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -127,14 +128,18 @@
 							<td th:text="${merchandise.title}">阿迪达斯男士运动篮球鞋</td>
 							<td><span th:each="surl :${merchandise.sourceUrl}"><a
 									th:href="${surl.url}" th:text="链接" target="_blank"></a>&nbsp;&nbsp;&nbsp;</span></td>
+							<td th:text="${merchandise.state}">阿迪达斯男士运动篮球鞋</td>
 							<!-- th:href="@{maintain(id=${merchandise.id})}" -->
 							<td><a
 								th:onclick="'javascript:maintain(\''+${merchandise.id}+'\')'"
 								title="维护精编"><span>维护</span></a> <a
 								th:onclick="'javascript:toModify(\''+${merchandise.id}+'\')'"
-								title="修改精编"><span>修改</span></a> <a
+								title="修改精编"><span>修改</span></a> <a th:if="${merchandise.state}=='已发布'"
 								th:onclick="'javascript:remove(\''+${merchandise.id}+'\')'"
-								title="禁用精编"><span>禁用</span></a></td>
+								title="禁用精编"><span>禁用</span></a>
+								<a th:if="${merchandise.state}=='已禁用'"
+								th:onclick="'javascript:enableOne(\''+${merchandise.id}+'\')'"
+								title="启用精编"><span>启用</span></a></td>
 						</tr>
 
 					</tbody>
@@ -175,8 +180,15 @@
 				myform.action = "remove?id=" + id + "&page=" + page;
 				myform.submit();
 			}
-
 		}
+		function enableOne(id) {
+			if (confirm("确定启用此条精编？")) {
+				var page = $("#page").val();
+				myform.action = "enable?id=" + id + "&page=" + page;
+				myform.submit();
+			}
+		}
+		
 		function toModify(id) {
 			myform.target = "_blank";
 			myform.action = "../" + id + "/modify";

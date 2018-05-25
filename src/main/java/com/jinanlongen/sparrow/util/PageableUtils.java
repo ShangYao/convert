@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jinanlongen.sparrow.domain.BaseDomain;
 
 /**
@@ -15,12 +16,19 @@ import com.jinanlongen.sparrow.domain.BaseDomain;
  * @date 2018年2月23日
  */
 public class PageableUtils {
+  @JsonIgnore
   private int page;
+  @JsonIgnore
   private int pageSize = 2;
+  @JsonIgnore
   private int totalPages;
+  @JsonIgnore
   private long totleElements;
+  @JsonIgnore
   private Sort sort;
+  @JsonIgnore
   private Page<? extends BaseDomain> pages;
+  @JsonIgnore
   private List<? extends BaseDomain> queryList;
 
   public long getTotleElements() {
@@ -83,6 +91,7 @@ public class PageableUtils {
     this.sort = new Sort(Direction.ASC, name);
   }
 
+  @JsonIgnore
   public Pageable getPageable() {
     return new PageRequest(page, pageSize, sort);
   }

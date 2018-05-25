@@ -21,6 +21,7 @@ import com.jinanlongen.sparrow.repository.MerchandiseRep;
 import com.jinanlongen.sparrow.repository.SizeRep;
 import com.jinanlongen.sparrow.repository.SourceUrlRep;
 import com.jinanlongen.sparrow.repository.SpecRep;
+import com.jinanlongen.sparrow.repository.StateChangeRep;
 import com.jinanlongen.sparrow.roc.domain.Taxon;
 import com.jinanlongen.sparrow.roc.repository.BrandRep;
 import com.jinanlongen.sparrow.roc.repository.GenderRep;
@@ -58,6 +59,8 @@ public class RefinedMineService {
   private AlbumRep albumRep;
   @Autowired
   private DescRep descRep;
+  @Autowired
+  private StateChangeRep changeRep;
 
   public String getUrl(String id) {
     return id;
@@ -81,7 +84,7 @@ public class RefinedMineService {
     merchandise.setSpecs(specRrep.findByMerchandiseId(id));
     merchandise.setAlbums(albumRep.findByMerchandiseId(id));
     merchandise.setDescs(descRep.findByMerchandiseId(id));
-
+    merchandise.setStateChanges(changeRep.findLast10ByMerchandiseIdOrderByCreatedAtDesc(id));
 
     return merchandise;
 
