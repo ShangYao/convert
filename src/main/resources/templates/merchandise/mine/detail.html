@@ -34,8 +34,8 @@
 			<form class="form-horizontal" id="defaultForm"
 				th:object="${merchandise}" method="POST" action="add"
 				onsubmit="return false">
-				<input type="hidden" name="id" id="id" th:value="*{id}" /> <input
-					type="hidden" id="login_user"
+				<!-- <input type="hidden" name="id" id="id" th:value="*{id}" /> -->
+				<input type="hidden" id="login_user"
 					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
 
 				<div class="panel-heading">
@@ -43,6 +43,20 @@
 
 				</div>
 				<div class="panel-body">
+					<div class="form-group">
+						<label for="title" class="col-sm-2 control-label">精编ID</label>
+						<div class="col-sm-10">
+							<input class="form-control" name="id" id="id" disabled="disabled"
+								th:value="*{id}" placeholder="" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="title" class="col-sm-2 control-label">负责人</label>
+						<div class="col-sm-10">
+							<input class="form-control" name="holderName" id="holderName"
+								disabled="disabled" th:value="*{holderName}" />
+						</div>
+					</div>
 					<div class="form-group">
 						<label for="title" class="col-sm-2 control-label">精编状态</label>
 						<div class="col-sm-10">
@@ -201,20 +215,15 @@
 										</tr>
 									</thead>
 									<tbody>
-
 										<tr th:each="size : *{sizes}">
 											<td th:text="${size.id}"></td>
 											<!-- <td th:text="${merchandise.createdAt}">2018-01-08</td> -->
 											<td th:text="${size.name}">2018-01-08</td>
 											<td th:text="${size.albumName}">2018-01-08</td>
 											<td th:text="${size.description}">2018-01-08</td>
-
 										</tr>
-
 									</tbody>
 								</table>
-
-
 							</div>
 						</div>
 					</div>
@@ -257,7 +266,7 @@
 						style="width: 90%;" align="center">
 						<tr class="success">
 							<th>编号</th>
-							<th>属性名称</th>
+							<th>规格名称</th>
 							<th>规格值</th>
 						</tr>
 						<tr th:each="spec : ${merchandise.specs}">
@@ -283,7 +292,7 @@
 							<th>名称</th>
 						</tr>
 						<tr th:each="desc : ${merchandise.descs}">
-							<td th:text="${desc.id}" class="itemId">12</td>
+								<td ><a th:href="'./desc/'+${desc.id}" th:text="${desc.id}"></a></td>
 							<td th:text="${desc.name}">12</td>
 
 						</tr>
@@ -291,6 +300,32 @@
 					</table>
 				</div>
 
+				<!-- 变更历史 -->
+				<div class="panel-heading">
+					<h3 class="panel-title">变更历史</h3>
+				</div>
+
+
+				<div class="panel-body">
+					<table class="table table-bordered table-condensed table-hover "
+						id="table-skus">
+						<tr class="success">
+							<th>时间</th>
+							<th>新状态</th>
+							<th>旧状态</th>
+							<th>备注</th>
+							<th>操作人</th>
+						</tr>
+						<tr th:each="item : ${merchandise.stateChanges}">
+							<td
+								th:text="${#dates.format(item.createdAt, 'yyyy/MM/dd HH:mm:ss')}"></td>
+							<td th:text="${item.newState}">12</td>
+							<td th:text="${item.oldState}">12</td>
+							<td th:text="${item.note}">12</td>
+							<td th:text="${item.createdBy}">12</td>
+						</tr>
+					</table>
+				</div>
 
 				<div class="form-group " style="text-align: center;">
 					<!-- <div class="col-sm-4 ">
@@ -310,14 +345,8 @@
 
 				</div>
 				<input type="hidden" id="message"
-					th:value="${merchandise.alertMessage}" /> <!-- <input type="hidden"
-					id="redirectPage" name="redirectPage"
-					th:value="${merchandise.page}" /> <input type="hidden"
-					name="beginMaintain" id="beginMaintain" th:value="*{beginMaintain}" />
-				<input type="hidden" name="endMaintain" id="endMaintain"
-					th:value="*{endMaintain}" />
-				<input type="hidden" name="queryString" id="queryString"
-					th:value="*{queryString}" /> -->
+					th:value="${merchandise.alertMessage}" />
+
 			</form>
 		</div>
 
@@ -409,7 +438,7 @@
 		}
 		function back() {
 
-			defaultForm.action = "queryAll";
+			defaultForm.action = "queryList";
 			defaultForm.submit();
 
 		}

@@ -121,24 +121,7 @@ public class RefinedAuditController extends BaseController {
     return "redirect:../" + id;
   }
 
-  // 跳转详情页
-  @RequestMapping("show")
-  public String show(Model model, Long id) {
-    if (mcdRep.exists(id)) {
 
-      Merchandise merchandise = mcdRep.findOne(id);
-      Set<LineItem> ids = itemRep.findByMId(merchandise.getId());
-      merchandise.setLineItems(ids);
-      List<SourceUrl> urls = urlRep.findByMerchandiseIdAndState(merchandise.getId(), 1);
-      merchandise.setSourceUrl(urls);
-      model.addAttribute("merchandise", merchandise);
-    } else {
-      model.addAttribute("merchandise", new Merchandise());
-    }
-    model.addAttribute("changeList", scRep.findLast10ByMerchandiseIdOrderByCreatedAtDesc(id));
-
-    return refinede_html_path + "detail";
-  }
 
   @RequestMapping("myAudit")
   public String myAudit(Model model) {

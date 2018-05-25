@@ -1,10 +1,12 @@
 package com.jinanlongen.sparrow.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.apache.commons.lang.StringUtils;
@@ -52,7 +54,10 @@ public class RefinedMaintainService {
           // }
         }
         if (StringUtils.isNotBlank(merchandise.getState())) {
-          lstPredicates.add(cb.equal(root.get("state").as(String.class), merchandise.getState()));
+          Expression<String> exp = root.get("state").as(String.class);
+          lstPredicates.add(exp.in(Arrays.asList("已发布", "已禁用")));
+          // lstPredicates.add(cb.equal(root.get("state").as(String.class),
+          // merchandise.getState()));
         }
 
         if (StringUtils.isNotBlank(merchandise.getEndMaintain())) {

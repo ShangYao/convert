@@ -13,6 +13,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * 
@@ -22,6 +23,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@JsonIgnoreProperties({"merchandiseId"})
 public class SourceUrl extends BaseDomain implements Serializable {
 
   /**

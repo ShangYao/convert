@@ -23,7 +23,6 @@ import com.jinanlongen.sparrow.repository.MaintainRep;
 import com.jinanlongen.sparrow.repository.MerchandiseRep;
 import com.jinanlongen.sparrow.repository.SourceUrlRep;
 import com.jinanlongen.sparrow.repository.StateChangeRep;
-import com.jinanlongen.sparrow.repository.UserRep;
 import com.jinanlongen.sparrow.roc.domain.CacheKey;
 import com.jinanlongen.sparrow.service.CacheService;
 import com.jinanlongen.sparrow.service.RefinedMaintainService;
@@ -50,8 +49,6 @@ public class RefinedMaintainController extends BaseController {
   private LineItemRep itemRep;
   @Autowired
   private MaintainRep mRep;
-  @Autowired
-  private UserRep userRep;
   @Autowired
   private SourceUrlRep urlRep;
   @Autowired
@@ -121,7 +118,16 @@ public class RefinedMaintainController extends BaseController {
     mcdRep.updateSateById("已禁用", id);
     // itemRep.updateState(id);
     saveChange(id, "已发布", "已禁用");
-    logger.info("下架id为{}的精编信息", id);
+    attr.addFlashAttribute("merchandise", merchandise);
+    return "redirect:queryAll?pageNum=" + page;
+  }
+
+  @RequestMapping("enable")
+  @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+  public String enable(Long id, int page, Merchandise merchandise, RedirectAttributes attr) {
+    mcdRep.updateSateById("已发布", id);
+    // itemRep.updateState(id);
+    saveChange(id, "已禁用", "已发布");
     attr.addFlashAttribute("merchandise", merchandise);
     return "redirect:queryAll?pageNum=" + page;
   }
