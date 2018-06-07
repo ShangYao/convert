@@ -58,7 +58,7 @@ function getTaxon2(id) {
 		return;
 	}
 	$.ajax({
-		url : "/merchandise/taxon2",
+		url : "/merchandise/mine/taxon2",
 		type : "post",
 		data : {
 			id : id
@@ -71,7 +71,7 @@ function getTaxon2(id) {
 			$("#taxon2").append("<option value=\"0\" >选择二级分类</option>");
 			$.each(data, function(i, item) {
 				$("#taxon2").append(
-						"<option value="+item.id+">" + item.name
+						"<option value="+item.code+">" + item.name
 								+ "</option>");
 			});
 		}
@@ -85,7 +85,7 @@ function getTaxon3(id) {
 		return;
 	}
 	$.ajax({
-		url : "/merchandise/taxon3",
+		url : "/merchandise/mine/taxon3",
 		type : "post",
 		data : {
 			id : id
@@ -98,7 +98,7 @@ function getTaxon3(id) {
 			$("#taxon3").append("<option value=\"0\" >选择三级分类</option>");
 			$.each(data, function(i, item) {
 				$("#taxon3").append(
-						"<option value="+item.id+">" + item.name
+						"<option value="+item.code+">" + item.name
 						+ "</option>");
 			});
 		}

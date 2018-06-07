@@ -46,7 +46,6 @@ public class Merchandise extends BaseDomain implements Serializable {
   private long reviewerId;
   @Column(nullable = false)
   private long holderId;
-  private String description;
   private int declinedCount;
   private boolean reviewNeeded = true;
   @CreatedDate
@@ -58,14 +57,16 @@ public class Merchandise extends BaseDomain implements Serializable {
   private Date maintainAt;
   // @Column(nullable = true)
   private long albumId;// 商品相册
-  private long brandId;
-  private long genderId;
-  private long taxonId;
+  private String brandId;
+  private String genderId;
+  private String taxonId;
   private String ownerName;
   private String reviewerName;
   private String holderName;
   @Transient
   private int redirectPage;
+  @Transient
+  private User holder;
   @Transient
   private Taxon taxon1;
   @Transient
@@ -73,9 +74,9 @@ public class Merchandise extends BaseDomain implements Serializable {
   @Transient
   private Taxon taxon3;
   @Transient
-  private int taxonId3;
+  private String taxonId3;
   @Transient
-  private int taxonId2;
+  private String taxonId2;
   @Transient
   private Brand brand;
   @Transient
@@ -97,15 +98,7 @@ public class Merchandise extends BaseDomain implements Serializable {
   @Transient
   private List<StateChange> stateChanges;
 
-  // @Transient
-  // private String targetUrl[];
-  // @Transient
-  // private String mpn[];
-  //
-  // @Transient
-  // private int allCount;
-  // @Transient
-  // private String itemIds;
+
 
   @Transient
   private PageableUtils draftPage = new PageableUtils();
@@ -147,18 +140,7 @@ public class Merchandise extends BaseDomain implements Serializable {
   private String endMaintain;
   @Transient
   private String queryString;
-  // @Transient
-  // private int itemSize;
-  // @Transient
-  // private String[] cost;
-  // @Transient
-  // private String[] color;
-  // @Transient
-  // private String[] size;
-  // @Transient
-  // private String[] salesStates;
-  // @Transient
-  // private String[] rocid;
+
   @Transient
   private List<Statistics> userSlist;
   @Transient
@@ -173,6 +155,14 @@ public class Merchandise extends BaseDomain implements Serializable {
 
 
 
+  public User getHolder() {
+    return holder;
+  }
+
+  public void setHolder(User holder) {
+    this.holder = holder;
+  }
+
   public List<StateChange> getStateChanges() {
     return stateChanges;
   }
@@ -181,19 +171,21 @@ public class Merchandise extends BaseDomain implements Serializable {
     this.stateChanges = stateChanges;
   }
 
-  public int getTaxonId3() {
+
+
+  public String getTaxonId3() {
     return taxonId3;
   }
 
-  public void setTaxonId3(int taxonId3) {
+  public void setTaxonId3(String taxonId3) {
     this.taxonId3 = taxonId3;
   }
 
-  public int getTaxonId2() {
+  public String getTaxonId2() {
     return taxonId2;
   }
 
-  public void setTaxonId2(int taxonId2) {
+  public void setTaxonId2(String taxonId2) {
     this.taxonId2 = taxonId2;
   }
 
@@ -301,27 +293,28 @@ public class Merchandise extends BaseDomain implements Serializable {
     this.taxon3 = taxon3;
   }
 
-  public long getBrandId() {
+
+  public String getBrandId() {
     return brandId;
   }
 
-  public void setBrandId(long brandId) {
+  public void setBrandId(String brandId) {
     this.brandId = brandId;
   }
 
-  public long getGenderId() {
+  public String getGenderId() {
     return genderId;
   }
 
-  public void setGenderId(long genderId) {
+  public void setGenderId(String genderId) {
     this.genderId = genderId;
   }
 
-  public long getTaxonId() {
+  public String getTaxonId() {
     return taxonId;
   }
 
-  public void setTaxonId(long taxonId) {
+  public void setTaxonId(String taxonId) {
     this.taxonId = taxonId;
   }
 
@@ -403,16 +396,6 @@ public class Merchandise extends BaseDomain implements Serializable {
 
   public void setDeclinedReason(String declinedReason) {
     this.declinedReason = declinedReason;
-  }
-
-
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
   }
 
 

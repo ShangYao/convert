@@ -11,17 +11,20 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import com.jinanlongen.sparrow.domain.Album;
 import com.jinanlongen.sparrow.domain.Merchandise;
 import com.jinanlongen.sparrow.domain.SourceUrl;
 import com.jinanlongen.sparrow.repository.AlbumRep;
 import com.jinanlongen.sparrow.repository.ColorRep;
 import com.jinanlongen.sparrow.repository.DescRep;
+import com.jinanlongen.sparrow.repository.ImageRep;
 import com.jinanlongen.sparrow.repository.LineItemRep;
 import com.jinanlongen.sparrow.repository.MerchandiseRep;
 import com.jinanlongen.sparrow.repository.SizeRep;
 import com.jinanlongen.sparrow.repository.SourceUrlRep;
 import com.jinanlongen.sparrow.repository.SpecRep;
 import com.jinanlongen.sparrow.repository.StateChangeRep;
+import com.jinanlongen.sparrow.repository.UserRep;
 import com.jinanlongen.sparrow.roc.domain.Taxon;
 import com.jinanlongen.sparrow.roc.repository.BrandRep;
 import com.jinanlongen.sparrow.roc.repository.GenderRep;
@@ -61,6 +64,10 @@ public class RefinedMineService {
   private DescRep descRep;
   @Autowired
   private StateChangeRep changeRep;
+  @Autowired
+  private ImageRep imageRep;
+  @Autowired
+  private UserRep userRep;
 
   public String getUrl(String id) {
     return id;
@@ -70,6 +77,31 @@ public class RefinedMineService {
   public Merchandise queryList(final Merchandise merchandise) {
     return init(merchandise);
   }
+
+  public Merchandise findOne(long id) {
+    Merchandise merchandise = mcdRep.findOne(id);
+    merchandise = getTaxons(merchandise);
+    merchandise.setSourceUrl(urlRep.findByMerchandiseId(id));
+    merchandise.setColors(colorRep.findByMerchandiseId(id));
+    merchandise.setSizes(sizeRep.findByMerchandiseId(id));
+    merchandise.setLineItems(itemRep.findByMId(id));
+    merchandise.setSpecs(specRrep.findByMerchandiseId(id));
+    merchandise.setAlbums(albumRep.findByMerchandiseId(id));
+    merchandise.setAlbums(findAlbums(id));
+    merchandise.setDescs(descRep.findByMerchandiseId(id));
+    merchandise.setStateChanges(changeRep.findLast10ByMerchandiseIdOrderByCreatedAtDesc(id));
+    merchandise.setHolder(userRep.findOne(merchandise.getHolderId()));
+    return merchandise;
+  }
+
+  private List<Album> findAlbums(long id) {
+    List<Album> albums = albumRep.findByMerchandiseId(id);
+    for (Album album : albums) {
+      album.setImages(imageRep.findByAlbumId(album.getId()));
+    }
+    return albums;
+  }
+
 
   public Merchandise toModify(long id) {
     Merchandise merchandise = mcdRep.findOne(id);
@@ -91,9 +123,9 @@ public class RefinedMineService {
   }
 
   private Merchandise getTaxons(Merchandise merchandise) {
-    merchandise.setBrand(brandRep.findOne(merchandise.getBrandId()));
-    merchandise.setGender(genderRep.findOne(merchandise.getGenderId()));
-    Taxon taxon = taxonRep.findOne(merchandise.getTaxonId());
+    merchandise.setBrand(brandRep.findByCode(merchandise.getBrandId()).get(0));
+    merchandise.setGender(genderRep.findByCode(merchandise.getGenderId()).get(0));
+    Taxon taxon = taxonRep.findByCode(merchandise.getTaxonId()).get(0);
     String[] tId = taxon.getAncestry().trim().split("/");
     int length = tId.length;
     if (length == 1) {

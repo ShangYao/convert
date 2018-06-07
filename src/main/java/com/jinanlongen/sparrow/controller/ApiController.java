@@ -3,17 +3,12 @@ package com.jinanlongen.sparrow.controller;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.jinanlongen.sparrow.domain.EsMerchandise;
-import com.jinanlongen.sparrow.domain.Merchandise;
 import com.jinanlongen.sparrow.result.RefinedData;
 import com.jinanlongen.sparrow.result.Result;
 import com.jinanlongen.sparrow.result.ResultGenerator;
 import com.jinanlongen.sparrow.service.APiService;
-import com.jinanlongen.sparrow.service.RefinedMineService;
 
 /**
  * 
@@ -26,10 +21,6 @@ import com.jinanlongen.sparrow.service.RefinedMineService;
 public class ApiController {
   @Autowired
   APiService apiService;
-  @Autowired
-  private RefinedMineService refinedService;
-  @Autowired
-  EsMerchandise es;
 
   @RequestMapping("getByItemId")
   public Result getByItemId(String id) {
@@ -56,12 +47,6 @@ public class ApiController {
 
   }
 
-  // 跳转精编详情
-  @RequestMapping("merchandise/{id}")
-  @ResponseBody
-  public Result EsMerchandise(@PathVariable Long id) {
-    Merchandise merchandise = refinedService.toModify(id);
-    return ResultGenerator.genSuccessResult(es.getEsMerchandise(merchandise));
-  }
+
 
 }

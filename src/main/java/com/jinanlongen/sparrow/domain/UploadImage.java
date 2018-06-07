@@ -12,12 +12,21 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class UploadImage {
   @Id
   private String href;
+  private String fingerprint;
   private long merchandiseId;
   @CreatedDate
   private Date createdAt;
 
   public String getHref() {
     return href;
+  }
+
+  public String getFingerprint() {
+    return fingerprint;
+  }
+
+  public void setFingerprint(String fingerprint) {
+    this.fingerprint = fingerprint;
   }
 
   public void setHref(String href) {

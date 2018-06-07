@@ -1,10 +1,13 @@
 package com.jinanlongen.sparrow.service;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.apache.commons.lang.StringUtils;
@@ -12,7 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import com.jinanlongen.sparrow.domain.Merchandise;
+import com.jinanlongen.sparrow.domain.User;
+import com.jinanlongen.sparrow.repository.GroupRep;
 import com.jinanlongen.sparrow.repository.MerchandiseRep;
+import com.jinanlongen.sparrow.repository.UserRep;
 import com.jinanlongen.sparrow.util.DateUtils;
 
 /**
@@ -25,8 +31,10 @@ import com.jinanlongen.sparrow.util.DateUtils;
 public class RefinedAuditService {
   @Autowired
   private MerchandiseRep mcdRep;
-  // @Autowired
-  // private GroupRep groupRep;
+  @Autowired
+  private GroupRep groupRep;
+  @Autowired
+  private UserRep userRep;
 
   public Merchandise auditQuery(final Merchandise merchandise) {
     merchandise.setPages(mcdRep.findAll(getSpecification(merchandise), merchandise.getPageable()));
@@ -43,22 +51,19 @@ public class RefinedAuditService {
         // lstPredicates.add(cb.equal(root.get("storeId").as(Long.class),
         // merchandise.getStoreId()));
         // } else {
-        // List<Long> idlist = merchandise.getStoreList().stream().map(i -> i.getId())
-        // .collect(Collectors.toList());
+        // List<Long> idlist =
+        // merchandise.getStoreList().stream().map(i -> i.getId()).collect(Collectors.toList());
         // if (null == idlist || idlist.size() == 0) {
         // lstPredicates.add(cb.equal(root.get("storeId").as(Long.class), 0l));
         // } else {
         // Expression<Long> exp = root.get("storeId").as(Long.class);
         // lstPredicates.add(exp.in(idlist));
         // }
-        // // if (0 != merchandise.getReviewerId()) {
-        // // List<Long> storeList = new ArrayList<>();
-        // // Expression<Long> exp = root.get("storeId").as(Long.class);
-        // // lstPredicates.add(exp.in(storeList));
-        // // lstPredicates.add(cb.equal(root.get("storeId").as(Long.class),
-        // // merchandise.getOwnerId()));
-        // // }
-        // }
+        List<BigInteger> ownerIds = groupRep.getUidsByGid(merchandise.getReviewerId());
+        List<Long> ids = ownerIds.stream().map(i -> i.longValue()).collect(Collectors.toList());
+        Expression<Long> exp = root.get("ownerId").as(Long.class);
+        lstPredicates.add(exp.in(ids));
+
         if (0 != merchandise.getOwnerId()) {
           lstPredicates.add(cb.equal(root.get("ownerId").as(Long.class), merchandise.getOwnerId()));
         }
@@ -96,5 +101,14 @@ public class RefinedAuditService {
         return cb.and(lstPredicates.toArray(arrayPredicates));
       }
     };
+  }
+
+  public List<User> findUserBySameGroup(long reviewerId) {
+    List<User> users = new ArrayList<User>();
+    List<BigInteger> ownerIds = groupRep.getUidsByGid(reviewerId);
+    for (BigInteger id : ownerIds) {
+      users.add(userRep.findOne(id.longValue()));
+    }
+    return users;
   }
 }

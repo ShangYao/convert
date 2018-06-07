@@ -1,15 +1,22 @@
 package com.jinanlongen.sparrow.controller;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.jinanlongen.sparrow.domain.Album;
@@ -39,9 +46,11 @@ import com.jinanlongen.sparrow.roc.domain.CacheKey;
 import com.jinanlongen.sparrow.roc.domain.Taxon;
 import com.jinanlongen.sparrow.roc.repository.TaxonRep;
 import com.jinanlongen.sparrow.service.CacheService;
+import com.jinanlongen.sparrow.service.EsOperationService;
 import com.jinanlongen.sparrow.service.RefinedMineService;
 import com.jinanlongen.sparrow.util.DateUtils;
 import com.jinanlongen.sparrow.util.Httptest;
+import com.jinanlongen.sparrow.util.MD5Utils;
 
 /**
  * 
@@ -50,7 +59,7 @@ import com.jinanlongen.sparrow.util.Httptest;
  * @date 2018年2月12日
  */
 @Controller
-@RequestMapping("merchandise/")
+@RequestMapping("merchandise/mine/")
 public class MerchandiseMineController extends BaseController {
   private static final String BASE_PATH = "merchandise/mine/";
 
@@ -84,6 +93,8 @@ public class MerchandiseMineController extends BaseController {
   private DescRep descRep;
   @Autowired
   private UploadImageRep uploadrep;
+  @Autowired
+  private EsOperationService esOperation;
 
   // 首页
   @RequestMapping("index")
@@ -360,14 +371,16 @@ public class MerchandiseMineController extends BaseController {
   // -------------------------taxon ----
   @RequestMapping("taxon2")
   @ResponseBody
-  public List<Taxon> getTaxon2(Long id) {
-    return TaxonRep.findByAncestry(id + "");
+  public List<Taxon> getTaxon2(String id) {
+    Taxon taxon = TaxonRep.findByCode(id).get(0);
+    return TaxonRep.findByAncestry(taxon.getId() + "");
   }
 
   @RequestMapping("taxon3")
   @ResponseBody
-  public List<Taxon> getTaxon3(Long id) {
-    return TaxonRep.getTaxon3("%" + id);
+  public List<Taxon> getTaxon3(String id) {
+    Taxon taxon = TaxonRep.findByCode(id).get(0);
+    return TaxonRep.getTaxon3("%" + taxon.getId());
   }
 
   // ----------------------------------sourceUrl-----------------------------------
@@ -434,22 +447,22 @@ public class MerchandiseMineController extends BaseController {
     boolean result = false;;
     try {
       result = Httptest.post(thumbnail.getBytes(), fileName);
+      if (result) {
+        UploadImage upload = new UploadImage();
+        upload.setHref(fileName);
+        upload.setMerchandiseId(mid);
+        upload.setFingerprint(MD5Utils.MD5(thumbnail.getBytes()));
+        uploadrep.save(upload);
+        return fileName;
+      }
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    if (result) {
-      UploadImage upload = new UploadImage();
-      upload.setHref(fileName);
-      upload.setMerchandiseId(mid);
-      uploadrep.save(upload);
-      return fileName;
-    }
+
     return "http://192.168.200.71:8888/areatrend_b/e0ca50c25f5c3b4957da6145ee3c9878.jpg?mode=2f&width=150&height=150";
   }
 
   private String generateFileName(long mid) {
-    // TODO Auto-generated method stub
     return "http://192.168.200.71:8888/sparrow/" + mid + "/desc/" + DateUtils.dateString() + ".jpg";
 
   }
@@ -500,7 +513,7 @@ public class MerchandiseMineController extends BaseController {
   }
 
   // 跳转单个相册管理
-  @RequestMapping("/album/show/{id}")
+  @RequestMapping("album/show/{id}")
   public String showAlbum(@PathVariable long id, Model model) {
     Album album = albumRep.findOne(id);
     album.setImages(imageRep.findByAlbumId(id));
@@ -547,15 +560,15 @@ public class MerchandiseMineController extends BaseController {
     boolean result = false;;
     try {
       result = Httptest.post(image.getImageFile().getBytes(), url);
+      if (result) {
+        image.setFingerprint(MD5Utils.MD5(image.getImageFile().getBytes()));
+        image.setUrl(url);
+        imageRep.save(image);
+      }
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    if (result) {
 
-      image.setUrl(url);
-      imageRep.save(image);
-    }
     return "redirect:./" + image.getAlbumId();
   }
 
@@ -599,9 +612,9 @@ public class MerchandiseMineController extends BaseController {
     merchandise.setOwnerName(getUserName());
     merchandise.setState("草稿");
 
-    if (merchandise.getTaxonId3() != 0) {
+    if (null != merchandise.getTaxonId3() && !merchandise.getTaxonId3().equals("")) {
       merchandise.setTaxonId(merchandise.getTaxonId3());
-    } else if (merchandise.getTaxonId2() != 0) {
+    } else if (null != merchandise.getTaxonId2() && !merchandise.getTaxonId2().equals("")) {
       merchandise.setTaxonId(merchandise.getTaxonId2());
     }
     mcdRep.save(merchandise);
@@ -625,12 +638,7 @@ public class MerchandiseMineController extends BaseController {
   // 修改精编基础信息
   @RequestMapping("{id}/basic/toModify")
   public String toModifyBasic(Model model, @PathVariable Long id) {
-    // Merchandise merchandise = refinedService.toModify(id);
-    // merchandise.setAlbums(albumRep.findByMerchandiseId(id));
-    // model.addAttribute("brands", initService.getBrands());
-    // model.addAttribute("genders", initService.getGenders());
-    // model.addAttribute("topTaxons", initService.getTopTaxons());
-    // model.addAttribute("merchandise", merchandise);
+
     return "redirect:../basic";
   }
 
@@ -646,7 +654,12 @@ public class MerchandiseMineController extends BaseController {
     return BASE_PATH + "basic";
   }
 
-
+  @InitBinder
+  public void initBinder(WebDataBinder binder, WebRequest request) {
+    // 转换日期
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
+  }
 
   // 保存基本信息
   @RequestMapping("{id}/basic/save")
@@ -658,9 +671,10 @@ public class MerchandiseMineController extends BaseController {
     newM.setAlbumId(merchandise.getAlbumId());
     newM.setBrandId(merchandise.getBrandId());
     newM.setGenderId(merchandise.getGenderId());
-    if (merchandise.getTaxonId3() != 0) {
+
+    if (null != merchandise.getTaxonId3() && !merchandise.getTaxonId3().equals("")) {
       newM.setTaxonId(merchandise.getTaxonId3());
-    } else if (merchandise.getTaxonId2() != 0) {
+    } else if (null != merchandise.getTaxonId2() && !merchandise.getTaxonId2().equals("")) {
       newM.setTaxonId(merchandise.getTaxonId2());
     }
     mcdRep.save(newM);
@@ -676,11 +690,13 @@ public class MerchandiseMineController extends BaseController {
   @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
   public String draft(Merchandise merchandise) {
     merchandise = mcdRep.findOne(merchandise.getId());
-    StateChange sc = new StateChange(merchandise.getId(), merchandise.getState(), "草稿", "");
+    StateChange sc = new StateChange(merchandise.getId(), merchandise.getState(), "草稿", "修改精编");
     saveChange(sc);
     merchandise.setState("草稿");
     mcdRep.save(merchandise);
-    // mcdRep.updateSateById("草稿", merchandise.getId());
+    if (sc.getOldState().equals("已发布") && sc.getNewState().equals("草稿")) {
+      esOperation.postToEs(merchandise.getId(), "草稿");
+    }
     return "redirect:../queryList";
 
   }
@@ -690,19 +706,22 @@ public class MerchandiseMineController extends BaseController {
   @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
   public String publish(Merchandise merchandise) {
     StateChange sc;
-
     merchandise = mcdRep.findOne(merchandise.getId());
     if (merchandise.getReviewNeeded()) {
-      // mcdRep.updateSateById("待审核", merchandise.getId());
-      sc = new StateChange(merchandise.getId(), merchandise.getState(), "待审核", "");
+      sc = new StateChange(merchandise.getId(), merchandise.getState(), "待审核", "修改精编");
+
       merchandise.setState("待审核");
     } else {
-      sc = new StateChange(merchandise.getId(), merchandise.getState(), "已发布", "");
-      merchandise.setState("已发布");
-      // mcdRep.updateSateById("已发布", merchandise.getId());
-    }
+      sc = new StateChange(merchandise.getId(), merchandise.getState(), "已发布", "修改精编");
 
+      merchandise.setState("已发布");
+    }
     mcdRep.save(merchandise);
+    if (sc.getOldState().equals("已发布") && sc.getNewState().equals("待审核")) {
+      esOperation.postToEs(merchandise.getId(), "待审核");
+    } else if (sc.getOldState().equals("已发布") && sc.getNewState().equals("已发布")) {
+      esOperation.postToEs(merchandise.getId(), "已发布");
+    }
     saveChange(sc);
     return "redirect:../queryList";
 
@@ -724,7 +743,6 @@ public class MerchandiseMineController extends BaseController {
   @RequestMapping("{id}")
   public String show(Model model, @PathVariable Long id) {
     Merchandise merchandise = refinedService.toModify(id);
-
     model.addAttribute("topTaxons", initService.getRocDataList(CacheKey.TOPTAXONS));
     model.addAttribute("merchandise", merchandise);
     return BASE_PATH + "detail";
@@ -736,11 +754,12 @@ public class MerchandiseMineController extends BaseController {
     Merchandise merchandise = mcdRep.findOne(id);
     StateChange sc = new StateChange(id, merchandise.getState(), "回收站", "删除精编");
     saveChange(sc);
+    if (merchandise.getState().equals("已发布")) {
+      esOperation.deleteOne(id);
+    }
     merchandise.setState("回收站");
     merchandise.setReviewNeeded(true);
     mcdRep.save(merchandise);
-    // mcdRep.updateSateBuId("回收站", id);
-    // mcdRep.updateSate(true, "回收站", id);
     model.addFlashAttribute("redirectAttr", m);
     return "redirect:../queryList";
   }
@@ -753,12 +772,9 @@ public class MerchandiseMineController extends BaseController {
     mcdRep.save(merchandise);
     StateChange sc = new StateChange(id, "已禁用", "已发布", "");
     saveChange(sc);
-
-    // mcdRep.updateSateById("已发布", id);
-
+    esOperation.updateDocumentState(id + "", "已发布");
     model.addFlashAttribute("redirectAttr", m);
     return "redirect:../queryList";
-    // return queryList(model, m, m.getPage());
   }
 
   @RequestMapping("{id}/disable")
@@ -768,7 +784,7 @@ public class MerchandiseMineController extends BaseController {
     mcdRep.save(merchandise);
     StateChange sc = new StateChange(id, "已发布", "已禁用", "");
     saveChange(sc);
-    // mcdRep.updateSateById("已禁用", id);
+    esOperation.updateDocumentState(id + "", "已禁用");
     model.addFlashAttribute("redirectAttr", m);
     return "redirect:../queryList";
   }

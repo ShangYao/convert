@@ -23,12 +23,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable().authorizeRequests().antMatchers("/logout").permitAll()
-        .antMatchers("/api/**").permitAll().antMatchers("/merchandise/index").permitAll()
+        .antMatchers("/api/**").permitAll().antMatchers("/merchandise/mine/index").permitAll()
         .antMatchers("/images/**").permitAll().antMatchers("/js/**").permitAll()
         .antMatchers("/css/**").permitAll().antMatchers("/fonts/**").permitAll()
         .antMatchers("/favicon.ico").permitAll().antMatchers("/").permitAll().anyRequest()
         .authenticated().and().formLogin().loginPage("/login")
-        .defaultSuccessUrl("/merchandise/index").failureUrl("/login?error").permitAll().and()
+        .defaultSuccessUrl("/merchandise/mine/index").failureUrl("/login?error").permitAll().and()
         .sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry).and().and()
         .logout().invalidateHttpSession(true).clearAuthentication(true).and().httpBasic();
 

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.jinanlongen.sparrow.domain.Merchandise;
-import com.jinanlongen.sparrow.repository.UserRep;
 import com.jinanlongen.sparrow.roc.domain.CacheKey;
 import com.jinanlongen.sparrow.service.CacheService;
 import com.jinanlongen.sparrow.service.RefinedAllService;
@@ -25,8 +24,6 @@ public class RefinedAllController extends BaseController {
   private static String refinede_html_path = "merchandise/all/";
   @Autowired
   private RefinedAllService refinedAllService;
-  @Autowired
-  private UserRep userRep;
 
   @Autowired
   private RefinedMineService refinedService;
@@ -35,9 +32,6 @@ public class RefinedAllController extends BaseController {
 
   @RequestMapping("all")
   public String all(Model model) {
-    // model.addAttribute("merchandise", new Merchandise());
-    // model.addAttribute("shopList", storeRep.findAll());
-    // model.addAttribute("userList", userRep.findByHasRefinedTrue());
     return "redirect:queryAll";
   }
 
@@ -45,10 +39,11 @@ public class RefinedAllController extends BaseController {
   public String queryAll(Model model, Merchandise merchandise,
       @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum) {
     merchandise.setPage(pageNum);
-
+    merchandise.setReviewerId(getUserId());
 
     Merchandise mcd = refinedAllService.queryAll(merchandise);
-    model.addAttribute("userList", userRep.findByHasRefinedTrue());
+    model.addAttribute("userList",
+        refinedAllService.findUserBySameGroup(merchandise.getReviewerId()));
     model.addAttribute("merchandise", mcd);
     return refinede_html_path + "all";
   }

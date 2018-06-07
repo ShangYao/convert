@@ -1,9 +1,7 @@
 package com.jinanlongen.sparrow.security;
 
 import java.util.Collection;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDecisionManager;
@@ -18,55 +16,58 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UrlAccessDecisionManager implements AccessDecisionManager {
-	private Logger logger = LoggerFactory.getLogger(UrlAccessDecisionManager.class);
+  private Logger logger = LoggerFactory.getLogger(UrlAccessDecisionManager.class);
 
-	@Override
-	public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes)
-			throws AccessDeniedException, InsufficientAuthenticationException {
-		HttpServletRequest request = ((FilterInvocation) object).getHttpRequest();
-		String url;
+  @Override
+  public void decide(Authentication authentication, Object object,
+      Collection<ConfigAttribute> configAttributes)
+      throws AccessDeniedException, InsufficientAuthenticationException {
+    HttpServletRequest request = ((FilterInvocation) object).getHttpRequest();
 
-		if (matchers("/images/**", request) || matchers("/js/**", request) || matchers("/api/**", request)
-				|| matchers("/css/**", request) || matchers("/fonts/**", request) || matchers("/", request)
-				|| matchers("/refined/index", request) || matchers("/favicon.ico", request)
-				|| matchers("/login", request)) {
-			return;
-		} else {
-			if (null == authentication.getAuthorities()) {
-				throw new AccessDeniedException("此用户无任何权限");
-			}
-			for (GrantedAuthority ga : authentication.getAuthorities()) {
-				if (ga instanceof UrlGrantedAuthority) {
-					UrlGrantedAuthority urlGrantedAuthority = (UrlGrantedAuthority) ga;
-					url = urlGrantedAuthority.getPermissionUrl();
-					if (matchers(url, request)) {
-						// logger.info("用户{}正在访问：{}", authentication.getName(),
-						// request.getRequestURL().toString());
-						return;
-					}
-				}
-			}
+    String url;
 
-		}
-		logger.info("用户{}无权限访问：{}", authentication.getName(), request.getRequestURL().toString());
-		throw new AccessDeniedException("无访问权限");
-	}
+    if (matchers("/images/**", request) || matchers("/js/**", request)
+        || matchers("/api/**", request) || matchers("/css/**", request)
+        || matchers("/fonts/**", request) || matchers("/", request)
+        || matchers("/refined/index", request) || matchers("/favicon.ico", request)
+        || matchers("/login", request)) {
+      return;
+    } else {
+      if (null == authentication.getAuthorities()) {
+        throw new AccessDeniedException("此用户无任何权限");
+      }
+      for (GrantedAuthority ga : authentication.getAuthorities()) {
+        if (ga instanceof UrlGrantedAuthority) {
+          UrlGrantedAuthority urlGrantedAuthority = (UrlGrantedAuthority) ga;
+          url = urlGrantedAuthority.getPermissionUrl();
+          if (matchers(url, request)) {
+            // logger.info("用户{}正在访问：{}", authentication.getName(),
+            // request.getRequestURL().toString());
+            return;
+          }
+        }
+      }
 
-	@Override
-	public boolean supports(ConfigAttribute attribute) {
-		return true;
-	}
+    }
+    logger.info("用户{}无权限访问：{}", authentication.getName(), request.getRequestURL().toString());
+    throw new AccessDeniedException("无访问权限");
+  }
 
-	@Override
-	public boolean supports(Class<?> clazz) {
-		return true;
-	}
+  @Override
+  public boolean supports(ConfigAttribute attribute) {
+    return true;
+  }
 
-	private boolean matchers(String url, HttpServletRequest request) {
-		AntPathRequestMatcher matcher = new AntPathRequestMatcher(url);
-		if (matcher.matches(request)) {
-			return true;
-		}
-		return false;
-	}
+  @Override
+  public boolean supports(Class<?> clazz) {
+    return true;
+  }
+
+  private boolean matchers(String url, HttpServletRequest request) {
+    AntPathRequestMatcher matcher = new AntPathRequestMatcher(url);
+    if (matcher.matches(request)) {
+      return true;
+    }
+    return false;
+  }
 }

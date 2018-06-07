@@ -53,12 +53,12 @@ public class RefinedMaintainService {
               "%" + merchandise.getQueryString().toUpperCase() + "%"));
           // }
         }
-        if (StringUtils.isNotBlank(merchandise.getState())) {
-          Expression<String> exp = root.get("state").as(String.class);
-          lstPredicates.add(exp.in(Arrays.asList("已发布", "已禁用")));
-          // lstPredicates.add(cb.equal(root.get("state").as(String.class),
-          // merchandise.getState()));
-        }
+        // if (StringUtils.isNotBlank(merchandise.getState())) {
+        Expression<String> exp = root.get("state").as(String.class);
+        lstPredicates.add(exp.in(Arrays.asList("已发布", "已禁用")));
+        // lstPredicates.add(cb.equal(root.get("state").as(String.class),
+        // merchandise.getState()));
+        // }
 
         if (StringUtils.isNotBlank(merchandise.getEndMaintain())) {
           lstPredicates.add(cb.lessThanOrEqualTo(root.get("maintainAt").as(Date.class),

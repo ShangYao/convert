@@ -18,4 +18,6 @@ public interface TaxonRep extends JpaRepository<Taxon, Long> {
 
   @Query(value = "SELECT * FROM taxons where ancestry like ? ", nativeQuery = true)
   List<Taxon> getTaxon3(String id);
+
+  List<Taxon> findByCode(String code);
 }

@@ -1,24 +1,19 @@
 package com.jinanlongen.sparrow.controller;
 
-import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.jinanlongen.sparrow.domain.LineItem;
 import com.jinanlongen.sparrow.domain.Merchandise;
-import com.jinanlongen.sparrow.domain.SourceUrl;
 import com.jinanlongen.sparrow.domain.StateChange;
-import com.jinanlongen.sparrow.repository.LineItemRep;
 import com.jinanlongen.sparrow.repository.MerchandiseRep;
-import com.jinanlongen.sparrow.repository.SourceUrlRep;
 import com.jinanlongen.sparrow.repository.StateChangeRep;
-import com.jinanlongen.sparrow.repository.UserRep;
 import com.jinanlongen.sparrow.roc.domain.CacheKey;
 import com.jinanlongen.sparrow.service.CacheService;
+import com.jinanlongen.sparrow.service.EsOperationService;
 import com.jinanlongen.sparrow.service.RefinedAuditService;
 import com.jinanlongen.sparrow.service.RefinedMineService;
 import com.jinanlongen.sparrow.service.StateChangeService;
@@ -31,6 +26,7 @@ import com.jinanlongen.sparrow.service.StateChangeService;
  */
 @Controller
 @RequestMapping("merchandise/audit/")
+@EnableAsync
 public class RefinedAuditController extends BaseController {
   private static String refinede_html_path = "merchandise/audit/";
   @Autowired
@@ -38,19 +34,15 @@ public class RefinedAuditController extends BaseController {
   @Autowired
   private RefinedAuditService refinedAuditService;
   @Autowired
-  private UserRep userRep;
-  @Autowired
   private StateChangeRep scRep;
   @Autowired
   private StateChangeService scService;
   @Autowired
-  private LineItemRep itemRep;
-  @Autowired
-  private SourceUrlRep urlRep;
-  @Autowired
   private RefinedMineService refinedService;
   @Autowired
   private CacheService initService;
+  @Autowired
+  private EsOperationService esOperation;
 
   @RequestMapping("audit")
   public String audit() {
@@ -63,25 +55,16 @@ public class RefinedAuditController extends BaseController {
       @RequestParam(value = "pageNum", defaultValue = "0") Integer pageNum) {
     merchandise.setState("待审核");
     merchandise.setPage(pageNum);
-
+    merchandise.setReviewerId(getUserId());
 
     Merchandise mcd = refinedAuditService.auditQuery(merchandise);
-    model.addAttribute("userList", userRep.findByHasRefinedTrue());
+    model.addAttribute("userList",
+        refinedAuditService.findUserBySameGroup(merchandise.getReviewerId()));
     model.addAttribute("merchandise", mcd);
     return refinede_html_path + "auditList";
   }
 
-  // 跳转精编审核页
-  @RequestMapping("toAudit")
-  public String toAuditold(Model model, Long id) {
-    Merchandise merchandise = mcdRep.findOne(id);
-    Set<LineItem> ids = itemRep.findByMId(merchandise.getId());
-    merchandise.setLineItems(ids);
-    List<SourceUrl> urls = urlRep.findByMerchandiseIdAndState(merchandise.getId(), 1);
-    merchandise.setSourceUrl(urls);
-    model.addAttribute("merchandise", merchandise);
-    return refinede_html_path + "audit";
-  }
+
 
   // 跳转精编详情
   @RequestMapping("{id}")
@@ -103,6 +86,7 @@ public class RefinedAuditController extends BaseController {
     if ("已发布".equals(state)) {
       merchandise.setState(state);
       merchandise.setReviewNeeded(false);
+
     } else {
       merchandise.setReviewNeeded(true);
       if (merchandise.getDeclinedCount() >= 1) {
@@ -116,9 +100,10 @@ public class RefinedAuditController extends BaseController {
     merchandise.setReviewerId(getUserId());
     merchandise.setReviewerName(getUserName());
     mcdRep.save(merchandise);
+    esOperation.postToEs(id, merchandise.getState());
     saveChange(merchandise.getId(), oldeState, newState, mer.getDeclinedReason());
 
-    return "redirect:../" + id;
+    return "redirect:../mine/" + id;
   }
 
 

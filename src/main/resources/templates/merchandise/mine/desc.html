@@ -38,8 +38,9 @@
 			<form class="form-horizontal" id="defaultForm" th:object="${desc}"
 				method="POST" action="addDesc" onsubmit="return false">
 				<input type="hidden" name="id" th:value="*{id}" /> <input
-					type="hidden" name="merchandiseId" id="merchandiseId" th:value="*{merchandiseId}" />
-				<input type="hidden" id="login_user"
+					type="hidden" name="merchandiseId" id="merchandiseId"
+					th:value="*{merchandiseId}" /> <input type="hidden"
+					id="login_user"
 					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
 				<input type="hidden" id="message" th:value="*{alertMessage}" />
 				<div class="panel-heading">
@@ -54,12 +55,13 @@
 								th:value="*{name}" placeholder="名称" />
 						</div>
 					</div>
-					
+
 					<div class="form-group">
-					
+
 						<label for="size" class="col-sm-2 control-label">详情</label>
 						<div class="col-sm-10">
-								<textarea name="content" th:value="*{content}"  th:text="*{content}" > </textarea>
+							<textarea name="content" th:value="*{content}"
+								th:text="*{content}"> </textarea>
 						</div>
 					</div>
 
@@ -71,7 +73,8 @@
 
 
 
-				<div th:if="*{id}!=0"  class="form-group " style="text-align: center;">
+				<div th:if="*{id}!=0" class="form-group "
+					style="text-align: center;">
 					<div class="col-sm-4 ">
 						<button class="btn btn-default" onclick="modify()">修改</button>
 					</div>
@@ -79,7 +82,8 @@
 						<button class="btn btn-default" onclick="modifyBack()">返回</button>
 					</div>
 				</div>
-				<div th:if="*{id}==0"  class="form-group " style="text-align: center;">
+				<div th:if="*{id}==0" class="form-group "
+					style="text-align: center;">
 					<div th:if="*{id}==0" class="col-sm-4 ">
 						<button class="btn btn-default" onclick="add()">添加</button>
 					</div>
@@ -92,32 +96,32 @@
 		</div>
 
 	</div>
-<script>
-var mid=$("#merchandiseId").val();
-	tinymce
-			.init({
-				selector : "textarea",
-				upload_image_url : '/merchandise/upload?mid='+mid, //配置的上传图片的路由
-				height : 400,
-				language : 'zh_CN',
-				plugins : [
-						'advlist autolink lists link  charmap print preview hr anchor pagebreak',
-						'searchreplace wordcount visualblocks visualchars code fullscreen',
-						'insertdatetime media nonbreaking save table contextmenu directionality',
-						'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help uploadimage' ],
-				toolbar1 : 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-				toolbar2 : 'print preview media | forecolor backcolor  | codesample help uploadimage',
-				image_advtab : true,
-				templates : [ {
-					title : 'Test template 1',
-					content : 'Test 1'
-				}, {
-					title : 'Test template 2',
-					content : 'Test 2'
-				} ],
-				menubar : false
-			});
-</script>
+	<script>
+		var mid = $("#merchandiseId").val();
+		tinymce
+				.init({
+					selector : "textarea",
+					upload_image_url : '/merchandise/mine/upload?mid=' + mid, //配置的上传图片的路由
+					height : 400,
+					language : 'zh_CN',
+					plugins : [
+							'advlist autolink lists link  charmap print preview hr anchor pagebreak',
+							'searchreplace wordcount visualblocks visualchars code fullscreen',
+							'insertdatetime media nonbreaking save table contextmenu directionality',
+							'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help uploadimage' ],
+					toolbar1 : 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+					toolbar2 : 'print preview media | forecolor backcolor  | codesample help uploadimage',
+					image_advtab : true,
+					templates : [ {
+						title : 'Test template 1',
+						content : 'Test 1'
+					}, {
+						title : 'Test template 2',
+						content : 'Test 2'
+					} ],
+					menubar : false
+				});
+	</script>
 
 	<script src="/js/alert.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
@@ -153,7 +157,7 @@ var mid=$("#merchandiseId").val();
 				return false;
 			}
 
-			defaultForm.action="../modifyDesc";
+			defaultForm.action = "../modifyDesc";
 			defaultForm.submit();
 
 		}

@@ -1,10 +1,13 @@
 package com.jinanlongen.sparrow.service;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.apache.commons.lang.StringUtils;
@@ -12,7 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import com.jinanlongen.sparrow.domain.Merchandise;
+import com.jinanlongen.sparrow.domain.User;
+import com.jinanlongen.sparrow.repository.GroupRep;
 import com.jinanlongen.sparrow.repository.MerchandiseRep;
+import com.jinanlongen.sparrow.repository.UserRep;
 import com.jinanlongen.sparrow.util.DateUtils;
 
 /**
@@ -25,6 +31,10 @@ import com.jinanlongen.sparrow.util.DateUtils;
 public class RefinedAllService {
   @Autowired
   private MerchandiseRep mcdRep;
+  @Autowired
+  private GroupRep groupRep;
+  @Autowired
+  private UserRep userRep;
 
   public Merchandise queryAll(final Merchandise merchandise) {
     merchandise
@@ -52,6 +62,12 @@ public class RefinedAllService {
         // }
         //
         // }
+        List<BigInteger> ownerIds = groupRep.getUidsByGid(merchandise.getReviewerId());
+        List<Long> ids = ownerIds.stream().map(i -> i.longValue()).collect(Collectors.toList());
+        Expression<Long> exp = root.get("ownerId").as(Long.class);
+        lstPredicates.add(exp.in(ids));
+
+
         if (0 != merchandise.getOwnerId()) {
           lstPredicates.add(cb.equal(root.get("ownerId").as(Long.class), merchandise.getOwnerId()));
         }
@@ -92,4 +108,12 @@ public class RefinedAllService {
     };
   }
 
+  public List<User> findUserBySameGroup(long reviewerId) {
+    List<User> users = new ArrayList<User>();
+    List<BigInteger> ownerIds = groupRep.getUidsByGid(reviewerId);
+    for (BigInteger id : ownerIds) {
+      users.add(userRep.findOne(id.longValue()));
+    }
+    return users;
+  }
 }

@@ -55,8 +55,8 @@
 							<select id="genderId" class="selectpicker show-tick form-control"
 								name="genderId" data-live-search="true">
 								<option value="0">选择性别</option>
-								<option th:each="gender:${genders}" th:value="${gender.id}"
-									th:selected="${gender.id}==*{genderId}"
+								<option th:each="gender:${genders}" th:value="${gender.code}"
+									th:selected="${gender.code}==*{genderId}"
 									th:text="${gender.name}"></option>
 							</select>
 						</div>
@@ -67,8 +67,8 @@
 							<select id="brandId" class="selectpicker show-tick form-control"
 								name="brandId" data-live-search="true">
 								<option value="0">选择品牌</option>
-								<option th:each="brand:${brands}" th:value="${brand.id}"
-									th:selected="${brand.id}==*{brandId}" th:text="${brand.name}"></option>
+								<option th:each="brand:${brands}" th:value="${brand.code}"
+									th:selected="${brand.code}==*{brandId}" th:text="${brand.name}"></option>
 							</select>
 						</div>
 					</div>
@@ -78,7 +78,7 @@
 							<select class="form-control" id="taxon1" th:value="${taxonId}"
 								onchange="getTaxon2(this.value)">
 								<option value="0">选择一级分类</option>
-								<option th:each="taxon:${topTaxons}" th:value="${taxon.id}"
+								<option th:each="taxon:${topTaxons}" th:value="${taxon.code}"
 									th:text="${taxon.name}"></option>
 							</select> <select class="form-control" id="taxon2" name="taxonId2" 
 								onchange="getTaxon3(this.value)">

@@ -34,8 +34,10 @@ public class Image extends BaseDomain {
   private long id;
   @JsonIgnore
   private long albumId;
+  @Transient
   private String name;
   private String url;
+  private String fingerprint;
   private int code;
   @CreatedDate
   private Date createdAt;
@@ -46,6 +48,14 @@ public class Image extends BaseDomain {
 
   public Date getCreatedAt() {
     return createdAt;
+  }
+
+  public String getFingerprint() {
+    return fingerprint;
+  }
+
+  public void setFingerprint(String fingerprint) {
+    this.fingerprint = fingerprint;
   }
 
   public void setCreatedAt(Date createdAt) {

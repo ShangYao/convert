@@ -40,7 +40,9 @@
 				th:object="${merchandise}" method="POST" onsubmit="return false">
 				<input type="hidden" name="id" id="id" th:value="*{id}" /> <input
 					type="hidden" name="alertEnabled" th:value="*{alertEnabled}" /> <input
-					type="hidden" name="reviewerId" th:value="*{reviewerId}" /> <input
+					type="hidden" name="reviewerId" th:value="*{reviewerId}" />
+					 <input
+					type="hidden" name="reviewerName" th:value="*{reviewerName}" /> <input
 					type="hidden" name="createdAt" th:value="*{createdAt}" /> <input
 					type="hidden" name="state" th:value="*{state}" /> <input
 					type="hidden" name="reviewNeeded" th:value="*{reviewNeeded}" /> <input
@@ -62,8 +64,8 @@
 							<select id="genderId" class="selectpicker show-tick form-control"
 								name="genderId" data-live-search="true">
 								<option value="0">选择性别</option>
-								<option th:each="gender:${genders}" th:value="${gender.id}"
-									th:selected="${gender.id}==*{genderId}"
+								<option th:each="gender:${genders}" th:value="${gender.code}"
+									th:selected="${gender.code}==*{genderId}"
 									th:text="${gender.name}"></option>
 							</select>
 						</div>
@@ -74,8 +76,8 @@
 							<select id="brandId" class="selectpicker show-tick form-control"
 								name="brandId" data-live-search="true">
 								<option value="0">选择品牌</option>
-								<option th:each="brand:${brands}" th:value="${brand.id}"
-									th:selected="${brand.id}==*{brandId}" th:text="${brand.name}"></option>
+								<option th:each="brand:${brands}" th:value="${brand.code}"
+									th:selected="${brand.code}==*{brandId}" th:text="${brand.name}"></option>
 							</select>
 						</div>
 					</div>
@@ -85,17 +87,17 @@
 							<select class="form-control" id="taxon1" th:value="${taxonId}"
 								onchange="getTaxon2(this.value)">
 								<option value="0">选择一级分类</option>
-								<option th:each="taxon:${topTaxons}" th:value="${taxon.id}"
+								<option th:each="taxon:${topTaxons}" th:value="${taxon.code}"
 									th:text="${taxon.name}" th:selected="*{taxon1.id}==${taxon.id}"></option>
 							</select> <select class="form-control" id="taxon2" name="taxonId2" 
 								onchange="getTaxon3(this.value)">
 								<option value="0">选择二级分类</option>
 								<option th:if="*{taxon2}!=null" th:text="*{taxon2.name}"
-									th:value="*{taxon2.id}" th:selected="true"></option>
+									th:value="*{taxon2.code}" th:selected="true"></option>
 							</select> <select class="form-control " name="taxonId3" 
 								id="taxon3">
 								<option th:if="*{taxon3}!=null" th:text="*{taxon3.name}"
-									th:value="*{taxon3.id}" th:selected="true"></option>
+									th:value="*{taxon3.code}" th:selected="true"></option>
 								<option value="0">选择三级分类</option>
 							</select>
 
@@ -164,7 +166,7 @@
 				alert("请选择类目！");
 				return false;
 			}
-			defaultForm.action = "../albums";
+			defaultForm.action = "albums";
 			defaultForm.submit();
 
 		}
