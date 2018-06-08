@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import com.jinanlongen.sparrow.domain.Size;
 
 public interface SizeRep extends JpaRepository<Size, Long> {
-  @Query(value = "select count(*) from sizes where name=? and merchandise_id=? ",
+  @Query(value = "SELECT COUNT(*) FROM SIZES WHERE NAME=? AND MERCHANDISE_ID=? ",
       nativeQuery = true)
   int countSize(String name, long merchandiseId);
 
-  @Query(value = "select count(*) from sizes where name=? and merchandise_id=? and id !=?",
+  @Query(value = "SELECT COUNT(*) FROM SIZES WHERE NAME=? AND MERCHANDISE_ID=? AND ID !=?",
       nativeQuery = true)
   int countSize2(String name, long merchandiseId, long id);
 

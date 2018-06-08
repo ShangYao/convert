@@ -6,17 +6,17 @@ import org.springframework.data.jpa.repository.Query;
 import com.jinanlongen.sparrow.domain.Color;
 
 public interface ColorRep extends JpaRepository<Color, Long> {
-  @Query(value = "select count(*) from colors where name=? and merchandise_id=? ",
+  @Query(value = "SELECT COUNT(*) FROM COLORS WHERE NAME=? AND MERCHANDISE_ID=? ",
       nativeQuery = true)
   int countColor(String name, long merchandiseId);
 
-  @Query(value = "select count(*) from colors where name=? and merchandise_id=? and id !=?",
+  @Query(value = "SELECT COUNT(*) FROM COLORS WHERE NAME=? AND MERCHANDISE_ID=? AND ID !=?",
       nativeQuery = true)
   int countColor2(String name, long merchandiseId, long id);
 
 
   List<Color> findByMerchandiseId(long mid);
 
-  @Query(value = "select name from  colors WHERE ID=?", nativeQuery = true)
+  @Query(value = "SELECT NAME FROM  COLORS WHERE ID=?", nativeQuery = true)
   String findNameById(long id);
 }

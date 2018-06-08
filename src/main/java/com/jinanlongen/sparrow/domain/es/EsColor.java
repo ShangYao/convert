@@ -3,9 +3,9 @@ package com.jinanlongen.sparrow.domain.es;
 import com.jinanlongen.sparrow.domain.Color;
 
 public class EsColor {
-  private long id;
+  private String id;
   private String name;
-  private long album_id;
+  private String album_id;
   private String memo;
 
   @Override
@@ -14,13 +14,19 @@ public class EsColor {
         + "]";
   }
 
-  public long getId() {
+
+
+  public String getId() {
     return id;
   }
 
-  public void setId(long id) {
+
+
+  public void setId(String id) {
     this.id = id;
   }
+
+
 
   public String getName() {
     return name;
@@ -28,14 +34,6 @@ public class EsColor {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public long getAlbum_id() {
-    return album_id;
-  }
-
-  public void setAlbum_id(long album_id) {
-    this.album_id = album_id;
   }
 
   public String getMemo() {
@@ -46,11 +44,19 @@ public class EsColor {
     this.memo = memo;
   }
 
+  public String getAlbum_id() {
+    return album_id;
+  }
+
+  public void setAlbum_id(String album_id) {
+    this.album_id = album_id;
+  }
+
   public EsColor generate(Color color) {
-    this.id = color.getId();
+    this.id = color.getId() + "";
     this.name = color.getName();
     this.memo = color.getDescription();
-    this.album_id = color.getAlbumId();
+    this.album_id = color.getAlbumId() == 0 ? null : (color.getAlbumId() + "");
     return this;
   }
 

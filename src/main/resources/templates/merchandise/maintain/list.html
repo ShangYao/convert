@@ -78,8 +78,13 @@
 			<div class="panel-heading">
 				<form class="form-inline" id="myform" th:object="${merchandise}"
 					method="POST" action="queryAll">
-
 					<input type="text" class="form-control datetimepicker"
+						style="width: 120px" name="beginCreated" id="beginCreated"
+						th:value="*{beginCreated}" placeholder="创建日期开始" /> <input
+						type="text" class="form-control datetimepicker"
+						style="width: 120px" name="endCreated" id="endCreated"
+						th:value="*{endCreated}" placeholder="创建日期结束" /> <input
+						type="text" class="form-control datetimepicker"
 						style="width: 120px" name="beginMaintain" id="beginMaintain"
 						th:value="*{beginMaintain}" placeholder="维护日期开始" /> <input
 						type="text" class="form-control datetimepicker"
@@ -134,10 +139,11 @@
 								th:onclick="'javascript:maintain(\''+${merchandise.id}+'\')'"
 								title="维护精编"><span>维护</span></a> <a
 								th:onclick="'javascript:toModify(\''+${merchandise.id}+'\')'"
-								title="修改精编"><span>修改</span></a> <a th:if="${merchandise.state}=='已发布'"
+								title="修改精编"><span>修改</span></a> <a
+								th:if="${merchandise.state}=='已发布'"
 								th:onclick="'javascript:remove(\''+${merchandise.id}+'\')'"
-								title="禁用精编"><span>禁用</span></a>
-								<a th:if="${merchandise.state}=='已禁用'"
+								title="禁用精编"><span>禁用</span></a> <a
+								th:if="${merchandise.state}=='已禁用'"
 								th:onclick="'javascript:enableOne(\''+${merchandise.id}+'\')'"
 								title="启用精编"><span>启用</span></a></td>
 						</tr>
@@ -188,10 +194,10 @@
 				myform.submit();
 			}
 		}
-		
+
 		function toModify(id) {
 			myform.target = "_blank";
-			myform.action = "../" + id + "/modify";
+			myform.action = "../mine/" + id + "/modify";
 			myform.submit();
 		}
 

@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.jinanlongen.sparrow.domain.Merchandise;
 import com.jinanlongen.sparrow.domain.es.EsMerchandise;
+import com.jinanlongen.sparrow.util.StringUtils;
 
 @Service
 public class EsOperationService {
@@ -77,7 +78,7 @@ public class EsOperationService {
               .field("descs", parseJson(m.getDescs())).field("sizes", parseJson(m.getSizes()))
               .field("skus", parseJson(m.getSkus())).field("urls", parseJson(m.getUrls()))
               .field("albums", parseJson(m.getAlbums())).field("specs", parseJson(m.getSpecs()))
-              .field("manager", parseJson(m.getManager())).endObject()));
+              .field("owner", parseJson(m.getManager())).endObject()));
     } catch (IOException e) {
       logger.error("上传es失败,精编ID:{}" + m.getId());
       logger.error("{}", e.toString());
@@ -97,8 +98,8 @@ public class EsOperationService {
     updateRequest.type(TYPE);
     updateRequest.id(id);
     try {
-      updateRequest
-          .doc(XContentFactory.jsonBuilder().startObject().field("state", state).endObject());
+      updateRequest.doc(XContentFactory.jsonBuilder().startObject()
+          .field("state", StringUtils.stateTransfor(state)).endObject());
       UpdateResponse response = client.update(updateRequest).get();
       logger.info("修改状态，精编id{},是否更新{}", id, response.status());
     } catch (IOException e) {

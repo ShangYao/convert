@@ -5,7 +5,7 @@ import com.jinanlongen.sparrow.domain.Image;
 public class EsImage {
   private String id;
   private String path;
-  private String position;
+  private int position;
   private boolean main_candidate;
   private String type;
   private String url;
@@ -13,10 +13,10 @@ public class EsImage {
 
   public EsImage generate(Image image) {
     this.id = image.getId() + "";
-    this.position = image.getCode() + "";
+    this.position = image.getCode();
     String imageUrl = image.getUrl();
     this.url = imageUrl;
-    this.path = imageUrl.substring(imageUrl.indexOf("/"));
+    this.path = imageUrl.substring(imageUrl.indexOf("/sparrow"));
     this.fingerprint = image.getFingerprint();
     return this;
   }
@@ -37,11 +37,13 @@ public class EsImage {
     this.path = path;
   }
 
-  public String getPosition() {
+
+
+  public int getPosition() {
     return position;
   }
 
-  public void setPosition(String position) {
+  public void setPosition(int position) {
     this.position = position;
   }
 

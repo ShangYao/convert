@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.jinanlongen.sparrow.domain.Merchandise;
 import com.jinanlongen.sparrow.domain.StateChange;
+import com.jinanlongen.sparrow.repository.ImageRep;
 import com.jinanlongen.sparrow.repository.MerchandiseRep;
 import com.jinanlongen.sparrow.repository.StateChangeRep;
 import com.jinanlongen.sparrow.roc.domain.CacheKey;
@@ -43,6 +44,8 @@ public class RefinedAuditController extends BaseController {
   private CacheService initService;
   @Autowired
   private EsOperationService esOperation;
+  @Autowired
+  private ImageRep imageRep;
 
   @RequestMapping("audit")
   public String audit() {
@@ -73,6 +76,7 @@ public class RefinedAuditController extends BaseController {
 
     model.addAttribute("topTaxons", initService.getRocDataList(CacheKey.TOPTAXONS));
     model.addAttribute("merchandise", merchandise);
+    model.addAttribute("images", imageRep.findByAlbumId(merchandise.getAlbumId()));
     return refinede_html_path + "audit";
   }
 

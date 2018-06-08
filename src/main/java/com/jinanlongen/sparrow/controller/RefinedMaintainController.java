@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.jinanlongen.sparrow.domain.Maintain;
 import com.jinanlongen.sparrow.domain.Merchandise;
 import com.jinanlongen.sparrow.domain.StateChange;
+import com.jinanlongen.sparrow.repository.ImageRep;
 import com.jinanlongen.sparrow.repository.MaintainRep;
 import com.jinanlongen.sparrow.repository.MerchandiseRep;
 import com.jinanlongen.sparrow.repository.SourceUrlRep;
@@ -51,6 +52,8 @@ public class RefinedMaintainController extends BaseController {
   private CacheService initService;
   @Autowired
   private EsOperationService esOperation;
+  @Autowired
+  private ImageRep imageRep;
 
   @RequestMapping("list")
   public String list(Model model) {
@@ -77,6 +80,7 @@ public class RefinedMaintainController extends BaseController {
     Merchandise merchandise = refinedService.toModify(id);
     model.addAttribute("topTaxons", initService.getRocDataList(CacheKey.TOPTAXONS));
     model.addAttribute("merchandise", merchandise);
+    model.addAttribute("images", imageRep.findByAlbumId(merchandise.getAlbumId()));
     return basePath + "detail";
   }
 

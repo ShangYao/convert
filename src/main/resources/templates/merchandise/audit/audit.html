@@ -13,6 +13,10 @@
 <link rel="stylesheet" href="/css/formValidation.css" />
 <script src="/js/jquery.min.js"></script>
 
+
+<script type="text/javascript" src="/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="/js/tinymce/jquery.tinymce.min.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
 </head>
 <body>
 	<!-- 导航部分开始 修改密码包含在导航里面 -->
@@ -113,16 +117,25 @@
 					<div class="form-group">
 						<label for="url" class="col-sm-2 control-label">相册名称</label>
 						<div class="col-sm-10">
-
 							<a class="form-control" id="url" th:each="album:*{albums}"
 								th:value="${album.id}" th:selected="${album.id}==*{albumId}"
 								th:text="${album.name}" th:href="'../album/show/'+${album.id}"
 								target='_blank'> </a>
-
-
 						</div>
 					</div>
 
+				</div>
+				<div class="panel-heading">
+					<h3 class="panel-title">精编相册图片</h3>
+				</div>
+				<div class="panel-body">
+					<table class="table table-bordered table-condensed table-hover "
+						style="width: 90%;" align="center">
+						<tr>
+							<td th:each="image : ${images}"><img alt=""
+								th:src="${image.url}" height="100"></img></td>
+						</tr>
+					</table>
 				</div>
 				<!-- 原网链接部分 -->
 				<div class="panel-heading">
@@ -159,82 +172,7 @@
 				</div>
 
 
-				<!--  单品维度部分-->
-				<div class="panel-heading">
-					<h3 class="panel-title">颜色尺码</h3>
-				</div>
-				<div class="panel-body">
-					<ul class="nav nav-tabs" role="tablist" id="refinedlist">
-						<li role="presentation" class="active"><a href="#color"
-							aria-controls="color" role="tab" data-toggle="tab">颜色<span
-								class="badge"></span></a></li>
-						<li role="presentation"><a href="#size" aria-controls="size"
-							role="tab" data-toggle="tab">尺码<span class="badge"></span></a></li>
-					</ul>
 
-					<div class="tab-content">
-						<div role="tabpanel" class="tab-pane active" id="color">
-							<div class="table-responsive">
-								<table class="table table-bordered table-condensed table-hover "
-									style="width: 90%;" align="center">
-									<thead>
-										<tr class="success">
-											<th>ID</th>
-											<th>颜色名称</th>
-											<th>相册名称</th>
-											<th>描述</th>
-										</tr>
-									</thead>
-									<tbody>
-
-										<tr th:each="color : ${merchandise.colors}">
-											<td th:text="${color.id}"></td>
-											<!-- <td th:text="${merchandise.createdAt}">2018-01-08</td> -->
-											<td th:text="${color.name}">2018-01-08</td>
-											<td><a th:text="${color.albumName}"
-												th:href="'../album/show/'+${color.albumId}" target="_blank"></a></td>
-											<td th:text="${color.description}">2018-01-08</td>
-										</tr>
-
-									</tbody>
-								</table>
-
-
-							</div>
-						</div>
-						<div role="tabpanel" class="tab-pane" id="size">
-							<div class="table-responsive">
-								<table class="table table-bordered table-condensed table-hover "
-									style="width: 90%;" align="center">
-									<thead>
-										<tr class="success">
-											<th>ID</th>
-											<th>尺码名称</th>
-											<th>相册</th>
-											<th>描述</th>
-											<!-- <th>操作</th> -->
-										</tr>
-									</thead>
-									<tbody>
-
-										<tr th:each="size : *{sizes}">
-											<td th:text="${size.id}"></td>
-											<!-- <td th:text="${merchandise.createdAt}">2018-01-08</td> -->
-											<td th:text="${size.name}">2018-01-08</td>
-											<td><a th:text="${size.albumName}"
-												th:href="'../album/show/'+${size.albumId}" target="_blank"></a></td>
-											<td th:text="${size.description}">2018-01-08</td>
-
-										</tr>
-
-									</tbody>
-								</table>
-
-
-							</div>
-						</div>
-					</div>
-				</div>
 				<!--  单品信息部分-->
 				<div class="panel-heading">
 					<h3 class="panel-title">单品信息</h3>
@@ -299,13 +237,13 @@
 						<tr class="success">
 							<th>编号</th>
 							<th>名称</th>
-							<!-- <th>操作</th> -->
+							<th>预览</th>
 						</tr>
 						<tr th:each="desc : ${merchandise.descs}">
 							<td><a th:text="${desc.id}"
 								th:href="'../desc/show/'+${desc.id}" target="_blank"> </a></td>
 							<td th:text="${desc.name}">12</td>
-
+							<td><textarea name="content" th:text="${desc.content}"> </textarea></td>
 						</tr>
 
 					</table>

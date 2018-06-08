@@ -25,19 +25,25 @@
 			<li><a href="#">添加精编</a></li>
 			<li class="active">相册管理</li>
 		</ol>
-
 		<div class="panel-heading">
 			<form method="POST" id="myform" th:object="${merchandise}">
-				精编id：<span>
-				<input type="hidden" th:value="*{id}" id="id"/>
-				<a  th:text="*{id}"  onclick="merchandise()"></a>
-			<button type="button" onclick="toAdd()" class="btn btn-info" style="float: right;" >添加相册</button>
-				</span>
+				精编id：<span> <input type="hidden" th:value="*{id}" id="id" />
+					<a th:text="*{id}" onclick="merchandise()"></a>
+					&nbsp;&nbsp;&nbsp;&nbsp; 精编主相册： <select id="albumId"
+					class="selectpicker show-tick " name="albumId"
+					data-live-search="true">
+						<option value="0">选择相册</option>
+						<option th:if="*{albums}!=null" th:each="album:*{albums}"
+							th:value="${album.id}" th:selected="${album.id}==*{albumId}"
+							th:text="${album.name}"></option>
+				</select>
 
+					<button type="button" onclick="toAdd()" class="btn btn-info"
+						style="float: right;">添加相册</button>
+				</span>
 			</form>
 		</div>
 		<table class="table table-bordered table-condensed table-hover ">
-
 			<thead>
 				<tr class="success">
 					<th>相册编号</th>
@@ -48,19 +54,27 @@
 			</thead>
 			<tbody>
 				<tr th:each="album: ${merchandise.albums}">
-					<td ><a th:text="${album.id}" th:href="'../album/'+${album.id}">
-					
+					<td><a th:text="${album.id}" th:href="'../album/'+${album.id}">
 					</a></td>
 					<td th:text="${album.name}"></td>
 					<td th:text="${album.createdAt}"></td>
 
-					<td><a th:href="@{../toModifyAlbum(id=${album.id})}" title="修改相册名称"><span
-							class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp; <a
-						th:onclick="'javascript:deleteOne(\''+${album.id}+'\')'" title="删除"><span
-							class="glyphicon glyphicon-trash"></span></a></td>
+					<td><a th:href="@{../toModifyAlbum(id=${album.id})}"
+						title="修改相册名称"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;
+						<a th:onclick="'javascript:deleteOne(\''+${album.id}+'\')'"
+						title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
 				</tr>
 			</tbody>
 		</table>
+
+		<!-- <div class="col-sm-4 " style="text-align: center;">
+			<input type="button" value="返回添加精编" class="btn btn-default"
+				onclick="merchandise()" />
+		</div> -->
+		<div class="col-sm-4 " style="text-align: center;" align="center">
+			<input type="button" value="下一步" class="btn btn-default"
+				onclick="merchandise()" />
+		</div>
 		<input type="hidden" id="login_user"
 			th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
 	</div>
@@ -78,13 +92,17 @@
 			}
 		}
 		function toAdd() {
-			var mid=$("#id").val();
-			myform.action = "../addAlbum?id="+mid;
+			var mid = $("#id").val();
+			myform.action = "../addAlbum?id=" + mid;
 			myform.submit();
 		}
 		function merchandise() {
-		//	var mid=$("#id").val();
-			myform.action = "basic";
+			//	var mid=$("#id").val();
+			if($("#albumId").val()==0){
+				alert("请先选择相册！");
+				return false;
+			}
+			myform.action = "saveAlbumId";
 			myform.submit();
 		}
 	</script>

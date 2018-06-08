@@ -11,6 +11,7 @@ import com.jinanlongen.sparrow.domain.Merchandise;
 import com.jinanlongen.sparrow.domain.Size;
 import com.jinanlongen.sparrow.domain.SourceUrl;
 import com.jinanlongen.sparrow.domain.Spec;
+import com.jinanlongen.sparrow.util.StringUtils;
 
 public class EsMerchandise {
   private String id;
@@ -38,8 +39,8 @@ public class EsMerchandise {
   public EsMerchandise generate(Merchandise m) {
     this.id = m.getId() + "";
     this.title = m.getTitle();
-    this.state = m.getState();
-    this.album_id = m.getAlbumId() + "";
+    this.state = StringUtils.stateTransfor(m.getState());
+    this.album_id = m.getAlbumId() == 0 ? null : (m.getAlbumId() + "");
     this.created_at = m.getCreatedAt().getTime();
     this.updated_at = m.getUpdatedAt().getTime();
 

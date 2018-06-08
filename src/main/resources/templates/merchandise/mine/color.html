@@ -74,30 +74,59 @@
 
 				</div>
 
-
-
-
-				<div th:if="*{id}!=0" class="form-group "
-					style="text-align: center;">
-					<div class="col-sm-4 ">
-						<button class="btn btn-default" onclick="modify()">修改</button>
-					</div>
-					<div class="col-sm-4 ">
-						<button class="btn btn-default" onclick="modifyBack()">返回</button>
-					</div>
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						颜色列表
+					</h3>
 				</div>
-				<div th:if="*{id}==0" class="form-group "
-					style="text-align: center;">
-					<div th:if="*{id}==0" class="col-sm-4 ">
-						<button class="btn btn-default" onclick="add()">添加</button>
-					</div>
-					<div class="col-sm-4 ">
-						<button class="btn btn-default" onclick="back()">返回</button>
-					</div>
+				<div class="panel-body">
+					<table class="table table-bordered table-condensed table-hover "
+						style="width: 90%;" align="center">
+						<thead>
+							<tr class="success">
+								<th>ID</th>
+								<th>颜色名称</th>
+								<th>相册名称</th>
+								<th>描述</th>
+								<!-- <th>操作</th> -->
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="color : ${colors}">
+								<td th:text="${color.id}"></td>
+								<td th:text="${color.name}">2018-01-08</td>
+								<td th:text="${color.albumName}">2018-01-08</td>
+								<td th:text="${color.description}">2018-01-08</td>
+								<!-- <td>&nbsp;&nbsp; <a
+									th:onclick="'javascript:deleteColor(\''+${color.id}+'\')'"
+									title="删除"><span class="glyphicon glyphicon-trash"></span></a>
+								</td> -->
+							</tr>
+
+						</tbody>
+					</table>
 				</div>
 
-			</form>
+
+		<div th:if="*{id}!=0" class="form-group " style="text-align: center;">
+			<div class="col-sm-4 ">
+				<button class="btn btn-default" onclick="modify()">修改</button>
+			</div>
+			<div class="col-sm-4 ">
+				<button class="btn btn-default" onclick="modifyBack()">返回</button>
+			</div>
 		</div>
+		<div th:if="*{id}==0" class="form-group " style="text-align: center;">
+			<div th:if="*{id}==0" class="col-sm-4 ">
+				<button class="btn btn-default" onclick="add()">添加</button>
+			</div>
+			<div class="col-sm-4 ">
+				<button class="btn btn-default" onclick="back()">返回</button>
+			</div>
+		</div>
+
+		</form>
+	</div>
 
 	</div>
 

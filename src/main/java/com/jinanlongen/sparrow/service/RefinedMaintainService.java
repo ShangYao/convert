@@ -59,7 +59,14 @@ public class RefinedMaintainService {
         // lstPredicates.add(cb.equal(root.get("state").as(String.class),
         // merchandise.getState()));
         // }
-
+        if (StringUtils.isNotBlank(merchandise.getBeginCreated())) {
+          lstPredicates.add(cb.greaterThanOrEqualTo(root.get("createdAt").as(Date.class),
+              DateUtils.getDate(merchandise.getBeginCreated() + " 00-00-00")));
+        }
+        if (StringUtils.isNotBlank(merchandise.getEndCreated())) {
+          lstPredicates.add(cb.lessThanOrEqualTo(root.get("createdAt").as(Date.class),
+              DateUtils.getDate(merchandise.getEndCreated() + " 23-59-59")));
+        }
         if (StringUtils.isNotBlank(merchandise.getEndMaintain())) {
           lstPredicates.add(cb.lessThanOrEqualTo(root.get("maintainAt").as(Date.class),
               DateUtils.getDate(merchandise.getEndMaintain() + " 23-59-59")));

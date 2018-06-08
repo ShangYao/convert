@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.jinanlongen.sparrow.domain.Merchandise;
+import com.jinanlongen.sparrow.repository.ImageRep;
 import com.jinanlongen.sparrow.roc.domain.CacheKey;
 import com.jinanlongen.sparrow.service.CacheService;
 import com.jinanlongen.sparrow.service.RefinedAllService;
@@ -29,6 +30,8 @@ public class RefinedAllController extends BaseController {
   private RefinedMineService refinedService;
   @Autowired
   private CacheService initService;
+  @Autowired
+  private ImageRep imageRep;
 
   @RequestMapping("all")
   public String all(Model model) {
@@ -53,9 +56,9 @@ public class RefinedAllController extends BaseController {
   @RequestMapping("{id}")
   public String show(Model model, @PathVariable Long id) {
     Merchandise merchandise = refinedService.toModify(id);
-
     model.addAttribute("topTaxons", initService.getRocDataList(CacheKey.TOPTAXONS));
     model.addAttribute("merchandise", merchandise);
+    model.addAttribute("images", imageRep.findByAlbumId(merchandise.getAlbumId()));
     return refinede_html_path + "detail";
   }
 

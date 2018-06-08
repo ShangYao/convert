@@ -68,12 +68,40 @@
 								th:value="*{description}" placeholder="描述" />
 						</div>
 					</div>
-
-
-
-
 				</div>
+				
+				
+				<div class="panel-heading">
+					<h3 class="panel-title">尺码列表</h3>
+				</div>
+					<div class="panel-body">
+						<table class="table table-bordered table-condensed table-hover "
+							style="width: 90%;" align="center">
+							<thead>
+								<tr class="success">
+									<th>ID</th>
+									<th>尺码名称</th>
+									<th>相册</th>
+									<th>描述</th>
+									<!-- <th>操作</th> -->
+								</tr>
+							</thead>
+							<tbody>
 
+								<tr th:each="size : ${sizes}">
+									<td th:text="${size.id}"></td>
+									<td th:text="${size.name}">2018-01-08</td>
+									<td th:text="${size.albumName}">2018-01-08</td>
+									<td th:text="${size.description}">2018-01-08</td>
+								<!-- 	<td>&nbsp;&nbsp; <a
+										th:onclick="'javascript:deleteSize(\''+${size.id}+'\')'"
+										title="删除"><span class="glyphicon glyphicon-trash"></span></a>
+									</td> -->
+								</tr>
+							</tbody>
+						</table>
+
+					</div>
 
 
 
@@ -126,7 +154,7 @@
 				return false;
 			}
 
-			defaultForm.action="../modifySize";
+			defaultForm.action = "../modifySize";
 			defaultForm.submit();
 
 		}

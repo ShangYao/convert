@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.jinanlongen</groupId>
-	<artifactId>sparrow</artifactId>
+	<artifactId>new-sparrow</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<name>sparrow</name>
+	<name>new-sparrow</name>
 	<description>sparrow project for Spring Boot</description>
 
 	<parent>

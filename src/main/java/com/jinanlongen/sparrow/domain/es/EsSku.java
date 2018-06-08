@@ -6,9 +6,18 @@ public class EsSku {
   private String id;
   private String color_id;
   private String size_id;
+  private String brand_code;
   private float desired_price;
   private String album_id;
   private int stock;
+
+  public String getBrand_code() {
+    return brand_code;
+  }
+
+  public void setBrand_code(String brand_code) {
+    this.brand_code = brand_code;
+  }
 
   public int getStock() {
     return stock;
@@ -64,9 +73,10 @@ public class EsSku {
     this.id = item.getId() + "";
     this.color_id = item.getColorId() + "";
     this.size_id = item.getSizeId() + "";
-    this.album_id = item.getAlbumId() + "";
+    this.album_id = item.getAlbumId() == 0 ? null : (item.getAlbumId() + "");
     this.desired_price = item.getPrice();
     this.stock = item.getStock();
+    this.brand_code = item.getBrand_code();
     return this;
   }
 

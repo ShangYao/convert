@@ -38,6 +38,7 @@ public class LineItem extends BaseDomain {
   private int stock;
   private long albumId;
   private String albumName;
+  private String brand_code;
   // private String salesState;
   // private String rocidString;
   // private int rocidCount;
@@ -56,6 +57,14 @@ public class LineItem extends BaseDomain {
   private long[] sizes;
 
 
+
+  public String getBrand_code() {
+    return brand_code;
+  }
+
+  public void setBrand_code(String brand_code) {
+    this.brand_code = brand_code;
+  }
 
   public Date getCreatedAt() {
     return createdAt;

@@ -113,65 +113,7 @@
 				.ready(
 						function() {
 							//动态添加HTML元素并绑定事件
-							$('.glyphicon-plus')
-									.on(
-											'click',
-											function() {
-												var index = $(this).data(
-														'index');
-
-												if (!index) {
-													index = 1;
-													$(this).data('index', 1);
-												}
-
-												index++;
-												$(this).data('index', index);
-												var template = $(this).attr(
-														'data-template'), $templateEle = $('#'
-														+ template + 'Template'), $row = $templateEle
-														.clone().removeAttr(
-																'id')
-														.insertBefore(
-																$templateEle)
-														.removeClass('hide'), $el = $row
-														.find('input').eq(0)
-														.attr('name', 'rocid'), $le = $row
-														.find('label')
-														.eq(0)
-														.attr(
-																'for',
-																template
-																		+ index);
-
-												$('#defaultForm')
-														.formValidation(
-																'addField', $el);
-
-												$el.attr('placeholder',
-														'请添加RocId #' + index);
-												$el
-														.attr('id', template
-																+ index);
-												$row
-														.on(
-																'click',
-																'.glyphicon-remove',
-																function(e) {
-																	$(
-																			'#defaultForm')
-																			.formValidation(
-																					'removeField',
-																					$el);
-																	$row
-																			.remove();
-																});
-											});
-
-							$('.glyphicon-remove').on('click', function() {
-								$(this).closest(".form-group").remove();
-
-							});
+							
 
 							$('#defaultForm').formValidation({
 								message : 'This value is not valid',
@@ -195,7 +137,18 @@
 
 										}
 									},
-
+									url : {
+										validators : {
+											notEmpty : {
+												message : '链接不能为空'
+											},
+											stringLength : {
+												min : 10,
+												//max : 300,
+												message : 'URL长度应大于10字符'
+											}
+										}
+									},
 								}
 							});
 						});

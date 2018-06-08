@@ -56,7 +56,15 @@ public interface LineItemRep extends JpaRepository<LineItem, Long> {
   @Query(value = "SELECT * FROM LINE_ITEMS WHERE M_ID=?", nativeQuery = true)
   List<LineItem> findByMId2(long id);
 
-  @Query(value = "SELECT count(*) FROM LINE_ITEMS WHERE color_id=? and size_id=? ",
+  @Query(value = "SELECT count(*) FROM LINE_ITEMS WHERE COLOR_ID=? AND SIZE_ID=? ",
       nativeQuery = true)
   int countColorAndSize(long cid, long sid);
+
+  @Transactional
+  @Modifying
+  void deleteByColorId(Long id);
+
+  @Transactional
+  @Modifying
+  void deleteBySizeId(Long id);
 }

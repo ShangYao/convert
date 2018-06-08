@@ -201,6 +201,7 @@ public class MerchandiseMineController extends BaseController {
     Color color = new Color();
     color.setMerchandiseId(id);
     model.addAttribute("color", color);
+    model.addAttribute("colors", colorRep.findByMerchandiseId(id));
     model.addAttribute("albums", albumRep.findByMerchandiseId(id));
     return BASE_PATH + "color";
   }
@@ -209,6 +210,7 @@ public class MerchandiseMineController extends BaseController {
   public String modifyColor(@PathVariable Long id, Model model) {
     Color color = colorRep.findOne(id);
     model.addAttribute("color", color);
+    model.addAttribute("colors", colorRep.findByMerchandiseId(id));
     model.addAttribute("albums", albumRep.findByMerchandiseId(color.getMerchandiseId()));
     return BASE_PATH + "color";
   }
@@ -222,13 +224,15 @@ public class MerchandiseMineController extends BaseController {
       }
       colorRep.save(color);
     }
-    return "redirect:modify";
+    return "redirect:color";
   }
 
   // ?
   @RequestMapping("{mid}/deleteColor/{id}")
+  @Transactional(rollbackFor = {Exception.class})
   public String deleteColor(@PathVariable Long id) {
     colorRep.delete(id);
+    itemRep.deleteByColorId(id);
     return "redirect:../modify";
   }
 
@@ -250,6 +254,7 @@ public class MerchandiseMineController extends BaseController {
     Size size = new Size();
     size.setMerchandiseId(id);
     model.addAttribute("size", size);
+    model.addAttribute("sizes", sizeRep.findByMerchandiseId(id));
     model.addAttribute("albums", albumRep.findByMerchandiseId(id));
     return BASE_PATH + "size";
   }
@@ -258,6 +263,7 @@ public class MerchandiseMineController extends BaseController {
   public String modifysize(@PathVariable Long id, Model model) {
     Size size = sizeRep.findOne(id);
     model.addAttribute("size", size);
+    model.addAttribute("sizes", sizeRep.findByMerchandiseId(id));
     model.addAttribute("albums", albumRep.findByMerchandiseId(size.getMerchandiseId()));
     return BASE_PATH + "size";
   }
@@ -271,13 +277,15 @@ public class MerchandiseMineController extends BaseController {
       }
       sizeRep.save(size);
     }
-    return "redirect:modify";
+    return "redirect:size";
   }
 
   // ?
   @RequestMapping("{mid}/deleteSize/{id}")
+  @Transactional(rollbackFor = {Exception.class})
   public String deleteSize(@PathVariable Long id) {
     sizeRep.delete(id);
+    itemRep.deleteBySizeId(id);
     return "redirect:../modify";
   }
 
@@ -340,32 +348,39 @@ public class MerchandiseMineController extends BaseController {
   @RequestMapping("{id}/addItem")
   @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
   public String addItem(LineItem item) {
+    String brand = mcdRep.findBrandIdById(item.getmId());
     long[] colorIds = item.getColors();
     long[] sizeIds = item.getSizes();
-    LineItem newItem;
-    int count;
     for (long cid : colorIds) {
-      for (long sid : sizeIds) {
-        count = itemRep.countColorAndSize(cid, sid);
-        if (count == 0) {
+      if (sizeIds != null && sizeIds.length != 0) {
+        for (long sid : sizeIds) {
+          saveItem(cid, sid, item, brand);
 
-          newItem = new LineItem();
-          newItem.setAlbumId(item.getAlbumId());
-          newItem.setAlbumName(albumRep.findNameById(item.getAlbumId()));
-          newItem.setColor(colorRep.findNameById(cid));
-          newItem.setSize(sizeRep.findNameById(sid));
-          newItem.setColorId(cid);
-          newItem.setSizeId(sid);
-          newItem.setPrice(item.getPrice());
-          newItem.setStock(item.getStock());
-          newItem.setmId(item.getmId());
-          itemRep.save(newItem);
         }
+      } else {
+        saveItem(cid, 0, item, brand);
       }
     }
-    // itemRep.save(item);
-    // mcdRep.updateTime(item.getUpdatedAt(), item.getmId());
     return "redirect:modify";
+  }
+
+  private void saveItem(long cid, long sid, LineItem item, String brand) {
+    int count = itemRep.countColorAndSize(cid, sid);
+    if (count == 0) {
+      LineItem newItem = new LineItem();
+      newItem.setAlbumId(item.getAlbumId());
+      newItem.setAlbumName(albumRep.findNameById(item.getAlbumId()));
+      newItem.setColor(colorRep.findNameById(cid));
+      newItem.setSize(sizeRep.findNameById(sid));
+      newItem.setColorId(cid);
+      newItem.setSizeId(sid);
+      newItem.setPrice(item.getPrice());
+      newItem.setStock(item.getStock());
+      newItem.setmId(item.getmId());
+      newItem.setBrand_code(brand);
+      itemRep.save(newItem);
+    }
+
   }
 
   // -------------------------taxon ----
@@ -472,11 +487,16 @@ public class MerchandiseMineController extends BaseController {
   // 跳转相册管理列表
   @RequestMapping("{id}/albums")
   public String albumList(@PathVariable long id, Model model) {
-    Merchandise merchandise = new Merchandise();
-    merchandise.setId(id);
+    Merchandise merchandise = mcdRep.findOne(id);
     merchandise.setAlbums(albumRep.findByMerchandiseId(id));
     model.addAttribute("merchandise", merchandise);
     return BASE_PATH + "albums";
+  }
+
+  @RequestMapping("{id}/saveAlbumId")
+  public String saveAlbumId(@PathVariable long id, Merchandise merchandise) {
+    mcdRep.updateAlbumId(merchandise.getAlbumId(), id);
+    return "redirect:modify";
   }
 
   // 修改相册
@@ -554,7 +574,6 @@ public class MerchandiseMineController extends BaseController {
   @RequestMapping("album/saveImage")
   @Transactional(rollbackFor = {Exception.class})
   public String saveImage(Image image) {
-    System.out.println(image);
     String url = "http://192.168.200.71:8888/sparrow/" + image.getAlbumId() + "/"
         + DateUtils.dateString() + ".jpg";
     boolean result = false;;
@@ -745,6 +764,7 @@ public class MerchandiseMineController extends BaseController {
     Merchandise merchandise = refinedService.toModify(id);
     model.addAttribute("topTaxons", initService.getRocDataList(CacheKey.TOPTAXONS));
     model.addAttribute("merchandise", merchandise);
+    model.addAttribute("images", imageRep.findByAlbumId(merchandise.getAlbumId()));
     return BASE_PATH + "detail";
   }
 
@@ -807,6 +827,8 @@ public class MerchandiseMineController extends BaseController {
     }
     if (null == show || "".equals(show)) {
       show = merchandise.getTabShow();
+    } else {
+      merchandise.setTabShow(show);
     }
     switch (show) {
       case "all":

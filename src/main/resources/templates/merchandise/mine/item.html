@@ -48,9 +48,9 @@
 						<label for="color" class="col-sm-2 control-label">颜色</label>
 						<div class="col-sm-10">
 							<select class="selectpicker show-tick form-control"
-								name="colorId" id="color">
+								name="colorId" id="color" disabled="disabled">
 								<option th:each="color:${colors}" th:value="${color.id}"
-									th:text="${color.name}" th:selected="${color.id}==*{colorId}" disabled="disabled"></option>
+									th:text="${color.name}" th:selected="${color.id}==*{colorId}" ></option>
 							</select>
 						</div>
 					</div>
@@ -58,9 +58,9 @@
 						<label for="color" class="col-sm-2 control-label">尺码</label>
 						<div class="col-sm-10">
 							<select class="selectpicker show-tick form-control" name="sizeId"
-								id="size">
+								id="size" disabled="disabled">
 								<option th:each="size:${sizes}" th:value="${size.id}"
-									th:text="${size.name}" th:selected="${size.id}==*{sizeId}" disabled="disabled"></option>
+									th:text="${size.name}" th:selected="${size.id}==*{sizeId}" ></option>
 							</select>
 						</div>
 					</div>
@@ -72,7 +72,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="basePrice" class="col-sm-2 control-label">价格</label>
+						<label for="basePrice" class="col-sm-2 control-label">原网价格</label>
 						<div class="col-sm-10">
 							<input type="number" class="form-control" id="price" step="0.1"
 								name="price" th:value="*{price}" placeholder="价格" />
@@ -126,15 +126,21 @@
 		}
 
 		function add() {
+			if ($("#color").val() == 0 || $("#color").val() == null) {
+				alert("color不能为空！");
+				return false;
+			}
 			
 			if ($("#price").val() == 0.0) {
 				alert("价格不能为0！");
 				return false;
 			}
-			if ($("#albumId").val() == 0) {
-				alert("请选择相册！");
+			
+			if ($("#stock").val() == 0 ) {
+				alert("stock不能为空！");
 				return false;
 			}
+			
 			
 			defaultForm.submit();
 

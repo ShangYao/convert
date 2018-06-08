@@ -4,17 +4,11 @@ import com.jinanlongen.sparrow.domain.Desc;
 
 public class EsDesc {
 
-  private long id;
+  private String id;
   private String type;
   private String content;
 
-  public long getId() {
-    return id;
-  }
 
-  public void setId(long id) {
-    this.id = id;
-  }
 
   public String getType() {
     return type;
@@ -22,6 +16,14 @@ public class EsDesc {
 
   public void setType(String type) {
     this.type = type;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getContent() {
@@ -33,7 +35,7 @@ public class EsDesc {
   }
 
   public EsDesc generate(Desc desc) {
-    this.id = desc.getId();
+    this.id = desc.getId() + "";
     this.content = desc.getContent();
     this.type = desc.getName();
 

@@ -53,5 +53,14 @@ public interface MerchandiseRep
       nativeQuery = true)
   Long findIdByItemId(String id);
 
+  @Query(value = "SELECT DISTINCT BRAND_ID FROM MERCHANDISES WHERE ID=? LIMIT 1 ",
+      nativeQuery = true)
+  String findBrandIdById(long getmId);
+
+  @Transactional
+  @Modifying
+  @Query(value = "update Merchandise set albumId=? where id=?")
+  void updateAlbumId(long albumId, long id);
+
   // Merchandise findFirst1ByItemIdAndState(String id, String state);
 }

@@ -292,7 +292,7 @@
 							<th>颜色</th>
 							<th>尺码</th>
 							<th>库存</th>
-							<th>价格</th>
+							<th>原网价格</th>
 							<th>相册</th>
 							<th>操作</th>
 						</tr>
@@ -464,19 +464,19 @@
 			}
 		}
 		function deleteItem(id) {
-			if (confirm("确定删除此条信息？")) {
+			if (confirm("确定删除此条单品信息？")) {
 				defaultForm.action = "deleteItem/" + id;
 				defaultForm.submit();
 			}
 		}
 		function deleteColor(id) {
-			if (confirm("确定删除此条信息？")) {
+			if (confirm("确定删除此颜色以及颜色下的单品？")) {
 				defaultForm.action = "deleteColor/" + id;
 				defaultForm.submit();
 			}
 		}
 		function deleteSize(id) {
-			if (confirm("确定删除此条信息？")) {
+			if (confirm("确定删除此尺码以及尺码下的单品？")) {
 				defaultForm.action = "deleteSize/" + id;
 				defaultForm.submit();
 			}

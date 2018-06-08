@@ -7,8 +7,17 @@ public class EsUrl {
   private String url;
   private String state;
   private String mpn;
+  private String brand_code;
   private long created_at;
   private long updated_at;
+
+  public String getBrand_code() {
+    return brand_code;
+  }
+
+  public void setBrand_code(String brand_code) {
+    this.brand_code = brand_code;
+  }
 
   public String getId() {
     return id;

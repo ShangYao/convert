@@ -33,8 +33,8 @@
 				<input type="hidden" th:value="*{merchandiseId}" id="merchandiseId"/>
 				<input type="hidden" th:value="*{id}" id="id"/>
 				<a  th:text="*{merchandiseId}"  onclick="merchandise()"></a>
-				
-				相册名称:<a th:text="*{name}"></a>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				相册名称:<a th:text="*{name}" onclick="albums()"></a>
 			<button type="button" onclick="toAdd()" class="btn btn-info" style="float: right;" >添加照片</button>
 				</span>
 
@@ -69,6 +69,10 @@
 				</tr>
 			</tbody>
 		</table>
+		<div class="col-sm-4 " style="text-align: center;">
+						<input type="button" value="返回相册列表" class="btn btn-default"
+							onclick="back()" />
+					</div>
 		<input type="hidden" id="login_user"
 			th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
 	</div>
@@ -95,6 +99,16 @@
 			myform.action = "../"+id+"/albums";
 			myform.submit();
 		}
+		function back() {
+			var id=$("#merchandiseId").val();
+			myform.action = "../"+id+"/albums";
+			myform.submit();
+		}
+		function merchandise() {
+			var id=$("#merchandiseId").val();
+			myform.action = "../"+id+"/albums";
+			myform.submit();
+			}
 	</script>
 
 </body>

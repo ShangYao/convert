@@ -44,7 +44,7 @@ public class EsSize {
     this.id = size.getId() + "";
     this.name = size.getName();
     this.memo = size.getDescription();
-    this.album_id = size.getAlbumId() + "";
+    this.album_id = size.getAlbumId() == 0 ? null : (size.getAlbumId() + "");
     return this;
   }
 
