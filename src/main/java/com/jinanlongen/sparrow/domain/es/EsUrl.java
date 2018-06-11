@@ -6,18 +6,12 @@ public class EsUrl {
   private String id;
   private String url;
   private String state;
-  private String mpn;
-  private String brand_code;
+  // private String mpn;
+  // private String brand_code;
   private long created_at;
   private long updated_at;
 
-  public String getBrand_code() {
-    return brand_code;
-  }
 
-  public void setBrand_code(String brand_code) {
-    this.brand_code = brand_code;
-  }
 
   public String getId() {
     return id;
@@ -31,13 +25,7 @@ public class EsUrl {
     return url;
   }
 
-  public String getMpn() {
-    return mpn;
-  }
 
-  public void setMpn(String mpn) {
-    this.mpn = mpn;
-  }
 
   public void setUrl(String url) {
     this.url = url;
@@ -73,7 +61,6 @@ public class EsUrl {
     this.state = (url.getState() == 0) ? "abnormal" : "normal";
     this.created_at = url.getCreatedAt().getTime();
     this.updated_at = url.getUpdatedAt().getTime();
-    this.mpn = url.getMpn();
     return this;
   }
 

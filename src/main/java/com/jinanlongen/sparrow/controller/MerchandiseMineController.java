@@ -332,6 +332,7 @@ public class MerchandiseMineController extends BaseController {
     newItem.setAlbumName(albumRep.findNameById(item.getAlbumId()));
     newItem.setPrice(item.getPrice());
     newItem.setStock(item.getStock());
+    newItem.setMpn(item.getMpn());
 
     itemRep.save(newItem);
     return "redirect:modify";
@@ -378,6 +379,7 @@ public class MerchandiseMineController extends BaseController {
       newItem.setStock(item.getStock());
       newItem.setmId(item.getmId());
       newItem.setBrand_code(brand);
+      newItem.setMpn(item.getMpn());
       itemRep.save(newItem);
     }
 
@@ -687,7 +689,7 @@ public class MerchandiseMineController extends BaseController {
     // saveMerchandise(merchandise, merchandise.getState());
     Merchandise newM = mcdRep.findOne(merchandise.getId());
     newM.setTitle(merchandise.getTitle());
-    newM.setAlbumId(merchandise.getAlbumId());
+    // newM.setAlbumId(merchandise.getAlbumId());
     newM.setBrandId(merchandise.getBrandId());
     newM.setGenderId(merchandise.getGenderId());
 
@@ -750,9 +752,9 @@ public class MerchandiseMineController extends BaseController {
   @RequestMapping("{id}/modify")
   public String toModify2(Model model, @PathVariable Long id) {
     Merchandise merchandise = refinedService.toModify(id);
-
     model.addAttribute("topTaxons", initService.getRocDataList(CacheKey.TOPTAXONS));
     model.addAttribute("merchandise", merchandise);
+    model.addAttribute("images", imageRep.findByAlbumId(merchandise.getAlbumId()));
     return BASE_PATH + "modify";
   }
 

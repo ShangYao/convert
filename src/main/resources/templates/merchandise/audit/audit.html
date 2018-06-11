@@ -150,8 +150,8 @@
 						style="width: 90%;" align="center">
 						<tr class="success">
 							<th>编号</th>
-							<th>品牌</th>
-							<th>mpn</th>
+							<!-- <th>品牌</th>
+							<th>mpn</th> -->
 							<th>url</th>
 							<th>状态</th>
 							<th>创建时间</th>
@@ -159,8 +159,8 @@
 						</tr>
 						<tr th:each="item : ${merchandise.SourceUrl}">
 							<td th:text="${item.id}" class="itemId">12</td>
-							<td th:text="*{brand.name}">12</td>
-							<td th:text="${item.mpn}">12</td>
+							<!-- <td th:text="*{brand.name}">12</td>
+							<td th:text="${item.mpn}">12</td> -->
 							<td><a th:href="${item.url}" target="_blank"
 								th:text="${item.url}"></a></td>
 							<td th:if="${item.state}==1">正常</td>
@@ -184,6 +184,7 @@
 							<th>编号</th>
 							<th>颜色</th>
 							<th>尺码</th>
+							<th>MPN</th>
 							<th>库存</th>
 							<th>价格</th>
 							<th>相册</th>
@@ -193,6 +194,7 @@
 							<td th:text="${item.id}" class="itemId">12</td>
 							<td th:text="${item.color}">12</td>
 							<td th:text="${item.size}">12</td>
+							<td th:text="${item.mpn}">12</td>
 							<td th:text="${item.stock}">12</td>
 							<td th:text="${item.price}">12</td>
 							<td><a th:text="${item.albumName}"

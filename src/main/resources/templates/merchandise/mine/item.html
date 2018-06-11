@@ -50,7 +50,7 @@
 							<select class="selectpicker show-tick form-control"
 								name="colorId" id="color" disabled="disabled">
 								<option th:each="color:${colors}" th:value="${color.id}"
-									th:text="${color.name}" th:selected="${color.id}==*{colorId}" ></option>
+									th:text="${color.name}" th:selected="${color.id}==*{colorId}"></option>
 							</select>
 						</div>
 					</div>
@@ -60,8 +60,15 @@
 							<select class="selectpicker show-tick form-control" name="sizeId"
 								id="size" disabled="disabled">
 								<option th:each="size:${sizes}" th:value="${size.id}"
-									th:text="${size.name}" th:selected="${size.id}==*{sizeId}" ></option>
+									th:text="${size.name}" th:selected="${size.id}==*{sizeId}"></option>
 							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="mpn" class="col-sm-2 control-label">MPN</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="mpn" id="mpn"
+								th:value="*{mpn}" placeholder="货号" />
 						</div>
 					</div>
 					<div class="form-group">
@@ -130,18 +137,17 @@
 				alert("color不能为空！");
 				return false;
 			}
-			
+
 			if ($("#price").val() == 0.0) {
 				alert("价格不能为0！");
 				return false;
 			}
-			
-			if ($("#stock").val() == 0 ) {
-				alert("stock不能为空！");
+
+			if ($("#mpn").val() == "" || $("#mpn").val() == null) {
+				alert("mpn不能为空！");
 				return false;
 			}
-			
-			
+
 			defaultForm.submit();
 
 		}

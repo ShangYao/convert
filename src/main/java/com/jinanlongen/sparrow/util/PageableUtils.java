@@ -19,7 +19,7 @@ public class PageableUtils {
   @JsonIgnore
   private int page;
   @JsonIgnore
-  private int pageSize = 5;
+  private int pageSize = 10;
   @JsonIgnore
   private int totalPages;
   @JsonIgnore

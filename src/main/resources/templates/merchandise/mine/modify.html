@@ -34,8 +34,8 @@
 			<form class="form-horizontal" id="defaultForm"
 				th:object="${merchandise}" method="POST" action="add"
 				onsubmit="return false">
-			<!-- 	<input type="hidden" name="id" id="id" th:value="*{id}" />  --><input
-					type="hidden" id="login_user"
+				<!-- 	<input type="hidden" name="id" id="id" th:value="*{id}" />  -->
+				<input type="hidden" id="login_user"
 					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
 				<input type="hidden" name="reviewNeeded" id="reviewNeeded"
 					th:value="*{reviewNeeded}" />
@@ -48,22 +48,22 @@
 					<div class="form-group">
 						<label for="title" class="col-sm-2 control-label">精编ID</label>
 						<div class="col-sm-10">
-							<input class="form-control" name="id" id="id"
-								disabled="disabled" th:value="*{id}"  />
+							<input class="form-control" name="id" id="id" disabled="disabled"
+								th:value="*{id}" />
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="title" class="col-sm-2 control-label">负责人</label>
 						<div class="col-sm-10">
 							<input class="form-control" name="holderName" id="holderName"
-								disabled="disabled" th:value="*{holderName}"  />
+								disabled="disabled" th:value="*{holderName}" />
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="title" class="col-sm-2 control-label">精编状态</label>
 						<div class="col-sm-10">
 							<input class="form-control" name="state" id="state"
-								disabled="disabled" th:value="*{state}"  />
+								disabled="disabled" th:value="*{state}" />
 						</div>
 					</div>
 					<div class="form-group">
@@ -133,12 +133,30 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						精编相册图片
+						<button type="button" value="相册管理" onclick="album()" style="float: right;"
+							class="btn btn-info">相册管理</button>
+					</h3>
+				</div>
+				<div class="panel-body">
+					<table class="table table-bordered table-condensed table-hover "
+						style="width: 90%;" align="center">
+						<tr>
+							<td th:each="image : ${images}"><img alt=""
+								th:src="${image.url}" height="100"></img></td>
+						</tr>
+					</table>
+				</div>
 				<!-- 原网链接部分 -->
 				<div class="panel-heading">
 					<h3 class="panel-title">
 						原网信息
 						<button type="button" value="添加原网信息" onclick="toUrl()"
 							style="float: right;" class="btn btn-info">添加原网信息</button>
+
 					</h3>
 				</div>
 				<div class="panel-body">
@@ -147,16 +165,16 @@
 						<tr class="success">
 							<th>编号</th>
 							<th>品牌</th>
-							<th>mpn</th>
-							<th>url</th>
+							<!-- <th>mpn</th>
+							<th>url</th> -->
 							<th>状态</th>
 							<th>创建时间</th>
 							<th>操作</th>
 						</tr>
 						<tr th:each="item : ${merchandise.SourceUrl}">
 							<td th:text="${item.id}" class="itemId">12</td>
-							<td th:text="*{brand.name}">12</td>
-							<td th:text="${item.mpn}">12</td>
+							<!-- <td th:text="*{brand.name}">12</td>
+							<td th:text="${item.mpn}">12</td> -->
 							<td><a th:href="${item.url}" target="_blank"
 								th:text="${item.url}"></a></td>
 							<td th:if="${item.state}==1">正常</td>
@@ -291,6 +309,7 @@
 							<th>编号</th>
 							<th>颜色</th>
 							<th>尺码</th>
+							<th>MPN</th>
 							<th>库存</th>
 							<th>原网价格</th>
 							<th>相册</th>
@@ -300,6 +319,7 @@
 							<td th:text="${item.id}" class="itemId">12</td>
 							<td th:text="${item.color}">12</td>
 							<td th:text="${item.size}">12</td>
+							<td th:text="${item.mpn}">12</td>
 							<td th:text="${item.stock}">12</td>
 							<td th:text="${item.price}">12</td>
 							<td th:text="${item.albumName}">12</td>
@@ -361,7 +381,7 @@
 							<th>操作</th>
 						</tr>
 						<tr th:each="desc : ${merchandise.descs}">
-							<td ><a th:href="'../desc/'+${desc.id}" th:text="${desc.id}"></a></td>
+							<td><a th:href="'../desc/'+${desc.id}" th:text="${desc.id}"></a></td>
 							<td th:text="${desc.name}">12</td>
 							<td><a th:href="'desc/'+${desc.id}" title="修改"><span
 									class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;<a
@@ -405,6 +425,12 @@
 	<script type="text/javascript" src="/js/language/zh_CN.js"></script>
 
 	<script type="text/javascript">
+		function album() {
+
+			defaultForm.action = "albums";
+			defaultForm.submit();
+
+		}
 		function toDesc() {
 			defaultForm.action = "desc";
 			defaultForm.submit();

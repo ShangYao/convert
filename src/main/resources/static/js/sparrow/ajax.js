@@ -68,7 +68,7 @@ function getTaxon2(id) {
 		success : function(data) {
 			//debugger
 			$("#taxon2").html("");
-			$("#taxon2").append("<option value=\"0\" >选择二级分类</option>");
+			$("#taxon2").append("<option value=\"\" >选择二级分类</option>");
 			$.each(data, function(i, item) {
 				$("#taxon2").append(
 						"<option value="+item.code+">" + item.name
@@ -95,7 +95,7 @@ function getTaxon3(id) {
 		success : function(data) {
 			//debugger
 			$("#taxon3").html("");
-			$("#taxon3").append("<option value=\"0\" >选择三级分类</option>");
+			$("#taxon3").append("<option value=\"\" >选择三级分类</option>");
 			$.each(data, function(i, item) {
 				$("#taxon3").append(
 						"<option value="+item.code+">" + item.name

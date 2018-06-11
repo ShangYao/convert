@@ -10,6 +10,15 @@ public class EsSku {
   private float desired_price;
   private String album_id;
   private int stock;
+  private String mpn;
+
+  public String getMpn() {
+    return mpn;
+  }
+
+  public void setMpn(String mpn) {
+    this.mpn = mpn;
+  }
 
   public String getBrand_code() {
     return brand_code;
@@ -77,6 +86,7 @@ public class EsSku {
     this.desired_price = item.getPrice();
     this.stock = item.getStock();
     this.brand_code = item.getBrand_code();
+    this.mpn = item.getMpn();
     return this;
   }
 

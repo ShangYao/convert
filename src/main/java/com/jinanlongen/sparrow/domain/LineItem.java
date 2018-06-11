@@ -39,6 +39,7 @@ public class LineItem extends BaseDomain {
   private long albumId;
   private String albumName;
   private String brand_code;
+  private String mpn;
   // private String salesState;
   // private String rocidString;
   // private int rocidCount;
@@ -57,6 +58,14 @@ public class LineItem extends BaseDomain {
   private long[] sizes;
 
 
+
+  public String getMpn() {
+    return mpn;
+  }
+
+  public void setMpn(String mpn) {
+    this.mpn = mpn;
+  }
 
   public String getBrand_code() {
     return brand_code;
