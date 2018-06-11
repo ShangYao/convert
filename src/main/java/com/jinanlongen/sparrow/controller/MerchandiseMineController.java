@@ -419,6 +419,7 @@ public class MerchandiseMineController extends BaseController {
     SourceUrl url = new SourceUrl();
     url.setMerchandiseId(id);
     model.addAttribute("url", url);
+    model.addAttribute("urls", urlRep.findByMerchandiseId(id));
     return BASE_PATH + "url";
   }
 
@@ -427,7 +428,7 @@ public class MerchandiseMineController extends BaseController {
   public String addUrl(SourceUrl url) {
     url.setState(1);
     urlRep.save(url);
-    return "redirect:./modify";
+    return "redirect:./url";
   }
 
   // 跳转修改源网连接

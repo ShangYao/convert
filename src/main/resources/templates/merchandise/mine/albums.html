@@ -29,7 +29,7 @@
 			<form method="POST" id="myform" th:object="${merchandise}">
 				精编id：<span> <input type="hidden" th:value="*{id}" id="id" />
 					<a th:text="*{id}" onclick="merchandise()"></a>
-					&nbsp;&nbsp;&nbsp;&nbsp; 精编主相册： <select id="albumId"
+					&nbsp;&nbsp;&nbsp;&nbsp; 商品相册： <select id="albumId"
 					class="selectpicker show-tick " name="albumId"
 					data-live-search="true">
 						<option value="0">选择相册</option>
@@ -62,7 +62,7 @@
 					<td><a th:href="@{../toModifyAlbum(id=${album.id})}"
 						title="修改相册名称"><span class="glyphicon glyphicon-cog"></span></a>&nbsp;&nbsp;
 						<a th:onclick="'javascript:deleteOne(\''+${album.id}+'\')'"
-						title="删除"><span class="glyphicon glyphicon-trash"></span></a></td>
+						title="删除相册"><span class="glyphicon glyphicon-trash"></span></a></td>
 				</tr>
 			</tbody>
 		</table>

@@ -30,7 +30,6 @@
 			<li class="active">添加源网连接</li>
 		</ol>
 		<div class="panel panel-default">
-
 			<form class="form-horizontal" id="defaultForm" th:object="${url}"
 				method="POST" action="addUrl" onsubmit="return false">
 				<input type="hidden" name="id" th:value="*{id}" /> <input
@@ -55,31 +54,53 @@
 					<div class="form-group">
 						<label for="name" class="col-sm-2 control-label">url</label>
 						<div class="col-sm-10">
-							<input type="url" class="form-control" id="url" name="url" th:value="*{url}"
-								placeholder="url" />
+							<input type="url" class="form-control" id="url" name="url"
+								th:value="*{url}" placeholder="url" />
 						</div>
 					</div>
-
-
 				</div>
 
+
+				<div class="panel-heading">
+					<h3 class="panel-title">原网信息</h3>
+				</div>
+				<div class="panel-body">
+					<table class="table table-bordered table-condensed table-hover "
+						style="width: 90%;" align="center">
+						<tr class="success">
+							<th>编号</th>
+							<th>url</th>
+							<th>状态</th>
+							<th>创建时间</th>
+							<!-- <th>操作</th> -->
+						</tr>
+						<tr th:each="url : ${urls}">
+							<td th:text="${url.id}">12</td>
+							<td><a th:href="${url.url}" target="_blank"
+								th:text="${url.url}"></a></td>
+							<td th:if="${url.state}==1">正常</td>
+							<td th:if="${url.state}==0">已删除</td>
+							<td th:text="${url.createdAt}">12</td>
+							<!-- <td>
+								&nbsp;&nbsp;<a
+								th:onclick="'javascript:deleteUrl(\''+${item.id}+'\')'"
+								title="删除"><span class="glyphicon glyphicon-trash"></span></a>
+							</td> -->
+						</tr>
+					</table>
+				</div>
 
 				<div class="form-group " style="text-align: center;">
 					<div class="col-sm-4 ">
-						<button class="btn btn-default" onclick="add()">保存</button>
+						<button class="btn btn-default" onclick="add()">添加</button>
 					</div>
 					<div class="col-sm-4 ">
-						<button class="btn btn-default" onclick="history.go(-1)">返回</button>
-
+						<button class="btn btn-default" onclick="back()">返回</button>
 					</div>
-
 				</div>
-
 			</form>
 		</div>
-
 	</div>
-
 
 	<script src="/js/alert.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
@@ -90,17 +111,16 @@
 
 	<script type="text/javascript">
 		function back() {
-
-			defaultForm.action = "list";
+			defaultForm.action = "modify";
 			defaultForm.submit();
 		}
 
 		function add() {
-			if ($("#mpn").val() == "" || $("#mpn").val() == null) {
-				alert("mpn不能为空！");
+			var urlP = /^((https?|ftp|file):\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+			if (!urlP.test($("#url").val())) {
+				alert("url无效！");
 				return false;
 			}
-
 			if ($("#url").val() == "" || $("#url").val() == null) {
 				alert("url不能为空！");
 				return false;
@@ -109,49 +129,31 @@
 
 		}
 
-		$(document)
-				.ready(
-						function() {
-							//动态添加HTML元素并绑定事件
-							
-
-							$('#defaultForm').formValidation({
-								message : 'This value is not valid',
-								icon : {
-									valid : 'glyphicon glyphicon-ok',
-									invalid : 'glyphicon glyphicon-remove',
-									validating : 'glyphicon glyphicon-refresh'
-								},
-								fields : {
-									inputTitel : {
-										message : 'The username is not valid',
-										validators : {
-											notEmpty : {
-												message : '标题'
-											},
-											stringLength : {
-												min : 6,
-												max : 60,
-												message : '标题必须在6-60个字符之间'
-											}
-
-										}
-									},
-									url : {
-										validators : {
-											notEmpty : {
-												message : '链接不能为空'
-											},
-											stringLength : {
-												min : 10,
-												//max : 300,
-												message : 'URL长度应大于10字符'
-											}
-										}
-									},
-								}
-							});
-						});
+		$(document).ready(function() {
+			//动态添加HTML元素并绑定事件
+			$('#defaultForm').formValidation({
+				message : 'This value is not valid',
+				icon : {
+					valid : 'glyphicon glyphicon-ok',
+					invalid : 'glyphicon glyphicon-remove',
+					validating : 'glyphicon glyphicon-refresh'
+				},
+				fields : {
+					url : {
+						validators : {
+							notEmpty : {
+								message : '链接不能为空'
+							},
+							stringLength : {
+								min : 10,
+								//max : 300,
+								message : 'URL长度应大于10字符'
+							}
+						}
+					},
+				}
+			});
+		});
 	</script>
 </body>
 </html>
