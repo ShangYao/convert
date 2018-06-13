@@ -49,13 +49,15 @@ public class RefinedAuditService {
           CriteriaBuilder cb) {
         List<Predicate> lstPredicates = new ArrayList<Predicate>();
 
-        List<BigInteger> ownerIds = groupRep.getUidsByGid(merchandise.getReviewerId());
-        List<Long> ids = ownerIds.stream().map(i -> i.longValue()).collect(Collectors.toList());
-        Expression<Long> exp = root.get("ownerId").as(Long.class);
-        lstPredicates.add(exp.in(ids));
+
 
         if (0 != merchandise.getOwnerId()) {
           lstPredicates.add(cb.equal(root.get("ownerId").as(Long.class), merchandise.getOwnerId()));
+        } else {
+          List<BigInteger> ownerIds = groupRep.getUidsByGid(merchandise.getReviewerId());
+          List<Long> ids = ownerIds.stream().map(i -> i.longValue()).collect(Collectors.toList());
+          Expression<Long> exp = root.get("ownerId").as(Long.class);
+          lstPredicates.add(exp.in(ids));
         }
 
         if (StringUtils.isNotBlank(merchandise.getQueryString())) {

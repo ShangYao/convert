@@ -640,6 +640,7 @@ public class MerchandiseMineController extends BaseController {
       merchandise.setTaxonId(merchandise.getTaxonId2());
     }
     mcdRep.save(merchandise);
+    merchandise.setMaintainAt(merchandise.getCreatedAt());
     userRep.update(getUserId());
     StateChange sc = new StateChange(merchandise.getId(), "", "草稿", "新建精编");
     saveChange(sc);

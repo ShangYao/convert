@@ -49,7 +49,7 @@
 								th:value="*{title}" placeholder="商品标题" />
 						</div>
 					</div>
-					 <div class="form-group">
+					<div class="form-group">
 						<label class="col-sm-2 control-label">性别</label>
 						<div class="col-sm-10">
 							<select id="genderId" class="selectpicker show-tick form-control"
@@ -80,20 +80,19 @@
 								<option value="">选择一级分类</option>
 								<option th:each="taxon:${topTaxons}" th:value="${taxon.code}"
 									th:text="${taxon.name}"></option>
-							</select> <select class="form-control" id="taxon2" name="taxonId2" 
+							</select> <select class="form-control" id="taxon2" name="taxonId2"
 								onchange="getTaxon3(this.value)">
 								<option value="">选择二级分类</option>
 								<option th:if="*{taxon2}!=null" th:text="*{taxon2.name}"
 									th:value="*{taxon2.id}" th:selected="true"></option>
-							</select> <select class="form-control " name="taxonId3" 
-								id="taxon3">
+							</select> <select class="form-control " name="taxonId3" id="taxon3">
 								<option th:if="*{taxon3}!=null" th:text="*{taxon3.name}"
 									th:value="*{taxon3.id}" th:selected="true"></option>
 								<option value="">选择三级分类</option>
 							</select>
 
 						</div>
-					</div> 
+					</div>
 					<!-- <div class="form-group">
 						<label for="url" class="col-sm-2 control-label">相册管理</label>
 						<div class="col-sm-10">
@@ -110,15 +109,15 @@
 
 				</div>
 				<div class="form-group " style="text-align: center;">
-					<div class="col-sm-4 " style="text-align: center;">
-						<input type="button" value="返回我的精编" class="btn btn-default"
-							onclick="back()" />
-					</div>
+
 					<div class="col-sm-4 " style="text-align: center;">
 						<input type="button" value="下一步" class="btn btn-default"
 							onclick="album()" />
 					</div>
-
+					<div class="col-sm-4 " style="text-align: center;">
+						<input type="button" value="返回我的精编" class="btn btn-default"
+							onclick="back()" />
+					</div>
 				</div>
 				<input type="hidden" id="login_user"
 					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
@@ -144,8 +143,12 @@
 				alert("title不能为空！");
 				return false;
 			}
+			if ($("#title").val().length > 60) {
+				alert("标题不能大于60个字符！");
+				return false;
+			}
 
-		 if ($("#brandId").val() == 0) {
+			if ($("#brandId").val() == 0) {
 				alert("请选择品牌！");
 				return false;
 			}
@@ -153,10 +156,10 @@
 				alert("请选择性别！");
 				return false;
 			}
-			if ( $("#taxon2").val() == 0) {
+			if ($("#taxon2").val() == 0) {
 				alert("请选择类目！");
 				return false;
-			} 
+			}
 			defaultForm.action = "albums";
 			defaultForm.submit();
 
@@ -167,7 +170,6 @@
 			defaultForm.submit();
 
 		}
-	
 	</script>
 </body>
 </html>

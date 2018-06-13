@@ -25,7 +25,7 @@ public class PageableUtils {
   @JsonIgnore
   private long totleElements;
   @JsonIgnore
-  private Sort sort;
+  private Sort sort = new Sort(Direction.DESC, "id");
   @JsonIgnore
   private Page<? extends BaseDomain> pages;
   @JsonIgnore
@@ -84,11 +84,15 @@ public class PageableUtils {
   }
 
   public Sort getSort() {
-    return new Sort(Direction.DESC, "id");
+    return sort;
   }
 
   public void setSort(String name) {
     this.sort = new Sort(Direction.ASC, name);
+  }
+
+  public void setSort(Sort sort) {
+    this.sort = sort;
   }
 
   @JsonIgnore
