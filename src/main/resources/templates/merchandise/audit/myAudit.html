@@ -87,7 +87,7 @@
 						<tr th:each="stateChange : ${stateChange.queryList}">
 							<td
 								th:text="${#dates.format(stateChange.createdAt, 'yyyy/MM/dd HH:mm:ss')}"></td>
-							<td><a th:href="@{show(id=${stateChange.merchandiseId})}"
+							<td><a th:href="'../all/'+${stateChange.merchandiseId}"
 								th:text="${stateChange.merchandiseId}"></a></td>
 							<td th:if="${stateChange.newState}=='已发布'">审核通过</td>
 							<td th:if="${stateChange.newState}=='回收站'">审核驳回</td>

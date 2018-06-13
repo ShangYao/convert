@@ -29,9 +29,8 @@
 	<!-- 内容部分 -->
 	<div class="container">
 		<ol class="breadcrumb">
-			<li><a href="list">精编管理</a></li>
-			<li><a href="list">我的精编</a></li>
-			<li class="active">精编详情</li>
+			<li><a href="auditQuery">精编审核</a></li>
+			<li class="active">审核精编</li>
 		</ol>
 		<div class="panel panel-default">
 
@@ -114,7 +113,7 @@
 
 						</div>
 					</div>
-					<div class="form-group">
+					<!-- <div class="form-group">
 						<label for="url" class="col-sm-2 control-label">相册名称</label>
 						<div class="col-sm-10">
 							<a class="form-control" id="url" th:each="album:*{albums}"
@@ -122,11 +121,20 @@
 								th:text="${album.name}" th:href="'../album/show/'+${album.id}"
 								target='_blank'> </a>
 						</div>
-					</div>
+					</div> -->
 
 				</div>
 				<div class="panel-heading">
-					<h3 class="panel-title">精编相册图片</h3>
+					<h3 class="panel-title">商品相册:
+					&nbsp;&nbsp;&nbsp;
+						<select id="albumId" 
+								disabled="disabled" name="albumId" data-live-search="true">
+								<option value="0">未选择商品相册</option>
+								<option th:each="album:*{albums}" th:value="${album.id}"
+									th:selected="${album.id}==*{albumId}" th:text="${album.name}"
+									disabled="disabled"></option>
+							</select>
+					</h3>
 				</div>
 				<div class="panel-body">
 					<table class="table table-bordered table-condensed table-hover "
@@ -311,7 +319,15 @@
 	<script type="text/javascript" src="/js/formValidation.js"></script>
 	<script type="text/javascript" src="/js/framework/bootstrap.js"></script>
 	<script type="text/javascript" src="/js/language/zh_CN.js"></script>
-
+	<script>
+		tinymce.init({
+			selector : "textarea",
+			height : 400,
+			language : 'zh_CN',
+			plugins : [ '          ' ],
+			menubar : false
+		});
+	</script>
 	<script type="text/javascript">
 		/*<![CDATA[*/
 

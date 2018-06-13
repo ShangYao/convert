@@ -118,7 +118,7 @@
 
 						</div>
 					</div>
-					<div class="form-group">
+					<!-- <div class="form-group">
 						<label for="url" class="col-sm-2 control-label">商品相册名称</label>
 						<div class="col-sm-10">
 							<select id="albumId" class="selectpicker show-tick form-control"
@@ -128,15 +128,23 @@
 									th:selected="${album.id}==*{albumId}" th:text="${album.name}"
 									disabled="disabled"></option>
 							</select>
-							<!-- <input type="button" value="相册管理" class="btn btn-default"
-								onclick="album()" placeholder="分类" /> -->
+							<input type="button" value="相册管理" class="btn btn-default"
+								onclick="album()" placeholder="分类" />
 						</div>
-					</div>
+					</div> -->
 				</div>
 
 				<div class="panel-heading">
 					<h3 class="panel-title">
-						商品相册图片
+						商品相册:
+						&nbsp;&nbsp;&nbsp;
+						<select id="albumId" 
+								disabled="disabled" name="albumId" data-live-search="true">
+								<option value="0">未选择商品相册</option>
+								<option th:each="album:*{albums}" th:value="${album.id}"
+									th:selected="${album.id}==*{albumId}" th:text="${album.name}"
+									disabled="disabled"></option>
+							</select>
 						<button type="button" value="相册管理" onclick="album()" style="float: right;"
 							class="btn btn-info">相册管理</button>
 					</h3>

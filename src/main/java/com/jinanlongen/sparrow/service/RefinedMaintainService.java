@@ -45,20 +45,11 @@ public class RefinedMaintainService {
           lstPredicates.add(cb.equal(root.get("ownerId").as(Long.class), merchandise.getOwnerId()));
         }
         if (StringUtils.isNotBlank(merchandise.getQueryString())) {
-          // if (StringUtils.isNumeric(merchandise.getQueryString())) {
-          // lstPredicates.add(cb.like(root.get("itemId").as(String.class),
-          // "%" + merchandise.getQueryString() + "%"));
-          // } else {
           lstPredicates.add(cb.like(cb.upper(root.get("title").as(String.class)),
               "%" + merchandise.getQueryString().toUpperCase() + "%"));
-          // }
         }
-        // if (StringUtils.isNotBlank(merchandise.getState())) {
         Expression<String> exp = root.get("state").as(String.class);
         lstPredicates.add(exp.in(Arrays.asList("已发布", "已禁用")));
-        // lstPredicates.add(cb.equal(root.get("state").as(String.class),
-        // merchandise.getState()));
-        // }
         if (StringUtils.isNotBlank(merchandise.getBeginCreated())) {
           lstPredicates.add(cb.greaterThanOrEqualTo(root.get("createdAt").as(Date.class),
               DateUtils.getDate(merchandise.getBeginCreated() + " 00-00-00")));

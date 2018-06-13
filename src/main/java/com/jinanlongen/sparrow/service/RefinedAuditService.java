@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import com.google.common.collect.Lists;
 import com.jinanlongen.sparrow.domain.Merchandise;
 import com.jinanlongen.sparrow.domain.User;
 import com.jinanlongen.sparrow.repository.GroupRep;
@@ -47,18 +48,7 @@ public class RefinedAuditService {
       public Predicate toPredicate(Root<Merchandise> root, CriteriaQuery<?> query,
           CriteriaBuilder cb) {
         List<Predicate> lstPredicates = new ArrayList<Predicate>();
-        // if (0 != merchandise.getStoreId()) {
-        // lstPredicates.add(cb.equal(root.get("storeId").as(Long.class),
-        // merchandise.getStoreId()));
-        // } else {
-        // List<Long> idlist =
-        // merchandise.getStoreList().stream().map(i -> i.getId()).collect(Collectors.toList());
-        // if (null == idlist || idlist.size() == 0) {
-        // lstPredicates.add(cb.equal(root.get("storeId").as(Long.class), 0l));
-        // } else {
-        // Expression<Long> exp = root.get("storeId").as(Long.class);
-        // lstPredicates.add(exp.in(idlist));
-        // }
+
         List<BigInteger> ownerIds = groupRep.getUidsByGid(merchandise.getReviewerId());
         List<Long> ids = ownerIds.stream().map(i -> i.longValue()).collect(Collectors.toList());
         Expression<Long> exp = root.get("ownerId").as(Long.class);
@@ -69,13 +59,8 @@ public class RefinedAuditService {
         }
 
         if (StringUtils.isNotBlank(merchandise.getQueryString())) {
-          // if (StringUtils.isNumeric(merchandise.getQueryString())) {
-          // lstPredicates.add(cb.like(root.get("itemId").as(String.class),
-          // "%" + merchandise.getQueryString() + "%"));
-          // } else {
           lstPredicates.add(cb.like(cb.upper(root.get("title").as(String.class)),
               "%" + merchandise.getQueryString().toUpperCase() + "%"));
-          // }
         }
         if (StringUtils.isNotBlank(merchandise.getState())) {
           lstPredicates.add(cb.equal(root.get("state").as(String.class), merchandise.getState()));
@@ -104,7 +89,7 @@ public class RefinedAuditService {
   }
 
   public List<User> findUserBySameGroup(long reviewerId) {
-    List<User> users = new ArrayList<User>();
+    List<User> users = Lists.newArrayList();
     List<BigInteger> ownerIds = groupRep.getUidsByGid(reviewerId);
     for (BigInteger id : ownerIds) {
       users.add(userRep.findOne(id.longValue()));
