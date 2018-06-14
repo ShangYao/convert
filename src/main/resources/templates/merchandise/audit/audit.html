@@ -125,18 +125,23 @@
 
 				</div>
 				<div class="panel-heading">
-					<h3 class="panel-title">商品相册:
-					&nbsp;&nbsp;&nbsp;
-						<select id="albumId" 
-								disabled="disabled" name="albumId" data-live-search="true">
-								<option value="0">未选择商品相册</option>
-								<option th:each="album:*{albums}" th:value="${album.id}"
-									th:selected="${album.id}==*{albumId}" th:text="${album.name}"
-									disabled="disabled"></option>
-							</select>
+					<h3 class="panel-title">
+						商品相册: &nbsp;&nbsp;&nbsp; <select id="albumId" disabled="disabled"
+							name="albumId" data-live-search="true">
+							<option value="0">未选择商品相册</option>
+							<option th:each="album:*{albums}" th:value="${album.id}"
+								th:selected="${album.id}==*{albumId}" th:text="${album.name}"
+								disabled="disabled"></option>
+						</select>
 					</h3>
 				</div>
 				<div class="panel-body">
+					<a th:each="image : ${images}"> <img alt=""
+						th:src="${image.url}" height="100"></img>
+					</a>
+				</div>
+
+				<!-- <div class="panel-body">
 					<table class="table table-bordered table-condensed table-hover "
 						style="width: 90%;" align="center">
 						<tr>
@@ -144,7 +149,7 @@
 								th:src="${image.url}" height="100"></img></td>
 						</tr>
 					</table>
-				</div>
+				</div> -->
 				<!-- 原网链接部分 -->
 				<div class="panel-heading">
 					<h3 class="panel-title">
@@ -206,10 +211,8 @@
 							<td th:text="${item.stock}">12</td>
 							<td th:text="${item.price}">12</td>
 							<td><a th:text="${item.albumName}"
-								th:href="'../album/show/'+${item.albumId}" target="_blank"></a></td>
-
+								th:href="'../mine/album/show/'+${item.albumId}" target="_blank"></a></td>
 						</tr>
-
 					</table>
 				</div>
 
@@ -250,8 +253,9 @@
 							<th>预览</th>
 						</tr>
 						<tr th:each="desc : ${merchandise.descs}">
-							<td><a th:text="${desc.id}"
-								th:href="'../desc/show/'+${desc.id}" target="_blank"> </a></td>
+							<!-- <td><a th:text="${desc.id}"
+								th:href="'../desc/show/'+${desc.id}" target="_blank"> </a></td> -->
+							<td th:text="${desc.id}">12</td>
 							<td th:text="${desc.name}">12</td>
 							<td><textarea name="content" th:text="${desc.content}"> </textarea></td>
 						</tr>

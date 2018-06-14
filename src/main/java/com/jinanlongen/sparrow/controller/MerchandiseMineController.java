@@ -541,7 +541,7 @@ public class MerchandiseMineController extends BaseController {
     Album album = albumRep.findOne(id);
     album.setImages(imageRep.findByAlbumId(id));
     model.addAttribute("album", album);
-    model.addAttribute("merchandise", mcdRep.findOne(id));
+    // model.addAttribute("merchandise", mcdRep.findOne(id));
     return BASE_PATH + "albumShow";
   }
 

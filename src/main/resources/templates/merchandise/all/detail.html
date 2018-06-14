@@ -146,6 +146,13 @@
 					</h3>
 				</div>
 				<div class="panel-body">
+					<a th:each="image : ${images}"> <img alt=""
+						th:src="${image.url}" height="100"></img>
+					</a>
+				</div>
+				
+				
+				<!-- <div class="panel-body">
 					<table class="table table-bordered table-condensed table-hover "
 						style="width: 90%;" align="center">
 						<tr>
@@ -153,7 +160,7 @@
 								th:src="${image.url}" height="100"></img></td>
 						</tr>
 					</table>
-				</div>
+				</div> -->
 				<!-- 原网链接部分 -->
 				<div class="panel-heading">
 					<h3 class="panel-title">原网信息</h3>
