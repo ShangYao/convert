@@ -39,7 +39,6 @@ public class Merchandise extends BaseDomain implements Serializable {
   @SequenceGenerator(name = "m_seq", sequenceName = "mer_seq", allocationSize = 1)
   private long id;
   private String state;
-  private boolean alertEnabled;
   private String title;
   @Column(nullable = false)
   private long ownerId;
@@ -144,16 +143,34 @@ public class Merchandise extends BaseDomain implements Serializable {
   @Transient
   private List<Statistics> userSlist;
   @Transient
-  private List<Statistics> sSlist;
-  @Transient
   private List<Statistics> aSlist;
   @Transient
+  private List<Statistics> personalMaintains;
+  @Transient
+  private List<Statistics> storeMaintains;
+
   private String declinedReason;
 
   @Transient
   private long oldId;
 
 
+
+  public List<Statistics> getPersonalMaintains() {
+    return personalMaintains;
+  }
+
+  public void setPersonalMaintains(List<Statistics> personalMaintains) {
+    this.personalMaintains = personalMaintains;
+  }
+
+  public List<Statistics> getStoreMaintains() {
+    return storeMaintains;
+  }
+
+  public void setStoreMaintains(List<Statistics> storeMaintains) {
+    this.storeMaintains = storeMaintains;
+  }
 
   public User getHolder() {
     return holder;
@@ -418,13 +435,6 @@ public class Merchandise extends BaseDomain implements Serializable {
     this.userSlist = userSlist;
   }
 
-  public List<Statistics> getsSlist() {
-    return sSlist;
-  }
-
-  public void setsSlist(List<Statistics> sSlist) {
-    this.sSlist = sSlist;
-  }
 
   public List<Statistics> getaSlist() {
     return aSlist;
@@ -629,13 +639,7 @@ public class Merchandise extends BaseDomain implements Serializable {
     this.state = state;
   }
 
-  public boolean isAlertEnabled() {
-    return alertEnabled;
-  }
 
-  public void setAlertEnabled(boolean alertEnabled) {
-    this.alertEnabled = alertEnabled;
-  }
 
   public String getTitle() {
     return title == null ? "" : title.trim();

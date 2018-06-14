@@ -27,10 +27,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/images/**").permitAll().antMatchers("/js/**").permitAll()
         .antMatchers("/css/**").permitAll().antMatchers("/fonts/**").permitAll()
         .antMatchers("/favicon.ico").permitAll().antMatchers("/").permitAll().anyRequest()
-        .authenticated().and().formLogin().loginPage("/login")
-        .defaultSuccessUrl("/merchandise/mine/index").failureUrl("/login?error").permitAll().and()
-        .sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry).and().and()
-        .logout().invalidateHttpSession(true).clearAuthentication(true).and().httpBasic();
+        .authenticated().and().logout().permitAll().logoutUrl("/logout").logoutSuccessUrl("/login")
+        .and().formLogin().loginPage("/login").defaultSuccessUrl("/merchandise/mine/index")
+        .failureUrl("/login?error").permitAll().and().sessionManagement().maximumSessions(1)
+        .sessionRegistry(sessionRegistry).and().and().logout().invalidateHttpSession(true)
+        .clearAuthentication(true).and().httpBasic();
 
   }
 

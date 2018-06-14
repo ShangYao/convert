@@ -34,7 +34,7 @@ public interface GroupRep extends JpaRepository<Group, Long> {
   int countGroupName2(String name, Long id);
 
   @Query(
-      value = " select distinct uid from groups_users where group_id in(select group_id from groups_users a,groups b where (a.group_id=b.id or a.group_id=to_number(b.parent_id,'99')) and uid=?) ",
+      value = " SELECT DISTINCT UID FROM GROUPS_USERS WHERE GROUP_ID IN(SELECT ID FROM GROUPS A,(SELECT GROUP_ID FROM GROUPS_USERS WHERE UID=?)B WHERE A.ID=B.GROUP_ID OR TO_NUMBER( A.PARENT_ID,'99')=B.GROUP_ID) ",
       nativeQuery = true)
   List<BigInteger> getUidsByGid(long reviewerId);
 }

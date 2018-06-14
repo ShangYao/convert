@@ -10,32 +10,37 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Statistics {
-	private String name;
-	private String count;
-	private String count2;
+  private String name;
+  private String count;
+  private String count2;
 
-	public String getName() {
-		return name;
-	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getCount2() {
+    return count2;
+  }
 
-	public String getCount() {
-		return count;
-	}
+  public void setCount2(String count2) {
+    this.count2 = count2;
+  }
 
-	public void setCount(String count) {
-		this.count = count;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getCount2() {
-		return count2;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setCount2(String count2) {
-		this.count2 = count2;
-	}
+
+
+  public String getCount() {
+    return count;
+  }
+
+  public void setCount(String count) {
+    this.count = count;
+  }
+
+
 
 }

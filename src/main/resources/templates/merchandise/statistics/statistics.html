@@ -91,10 +91,14 @@
 				<ul class="nav nav-pills" role="tablist" id="refinedlist">
 					<!-- <li role="presentation" class="active"><a href="#store"
 						aria-controls="store" role="tab" data-toggle="tab">店铺统计</a></li> -->
-					<li role="presentation" class="active"><a href="#user" aria-controls="user"
-						role="tab" data-toggle="tab">个人统计</a></li>
+					<li role="presentation" class="active"><a href="#user"
+						aria-controls="user" role="tab" data-toggle="tab">个人精编</a></li>
 					<li role="presentation"><a href="#audit"
-						aria-controls="committed" role="tab" data-toggle="tab">精编审核</a></li>
+						aria-controls="#audit" role="tab" data-toggle="tab">审核精编</a></li>
+					<li role="presentation"><a href="#userMatain" aria-controls="#userMatain"
+						role="tab" data-toggle="tab">个人维护</a></li>
+					<!-- <li role="presentation"><a href="#userMatain" aria-controls="user"
+						role="tab" data-toggle="tab">店铺维护</a></li> -->
 				</ul>
 
 				<!-- Tab panes -->
@@ -149,6 +153,28 @@
 							</table>
 						</div>
 					</div>
+					
+					
+					<div role="tabpanel" class="tab-pane " id="userMatain">
+						<div class="table-responsive">
+							<table class="table table-bordered table-condensed table-hover ">
+
+								<tr class="success">
+									<th>员工</th>
+									<th>维护数量</th>
+								</tr>
+								<tr th:each=" sta:${merchandise.personalMaintains} ">
+									<td th:text="*{sta.name}">马明明-66</td>
+									<td th:text="*{sta.count}">200</td>
+
+								</tr>
+
+							</table>
+						</div>
+					</div>
+					
+					
+					
 				</div>
 			</div>
 		</div>
