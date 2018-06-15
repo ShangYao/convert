@@ -568,6 +568,7 @@ public class MerchandiseMineController extends BaseController {
     Image image = new Image();
     image.setAlbumId(id);
     model.addAttribute("image", image);
+    model.addAttribute("images", imageRep.findByAlbumId(id));
     return BASE_PATH + "addImage";
   }
 
@@ -591,7 +592,7 @@ public class MerchandiseMineController extends BaseController {
       e.printStackTrace();
     }
 
-    return "redirect:./" + image.getAlbumId();
+    return "redirect:./addImage?id=" + image.getAlbumId();
   }
 
   // 删除照片
