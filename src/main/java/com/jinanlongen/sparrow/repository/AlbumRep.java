@@ -17,4 +17,5 @@ public interface AlbumRep extends JpaRepository<Album, Long> {
 
   @Query(value = "SELECT NAME FROM  ALBUM WHERE ID=?", nativeQuery = true)
   String findNameById(long id);
+
 }

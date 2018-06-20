@@ -535,6 +535,13 @@ public class MerchandiseMineController extends BaseController {
     return BASE_PATH + "album";
   }
 
+  // 跳转相册列表
+  @RequestMapping("album/albumList")
+  public String toAlbumList(long albumId) {
+    Album album = albumRep.findOne(albumId);
+    return "redirect:../" + album.getMerchandiseId() + "/albums";
+  }
+
   // 跳转单个相册管理
   @RequestMapping("album/show/{id}")
   public String showAlbum(@PathVariable long id, Model model) {
@@ -654,6 +661,7 @@ public class MerchandiseMineController extends BaseController {
 
     model.addAttribute("merchandise", new Merchandise());
     model.addAttribute("brands", initService.getRocDataList(CacheKey.BRANDS));
+    // model.addAttribute("brands", Lists.newArrayList());
     model.addAttribute("genders", initService.getRocDataList(CacheKey.GENDERS));
     model.addAttribute("topTaxons", initService.getRocDataList(CacheKey.TOPTAXONS));
     return BASE_PATH + "add";

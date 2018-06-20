@@ -26,43 +26,43 @@
 			<li class="active">添加照片</li>
 		</ol>
 		<div class="panel panel-default">
-		<!-- <div style="width: 500px; margin: 0 auto;"> -->
-		<div class="panel-body">
-			<form class="form-horizontal" id="myform" action="saveImage"
-				method="POST" th:object="${image}" onsubmit="return false"
-				enctype="multipart/form-data">
-				<input type="hidden" name="albumId" id="albumId"
-					th:value="*{albumId}" />
+			<!-- <div style="width: 500px; margin: 0 auto;"> -->
+			<div class="panel-body">
+				<form class="form-horizontal" id="myform" action="saveImage"
+					method="POST" th:object="${image}" onsubmit="return false"
+					enctype="multipart/form-data">
+					<input type="hidden" name="albumId" id="albumId"
+						th:value="*{albumId}" />
 					<div class="panel-heading">
-					<h3 class="panel-title">基本信息</h3>
-				</div>
-				<div class="form-group">
-					<label for="name" class="col-sm-2 control-label">顺序编码</label>
-					<div class="col-sm-10">
-						<input class="form-control" id="code" name="code" type="number"
-							th:value="*{code}" placeholder="顺序" />
+						<h3 class="panel-title">基本信息</h3>
 					</div>
-				</div>
-				<div class="form-group">
-					<label for="name" class="col-sm-2 control-label">上传照片</label>
-					<div class="col-sm-10">
-						<input class="form-control form-control-file" id="imageFile" name="imageFile"
-							type="file" />
+					<div class="form-group">
+						<label for="name" class="col-sm-2 control-label">顺序编码</label>
+						<div class="col-sm-10">
+							<input class="form-control" id="code" name="code" type="number"
+								th:value="*{code}" placeholder="顺序" />
+						</div>
 					</div>
-				</div>
+					<div class="form-group">
+						<label for="name" class="col-sm-2 control-label">上传照片</label>
+						<div class="col-sm-10">
+							<input class="form-control form-control-file" id="imageFile"
+								name="imageFile" type="file" />
+						</div>
+					</div>
 
-				<div class="panel-heading">
-					<h3 class="panel-title">图片列表</h3>
-				</div>
-				
-				<div class="panel-body">
-					<a th:each="image : ${images}"> <img alt=""
-						th:src="${image.url}" height="100"></img>
-					</a>
-				</div>
-				
-				
-				<!-- <div class="panel-body">
+					<div class="panel-heading">
+						<h3 class="panel-title">图片列表</h3>
+					</div>
+
+					<div class="panel-body">
+						<a th:each="image : ${images}"> <img alt=""
+							th:src="${image.url}" height="100"></img>
+						</a>
+					</div>
+
+
+					<!-- <div class="panel-body">
 					<table class="table table-bordered table-condensed table-hover "
 						style="width: 90%;"   align="center">
 						<thead>
@@ -96,19 +96,22 @@
 				</div> -->
 
 
-				<div class="form-group">
-					<div class="col-sm-4"></div>
-					<div class="col-sm-4">
-					<button class="btn btn-primary" onclick="add()">添加</button></div>
-					<div class="col-sm-4">
-						
-						<button class="btn btn-primary" onclick="back()">返回相册</button>
+					<div class="form-group">
+						<div class="col-sm-3"></div>
+						<div class="col-sm-3">
+							<button class="btn btn-primary" onclick="add()">  确认添加</button>
+						</div>
+						<div class="col-sm-3">
+							<button class="btn btn-primary" onclick="back()"> 返回本相册</button>
+						</div>
+						<div class="col-sm-3">
+							<button class="btn btn-primary" onclick="albumList()">返回相册列表</button>
+						</div>
 					</div>
-				</div>
-				<input type="hidden" id="login_user"
-					th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
-			</form>
-		</div>
+					<input type="hidden" id="login_user"
+						th:value="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" />
+				</form>
+			</div>
 		</div>
 	</div>
 	<!-- 内容部分结束 -->
@@ -117,10 +120,10 @@
 	<script src="/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
 		function add() {
-			if ($("#code").val() == 0) {
+			/* if ($("#code").val() == 0) {
 				alert("顺序编号不能为0！");
 				return false;
-			}
+			} */
 			if ($("#imageFile").val() == "" || $("#imageFile").val() == null) {
 				alert("图片不能为空！");
 				return false;
@@ -131,6 +134,11 @@
 		function back() {
 			var id = $("#albumId").val();
 			myform.action = "./" + id;
+			myform.submit();
+		}
+		function albumList() {
+			var id = $("#albumId").val();
+			myform.action = "./albumList?albumId=" + id;
 			myform.submit();
 		}
 	</script>
