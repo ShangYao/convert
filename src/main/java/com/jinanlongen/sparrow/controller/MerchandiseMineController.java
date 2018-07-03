@@ -424,7 +424,7 @@ public class MerchandiseMineController extends BaseController {
   }
 
   // 保存添加源网连接
-  @RequestMapping("{id}/addUrl")
+  @RequestMapping("{mid}/addUrl")
   public String addUrl(SourceUrl url) {
     url.setState(1);
     urlRep.save(url);
