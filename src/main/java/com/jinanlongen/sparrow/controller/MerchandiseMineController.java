@@ -268,7 +268,7 @@ public class MerchandiseMineController extends BaseController {
     return BASE_PATH + "size";
   }
 
-  @RequestMapping("{id}/addSize")
+  @RequestMapping("{mid}/addSize")
   public String addSize(Size size) {
     int count = sizeRep.countSize(size.getName(), size.getMerchandiseId());
     if (count == 0) {
@@ -289,7 +289,7 @@ public class MerchandiseMineController extends BaseController {
     return "redirect:../modify";
   }
 
-  @RequestMapping("{id}/modifySize")
+  @RequestMapping("{mid}/modifySize")
   public String saveModifySize(Size size) {
     int count = sizeRep.countSize2(size.getName(), size.getMerchandiseId(), size.getId());
     if (count == 0) {
