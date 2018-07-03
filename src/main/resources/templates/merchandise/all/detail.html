@@ -259,7 +259,7 @@
 							<th>预览</th>
 						</tr>
 						<tr th:each="desc : ${merchandise.descs}">
-							<td><a th:href="'../desc/'+${desc.id}" th:text="${desc.id}"></a></td>
+							<td th:text="${desc.id}"></td>
 							<td th:text="${desc.name}">12</td>
 							<td><textarea name="content" th:text="${desc.content}"> </textarea></td>
 						</tr>
