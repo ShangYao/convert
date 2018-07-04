@@ -149,8 +149,8 @@
 				alert("title不能为空！");
 				return false;
 			}
-			if (title.replace(/[^\x00-\xff]/g,"01").length > 60) {
-				alert("标题不能大于60个字符！");
+			if (title.replace(/[\u4e00-\u9fa5]/g,"01").length > 60) {
+				alert("标题不能大于60个字符！当前字符长度为:"+title.replace(/[\u4e00-\u9fa5]/g,"01").length);
 				return false;
 			}
 
