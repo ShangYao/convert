@@ -144,11 +144,12 @@
 
 	<script type="text/javascript">
 		function album() {
-			if ($("#title").val() == "" || $("#title").val() == null) {
+			var title=$("#title").val();
+			if (title== "" || title== null) {
 				alert("title不能为空！");
 				return false;
 			}
-			if ($("#title").val().length > 60) {
+			if (title.replace(/[^\x00-\xff]/g,"01").length > 60) {
 				alert("标题不能大于60个字符！");
 				return false;
 			}
