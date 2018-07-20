@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.google.common.collect.Lists;
 import com.jinanlongen.sparrow.domain.Album;
 import com.jinanlongen.sparrow.domain.Color;
 import com.jinanlongen.sparrow.domain.Desc;
@@ -460,7 +461,36 @@ public class MerchandiseMineController extends BaseController {
   // --------------------------- tinymce上传图片
   @RequestMapping("upload")
   @ResponseBody
-  public String uploa(MultipartFile thumbnail, long mid) {
+  public List<String> uploa(List<MultipartFile> thumbnail, long mid) {
+    List<String> imagUrls = Lists.newArrayList();
+    for (MultipartFile multipartFile : thumbnail) {
+      imagUrls.add(uploadImage(multipartFile, mid));
+    }
+    return imagUrls;
+  }
+
+  private String uploadImage(MultipartFile multipartFile, long mid) {
+    String fileName = generateFileName(mid);
+    boolean result = false;;
+    try {
+      result = Httptest.post(multipartFile.getBytes(), fileName);
+      if (result) {
+        UploadImage upload = new UploadImage();
+        upload.setHref(fileName);
+        upload.setMerchandiseId(mid);
+        upload.setFingerprint(MD5Utils.MD5(multipartFile.getBytes()));
+        uploadrep.save(upload);
+        return fileName;
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return "";
+  }
+
+  @RequestMapping("ggupload")
+  @ResponseBody
+  public String upload(MultipartFile thumbnail, long mid) {
     String fileName = generateFileName(mid);
     boolean result = false;;
     try {
