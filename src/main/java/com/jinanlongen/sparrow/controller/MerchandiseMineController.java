@@ -164,6 +164,7 @@ public class MerchandiseMineController extends BaseController {
     Spec spec = new Spec();
     spec.setMerchandiseId(id);
     model.addAttribute("spec", spec);
+    model.addAttribute("specs", specRep.findByMerchandiseId(id));
     return BASE_PATH + "spec";
   }
 
@@ -178,7 +179,7 @@ public class MerchandiseMineController extends BaseController {
   public String addSpec(Spec spec) {
     specRep.save(spec);
 
-    return "redirect:modify";
+    return "redirect:spec";
   }
 
   // ?
