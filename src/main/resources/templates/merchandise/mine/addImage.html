@@ -46,9 +46,9 @@
 					<div class="form-group">
 						<label for="name" class="col-sm-2 control-label">上传照片</label>
 						<div class="col-sm-5">
-							<input class="form-control form-control-file" id="imageFile"
+							<input class="form-control form-control-file" id="imageFile" 
 								name="imageFile" type="file" /><span style="color: blue;">
-								图片尺寸需大于800*800，图片格式需为jpg</span>
+								图片需为正方形，尺寸需大于800*800，图片格式需为jpg</span>
 						</div>
 
 					</div>
@@ -113,7 +113,7 @@
 					var width = img.width;
 					var height = img.height;
 					var filesize = img
-					if (width < 800 || height < 800) {
+					if (width < 800 || height < 800||width！=height) {
 
 						alert("图片尺寸不符合，请重新上传....");
 					} else {
